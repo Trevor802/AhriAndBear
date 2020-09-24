@@ -1,0 +1,51 @@
+Begin Object Class=/Script/Engine.Material Name="M_MBuilding05_InteriorWalls"
+   Begin Object Class=/Script/UnrealEd.SceneThumbnailInfoWithPrimitive Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionTextureSample Name="MaterialExpressionTextureSample_35"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionTextureSample Name="MaterialExpressionTextureSample_34"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionTextureSample Name="MaterialExpressionTextureSample_33"
+   End Object
+   Begin Object Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   Begin Object Name="MaterialExpressionTextureSample_35"
+      Texture=Texture2D'"/Game/ModernCityEnvironment01/Textures/T_MBuilding05_InteriorWalls_ORM.T_MBuilding05_InteriorWalls_ORM"'
+      MaterialExpressionEditorX=-288
+      MaterialExpressionEditorY=64
+      MaterialExpressionGuid=A48A386E46123A4E92392D8609D07AF3
+      Material=Material'"M_MBuilding05_InteriorWalls"'
+   End Object
+   Begin Object Name="MaterialExpressionTextureSample_34"
+      Texture=Texture2D'"/Game/ModernCityEnvironment01/Textures/T_MBuilding05_InteriorWalls_N.T_MBuilding05_InteriorWalls_N"'
+      SamplerType=SAMPLERTYPE_Normal
+      MaterialExpressionEditorX=-288
+      MaterialExpressionEditorY=288
+      MaterialExpressionGuid=3FC8685A4F95E0DBEC5817866529544C
+      Material=Material'"M_MBuilding05_InteriorWalls"'
+   End Object
+   Begin Object Name="MaterialExpressionTextureSample_33"
+      Texture=Texture2D'"/Game/ModernCityEnvironment01/Textures/T_MBuilding05_InteriorWalls_BC.T_MBuilding05_InteriorWalls_BC"'
+      MaterialExpressionEditorX=-288
+      MaterialExpressionEditorY=-160
+      MaterialExpressionGuid=1463898742C52B0678627EB3F19987F1
+      Material=Material'"M_MBuilding05_InteriorWalls"'
+   End Object
+   BaseColor=(Expression=MaterialExpressionTextureSample'"MaterialExpressionTextureSample_33"',Mask=1,MaskR=1,MaskG=1,MaskB=1)
+   Metallic=(Expression=MaterialExpressionTextureSample'"MaterialExpressionTextureSample_35"',OutputIndex=3,Mask=1,MaskB=1)
+   Roughness=(Expression=MaterialExpressionTextureSample'"MaterialExpressionTextureSample_35"',OutputIndex=2,Mask=1,MaskG=1)
+   Normal=(Expression=MaterialExpressionTextureSample'"MaterialExpressionTextureSample_34"',Mask=1,MaskR=1,MaskG=1,MaskB=1)
+   AmbientOcclusion=(Expression=MaterialExpressionTextureSample'"MaterialExpressionTextureSample_35"',OutputIndex=1,Mask=1,MaskR=1)
+   bUsedWithStaticLighting=True
+   Expressions(0)=MaterialExpressionTextureSample'"MaterialExpressionTextureSample_33"'
+   Expressions(1)=MaterialExpressionTextureSample'"MaterialExpressionTextureSample_35"'
+   Expressions(2)=MaterialExpressionTextureSample'"MaterialExpressionTextureSample_34"'
+   bCanMaskedBeAssumedOpaque=True
+   StateId=46AF2CE04D15326ED9274688B6A00B56
+   CachedExpressionData=(ReferencedTextures=(Texture2D'"/Game/ModernCityEnvironment01/Textures/T_MBuilding05_InteriorWalls_BC.T_MBuilding05_InteriorWalls_BC"',Texture2D'"/Game/ModernCityEnvironment01/Textures/T_MBuilding05_InteriorWalls_ORM.T_MBuilding05_InteriorWalls_ORM"',Texture2D'"/Game/ModernCityEnvironment01/Textures/T_MBuilding05_InteriorWalls_N.T_MBuilding05_InteriorWalls_N"'),QualityLevelsUsed=(False,True,False))
+   ReferencedTextureGuids(0)=5E110EFC470698E75BFBB2BF8380359E
+   ReferencedTextureGuids(1)=D2A7BED34320B5D9E59D69AF880C5BC3
+   ReferencedTextureGuids(2)=4C7DEFE94F91B13D8954DBA2F9DBE75B
+   ThumbnailInfo=SceneThumbnailInfoWithPrimitive'"SceneThumbnailInfoWithPrimitive_0"'
+   LightingGuid=1A76124E45EEB3ED7A0E5A86F89ADD9A
+End Object
