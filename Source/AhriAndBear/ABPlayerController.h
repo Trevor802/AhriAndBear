@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "ABAnimalCharacter.h"
 #include "ABPlayerController.generated.h"
-
 /**
  * 
  */
@@ -14,4 +14,20 @@ class AHRIANDBEAR_API AABPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 	
+public:
+	AABPlayerController();
+
+	virtual void SetupInputComponent() override;
+	virtual void OnPossess(APawn* Pawn) override;
+
+	void CallMoveForward(float value);
+	void CallMoveRight(float value);
+	void CallTurnAtRate(float value);
+	void CallLookUpAtRate(float value);
+	void CallJump();
+	void CallStopJump();
+
+private:
+	AABAnimalCharacter* AnimalCharacter;
+
 };
