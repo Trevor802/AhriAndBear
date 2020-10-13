@@ -7,6 +7,17 @@
 #include "Components/BoxComponent.h"
 #include "ABInteractiveObjectBase.generated.h"
 
+UENUM(BlueprintType)
+enum class EABIteractiveObjectTypes : uint8
+{
+	Food
+	UMETA(DisplayName = "Food"),
+	Water
+	UMETA(DisplayName = "Water"),
+	Gate
+	UMETA(DisplayName = "Gate"),
+};
+
 UCLASS()
 class AHRIANDBEAR_API AABInteractiveObjectBase : public AActor
 {
@@ -16,8 +27,8 @@ public:
 	// Sets default values for this actor's properties
 	AABInteractiveObjectBase();
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UBoxComponent* AreaCollision;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Type")
+	TEnumAsByte<EABIteractiveObjectTypes> IteractiveObjectTypes;
 
 protected:
 	// Called when the game starts or when spawned

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Interactives/ABInteractiveObjectBase.h"
+#include "Components/BoxComponent.h"
 #include "ABAnimalCharacter.generated.h"
 
 class UStaticMeshComponent;
@@ -23,6 +24,8 @@ public:
 		class USpringArmComponent* springArm;
 	UPROPERTY(Category = Camera, VisibleDefaultsOnly, BlueprintReadWrite)
 		class UCameraComponent* camera;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		UBoxComponent* InterationTrigger;
 
 protected:
 	// Called when the game starts or when spawned

@@ -15,6 +15,9 @@ AABAnimalCharacter::AABAnimalCharacter()
 	camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera0"));
 	camera->SetupAttachment(springArm);
 
+	InterationTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("InterationTrigger"));
+	InterationTrigger->SetupAttachment(RootComponent);
+
 	baseTurnRate = 45.f;
 	baseLookUpRate = 45.f;
 
@@ -26,8 +29,8 @@ void AABAnimalCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AABAnimalCharacter::OnInteractionOverlapBegin);
-	GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &AABAnimalCharacter::OnInteractionOverlapEnd);
+	InterationTrigger->OnComponentBeginOverlap.AddDynamic(this, &AABAnimalCharacter::OnInteractionOverlapBegin);
+	InterationTrigger->OnComponentEndOverlap.AddDynamic(this, &AABAnimalCharacter::OnInteractionOverlapEnd);
 }
 
 // Called every frame
@@ -52,15 +55,26 @@ void AABAnimalCharacter::EndJumping()
 
 void AABAnimalCharacter::StartInteracting()
 {
-	bInteracting = true;
-
 	if (InteractiveObjectRef)
 	{
+		bInteracting = true;
 		InteractiveObjectRef->bInteracted = true;
-	}
+	
+		float InteractingCooldown = 0.0f;
 
-	FTimerDelegate InteractionTimerDelegate = FTimerDelegate::CreateUObject(this, &AABAnimalCharacter::EndInteracting);
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, InteractionTimerDelegate, 2.0f, false);
+		switch (InteractiveObjectRef->IteractiveObjectTypes)
+		{
+			case(EABIteractiveObjectTypes::Food):
+				InteractingCooldown = 2.0f;
+			case(EABIteractiveObjectTypes::Water):
+				InteractingCooldown = 1.0f;
+			case(EABIteractiveObjectTypes::Gate):
+				InteractingCooldown = 0.5f;
+		}
+
+		FTimerDelegate InteractionTimerDelegate = FTimerDelegate::CreateUObject(this, &AABAnimalCharacter::EndInteracting);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, InteractionTimerDelegate, InteractingCooldown, false);
+	}	
 }
 
 void AABAnimalCharacter::EndInteracting()
