@@ -29,13 +29,13 @@ void AABPlayerController::SetupInputComponent()
 	InputComponent->BindAxis("Turn", this, &AABPlayerController::CallTurnAtRate);
 	InputComponent->BindAxis("LookUp", this, &AABPlayerController::CallLookUpAtRate);
 	InputComponent->BindAction("Jump", IE_Pressed, this, &AABPlayerController::CallJump);
-	InputComponent->BindAction("Jump", IE_Released, this, &AABPlayerController::CallJump);
+	InputComponent->BindAction("Jump", IE_Released, this, &AABPlayerController::CallStopJump);
 
 }
 
 void AABPlayerController::CallMoveForward(float value)
 {
-	if ( AnimalCharacter && value != 0.f)
+	if ( AnimalCharacter && value != 0.f && AnimalCharacter->CanMove())
 	{
 		const FRotator rotation = GetControlRotation();
 		const FRotator YawRotation(0, rotation.Yaw, 0);
@@ -47,7 +47,7 @@ void AABPlayerController::CallMoveForward(float value)
 
 void AABPlayerController::CallMoveRight(float value)
 {
-	if (AnimalCharacter && value != 0.f)
+	if (AnimalCharacter && value != 0.f && AnimalCharacter->CanMove())
 	{
 		const FRotator rotation = GetControlRotation();
 		const FRotator YawRotation(0, rotation.Yaw, 0);
@@ -59,7 +59,7 @@ void AABPlayerController::CallMoveRight(float value)
 
 void AABPlayerController::CallTurnAtRate(float value)
 {
-	if (AnimalCharacter)
+	if (AnimalCharacter && AnimalCharacter->CanMove())
 	{
 		AnimalCharacter->AddControllerYawInput(value * AnimalCharacter->baseTurnRate * GetWorld()->GetDeltaSeconds());
 	}
@@ -67,7 +67,7 @@ void AABPlayerController::CallTurnAtRate(float value)
 
 void AABPlayerController::CallLookUpAtRate(float value)
 {
-	if (AnimalCharacter)
+	if (AnimalCharacter && AnimalCharacter->CanMove())
 	{
 		AnimalCharacter->AddControllerPitchInput(value * AnimalCharacter->baseLookUpRate * GetWorld()->GetDeltaSeconds());
 	}
@@ -75,15 +75,27 @@ void AABPlayerController::CallLookUpAtRate(float value)
 
 void AABPlayerController::CallJump()
 {
-	if (AnimalCharacter->CanJump())
+	if (AnimalCharacter->CanJump() && AnimalCharacter->CanMove())
 	{
+		AnimalCharacter->StartJumping();
 		AnimalCharacter->Jump();
 	}
 }
 
 void AABPlayerController::CallStopJump()
 {
-	AnimalCharacter->StopJumping();
+	if (AnimalCharacter)
+	{
+		AnimalCharacter->StopJumping();
+	}
+}
+
+void AABPlayerController::CallInteract()
+{
+	if (AnimalCharacter && AnimalCharacter->CanInteract())
+	{
+		AnimalCharacter->StartInteracting();
+	}
 }
 
 
