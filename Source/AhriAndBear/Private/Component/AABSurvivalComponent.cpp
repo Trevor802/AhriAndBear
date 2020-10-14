@@ -11,6 +11,10 @@ UAABSurvivalComponent::UAABSurvivalComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 
 	// ...
+	StartingHealth = MaxHealth;
+	StartingThirst = MaxThirst;
+	StartingFullness = MaxFullness;
+	StartingWarmth = MaxWarmth;
 }
 
 
@@ -20,7 +24,10 @@ void UAABSurvivalComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
+	CurrentHealth = StartingHealth;
+	CurrentFullness = StartingFullness;
+	CurrentThirst = StartingThirst;
+	CurrentWarmth = StartingWarmth;
 }
 
 
@@ -29,6 +36,14 @@ void UAABSurvivalComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	TickStat(CurrentHealth, MaxHealth, HealthChangeRate);
+	TickStat(CurrentThirst, MaxThirst, ThirstChangeRate);
+	TickStat(CurrentFullness, MaxFullness, FullnessChangeRate);
+	TickStat(CurrentWarmth, MaxWarmth, WarmthChangeRate);
+}
+
+FORCEINLINE void UAABSurvivalComponent::TickStat(float& currentValue, int maxValue, float delta)
+{
+	currentValue = FMath::Clamp<float>(currentValue + delta, 0, maxValue);
 }
 

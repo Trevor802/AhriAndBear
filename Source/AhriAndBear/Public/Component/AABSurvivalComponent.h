@@ -20,32 +20,40 @@ public:
 	float MaxHealth = 100.f;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character | Survival | Health")
 	float CurrentHealth;
-	UPROPERTY(EditAnywhere, BlueprintReadWhite, Category = "Character | Survival | Health")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character | Survival | Health")
 	float HealthChangeRate = -1.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character | Survival | Health")
+	float StartingHealth;
 
 	// Thirst-related stats
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character | Survival | Thirst")
 	float MaxThirst = 100.f;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character | Survival | Thirst")
 	float CurrentThirst;
-	UPROPERTY(EditAnywhere, BlueprintReadWhite, Category = "Character | Survival | Thirst")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character | Survival | Thirst")
 	float ThirstChangeRate = -1.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character | Survival | Thirst")
+	float StartingThirst;
 
 	// Hunger-related stats
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character | Survival | Hunger")
 	float MaxFullness = 100.f;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character | Survival | Hunger")
 	float CurrentFullness;
-	UPROPERTY(EditAnywhere, BlueprintReadWhite, Category = "Character | Survival | Hunger")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character | Survival | Hunger")
 	float FullnessChangeRate = -1.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character | Survival | Hunger")
+	float StartingFullness;
 
 	// Warmth-related stats
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character | Survival | Warmth")
 	float MaxWarmth = 100.f;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character | Survival | Warmth")
 	float CurrentWarmth;
-	UPROPERTY(EditAnywhere, BlueprintReadWhite, Category = "Character | Survival | Warmth")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character | Survival | Warmth")
 	float WarmthChangeRate = -1.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character | Survival | Warmth")
+	float StartingWarmth;
 
 protected:
 	// Called when the game starts
@@ -55,5 +63,6 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+	// Updates the specified stat.
+	void TickStat(float& currentValue, int maxValue, float delta);
 };
