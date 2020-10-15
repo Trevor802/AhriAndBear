@@ -2,6 +2,8 @@
 
 
 #include "AABSurvivalComponent.h"
+#include "Engine/World.h"
+#include "Engine/Engine.h"
 
 // Sets default values for this component's properties
 UAABSurvivalComponent::UAABSurvivalComponent()
@@ -17,6 +19,14 @@ UAABSurvivalComponent::UAABSurvivalComponent()
 	StartingWarmth = MaxWarmth;
 }
 
+
+void UAABSurvivalComponent::UpdateStats(float deltaTime)
+{
+	TickStat(CurrentHealth, MaxHealth, HealthChangeRate, deltaTime);
+	TickStat(CurrentThirst, MaxThirst, ThirstChangeRate, deltaTime);
+	TickStat(CurrentFullness, MaxFullness, FullnessChangeRate, deltaTime);
+	TickStat(CurrentWarmth, MaxWarmth, WarmthChangeRate, deltaTime);
+}
 
 // Called when the game starts
 void UAABSurvivalComponent::BeginPlay()
@@ -36,14 +46,11 @@ void UAABSurvivalComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	TickStat(CurrentHealth, MaxHealth, HealthChangeRate);
-	TickStat(CurrentThirst, MaxThirst, ThirstChangeRate);
-	TickStat(CurrentFullness, MaxFullness, FullnessChangeRate);
-	TickStat(CurrentWarmth, MaxWarmth, WarmthChangeRate);
+	UpdateStats(DeltaTime);
 }
 
-FORCEINLINE void UAABSurvivalComponent::TickStat(float& currentValue, int maxValue, float delta)
+FORCEINLINE void UAABSurvivalComponent::TickStat(float& currentValue, int maxValue, float delta, float deltaTime)
 {
-	currentValue = FMath::Clamp<float>(currentValue + delta, 0, maxValue);
+	currentValue = FMath::Clamp<float>(currentValue + delta * deltaTime, 0, maxValue);
 }
 
