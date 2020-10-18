@@ -6,6 +6,8 @@
 #include "Components/ActorComponent.h"
 #include "Components/SphereComponent.h"
 #include "Interactive.h"
+#include "GameBase/Define.h"
+#include "ABAnimalCharacter.h"
 #include "VolumeInteractiveComponent.generated.h"
 
 
@@ -21,15 +23,22 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-	UFUNCTION() void OnEnterCollision(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) { bCanInteract = true; }
-	UFUNCTION() void OnExitCollision(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) { bCanInteract = false; }
+	UFUNCTION() void OnEnterCollision(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION() void OnExitCollision(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	void SaveGame(AABAnimalCharacter*) const;
+	void LoadLevel(ELevelName) const;
+	void ChangeWarmthRate(AABAnimalCharacter*, float);
 
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
 	UShapeComponent* CollisionShape;
-
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FEventData EventData;
+	bool CanInteractive();
+	void Interact();
 private:
 	bool bCanInteract;
+	float oldWarmthRate;
 };

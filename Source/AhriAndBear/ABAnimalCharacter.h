@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Interactives/ABInteractiveObjectBase.h"
 #include "Components/BoxComponent.h"
+#include "GameBase/Define.h"
 #include "ABAnimalCharacter.generated.h"
 
 class UStaticMeshComponent;
@@ -63,6 +64,8 @@ public:
 		bool bJumping;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
 		bool bInteracting;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+		EAnimalType AnimalType;
 
 private:
 	bool bWithinRange;

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "GameBase/Define.h"
 #include "AABSurvivalComponent.generated.h"
 
 
@@ -65,4 +66,6 @@ public:
 
 	// Updates the specified stat.
 	void TickStat(float& currentValue, int maxValue, float delta);
+
+	FORCEINLINE FSurvivalData GetSurvivalData() const { return FSurvivalData{ CurrentHealth, CurrentFullness, CurrentThirst, CurrentWarmth }; }
 };
