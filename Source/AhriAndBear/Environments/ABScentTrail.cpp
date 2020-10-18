@@ -44,7 +44,7 @@ void AABScentTrail::InitTrail()
 		float distance = Interval * i;
 		FVector position = spline->GetLocationAtDistanceAlongSpline(distance, ESplineCoordinateSpace::World);
 		UNiagaraComponent* tempSystem = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), TemplateSystem, position, FRotator::ZeroRotator, false);
-		tempSystem->Deactivate();
+		//tempSystem->Deactivate();
 		systemArray.Add(tempSystem);
 	}
 }
