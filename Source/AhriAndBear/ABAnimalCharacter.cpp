@@ -3,6 +3,7 @@
 #include "ABAnimalCharacter.h"
 #include "Engine.h"
 #include "Components/InputComponent.h"
+#include "AABSurvivalComponent.h"
 
 // Sets default values
 AABAnimalCharacter::AABAnimalCharacter()
@@ -17,6 +18,8 @@ AABAnimalCharacter::AABAnimalCharacter()
 
 	InterationTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("InterationTrigger"));
 	InterationTrigger->SetupAttachment(RootComponent);
+
+	SurvivalComponent = CreateDefaultSubobject<UAABSurvivalComponent>(TEXT("Survival Component"));
 
 	baseTurnRate = 45.f;
 	baseLookUpRate = 45.f;

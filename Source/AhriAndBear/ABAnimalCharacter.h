@@ -10,6 +10,7 @@
 
 class UStaticMeshComponent;
 class USpringArmComponent;
+class UAABSurvivalComponent;
 
 UCLASS()
 class AHRIANDBEAR_API AABAnimalCharacter : public ACharacter
@@ -26,6 +27,8 @@ public:
 		class UCameraComponent* camera;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		UBoxComponent* InterationTrigger;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Survival")
+		UAABSurvivalComponent* SurvivalComponent;
 
 protected:
 	// Called when the game starts or when spawned
