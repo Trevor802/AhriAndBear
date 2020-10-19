@@ -28,6 +28,7 @@ protected:
 	void SaveGame(AABAnimalCharacter*) const;
 	void LoadLevel(ELevelName) const;
 	void ChangeWarmthRate(AABAnimalCharacter*, float);
+	void Supply(const FSurvivalData&);
 
 public:	
 	// Called every frame
@@ -36,9 +37,10 @@ public:
 	UShapeComponent* CollisionShape;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FEventData EventData;
-	bool CanInteractive();
+	FORCEINLINE bool CanInteractive() const { return bCanInteract; }
 	void Interact();
 private:
+	AABAnimalCharacter* AnimalOverlapping = nullptr;
 	bool bCanInteract;
-	float oldWarmthRate;
+	float OldWarmthRate;
 };

@@ -40,6 +40,7 @@ enum class EEventType : uint8
 	SaveGame,
 	LoadLevel,
 	GainWarmth,
+	Supply,
 };
 
 UENUM(BlueprintType)
@@ -71,5 +72,7 @@ struct FEventData
 		ELevelName LevelID;
 		UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		float GainWarmthRate;
+		UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		FSurvivalData SurvivalData;
 	};
 };

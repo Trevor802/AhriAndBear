@@ -33,6 +33,7 @@ void UVolumeInteractiveComponent::OnEnterCollision(UPrimitiveComponent* Overlapp
 	AABAnimalCharacter* character = Cast<AABAnimalCharacter>(OtherActor);
 	if (character != nullptr)
 	{
+		AnimalOverlapping = character;
 		switch (EventData.TriggerEvent)
 		{
 		case EEventType::SaveGame:
@@ -74,12 +75,22 @@ void UVolumeInteractiveComponent::LoadLevel(ELevelName levelID) const
 	UGameplayStatics::OpenLevel(GetWorld(), FName(*str));
 }
 
+void UVolumeInteractiveComponent::Supply(const FSurvivalData& value)
+{
+	check(AnimalOverlapping);
+	UAABSurvivalComponent* survivalComp = AnimalOverlapping->GetOwner()->FindComponentByClass<UAABSurvivalComponent>();
+	if (survivalComp != nullptr)
+	{
+		survivalComp->AddSurvivalData(value);
+	}
+}
+
 void UVolumeInteractiveComponent::ChangeWarmthRate(AABAnimalCharacter* character, float value)
 {
 	UAABSurvivalComponent* survivalComp = character->GetOwner()->FindComponentByClass<UAABSurvivalComponent>();
 	if (survivalComp != nullptr)
 	{
-		oldWarmthRate = survivalComp->WarmthChangeRate;
+		OldWarmthRate = survivalComp->WarmthChangeRate;
 		survivalComp->WarmthChangeRate = value;
 	}
 }
@@ -89,6 +100,7 @@ void UVolumeInteractiveComponent::OnExitCollision(UPrimitiveComponent* Overlappe
 	AABAnimalCharacter* character = Cast<AABAnimalCharacter>(OtherActor);
 	if (character != nullptr)
 	{
+		AnimalOverlapping = nullptr;
 		switch (EventData.TriggerEvent)
 		{
 		case EEventType::SaveGame:
@@ -96,7 +108,7 @@ void UVolumeInteractiveComponent::OnExitCollision(UPrimitiveComponent* Overlappe
 		case EEventType::LoadLevel:
 			break;
 		case EEventType::GainWarmth:
-			ChangeWarmthRate(character, oldWarmthRate);
+			ChangeWarmthRate(character, OldWarmthRate);
 			break;
 		default:
 			break;
@@ -112,12 +124,17 @@ void UVolumeInteractiveComponent::TickComponent(float DeltaTime, ELevelTick Tick
 	// ...
 }
 
-bool UVolumeInteractiveComponent::CanInteractive()
-{
-	return false;
-}
-
 void UVolumeInteractiveComponent::Interact()
 {
-
+	if (AnimalOverlapping != nullptr)
+	{
+		switch (EventData.TriggerEvent)
+		{
+		case EEventType::Supply:
+			Supply(EventData.SurvivalData);
+			break;
+		default:
+			break;
+		}
+	}
 }

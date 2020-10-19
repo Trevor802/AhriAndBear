@@ -68,4 +68,5 @@ public:
 	void TickStat(float& currentValue, int maxValue, float delta);
 
 	FORCEINLINE FSurvivalData GetSurvivalData() const { return FSurvivalData{ CurrentHealth, CurrentFullness, CurrentThirst, CurrentWarmth }; }
+	void AddSurvivalData(const FSurvivalData& value);
 };
