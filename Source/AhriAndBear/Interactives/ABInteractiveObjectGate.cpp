@@ -13,7 +13,9 @@ AABInteractiveObjectGate::AABInteractiveObjectGate()
 	FrameMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FrameMesh"));
 	FrameMesh->SetupAttachment(RootComponent);
 
-	bOpened = false;
+	DoorJoint = CreateDefaultSubobject<UPhysicsConstraintComponent>(TEXT("DoorJoint"));
+	DoorJoint->SetupAttachment(RootComponent);
+	DoorJoint->SetDisableCollision(true);
 
 	bCanBeInteracted = true;
 }
@@ -25,13 +27,6 @@ void AABInteractiveObjectGate::Tick(float DeltaTime)
 
 void AABInteractiveObjectGate::AfterInteraction()
 {
-	if (bOpened == false)
-	{
-		//TODO: play gate sound
-
-		//TODO: Release joint or something to open the gate
-
-		bOpened = true;
-		bCanBeInteracted = false;
-	}
+	DoorJoint->SetDisableCollision(false);
+	bCanBeInteracted = false;
 }

@@ -30,7 +30,4 @@ public:
 	UStaticMeshComponent* FrameMesh;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Constraint")
 	UPhysicsConstraintComponent* DoorJoint;
-
-private:
-	bool bOpened;
 };
