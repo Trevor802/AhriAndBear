@@ -5,6 +5,7 @@
 #include "Engine.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/CollisionProfile.h"
+#include "VolumeInteractiveComponent.h"
 
 AABInteractiveObjectFood::AABInteractiveObjectFood()
 	: Super()
@@ -37,8 +38,8 @@ void AABInteractiveObjectFood::AfterInteraction()
 
 	if (FoodArray.Num() != 0)
 	{
-		//TODO: add to survival data
-
+		//TODO: add survival data
+		FindComponentByClass<UVolumeInteractiveComponent>()->Interact();
 		//TODO: play eating sound
 
 		FoodArray[0]->SetVisibility(false);

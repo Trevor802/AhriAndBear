@@ -5,6 +5,7 @@
 #include "Engine.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/CollisionProfile.h"
+#include "VolumeInteractiveComponent.h"
 
 AABInteractiveObjectWater::AABInteractiveObjectWater()
 	: Super()
@@ -25,5 +26,6 @@ void AABInteractiveObjectWater::AfterInteraction()
 	Super::AfterInteraction();
 
 	//TODO: add to survival data
+	FindComponentByClass<UVolumeInteractiveComponent>()->Interact();
 	//TODO: play drinking sound
 }

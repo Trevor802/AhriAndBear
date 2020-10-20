@@ -39,10 +39,14 @@ public:
 	void StartJumping();
 	void EndJumping();
 
+	void StartSprinting();
+	void EndSprinting();
+
 	void StartInteracting();
 	void EndInteracting();
 
 	bool CanMove();
+	bool CanSprint();
 	bool CanInteract();
 
 	UFUNCTION()
@@ -61,7 +65,14 @@ public:
 		float baseLookUpRate;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
+		float WalkSpeed;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
+		float SprintSpeed;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
 		bool bJumping;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
+		bool bSprinting;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
 		bool bInteracting;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)

@@ -30,6 +30,8 @@ void AABPlayerController::SetupInputComponent()
 	InputComponent->BindAxis("LookUp", this, &AABPlayerController::CallLookUpAtRate);
 	InputComponent->BindAction("Jump", IE_Pressed, this, &AABPlayerController::CallJump);
 	InputComponent->BindAction("Jump", IE_Released, this, &AABPlayerController::CallStopJump);
+	InputComponent->BindAction("Jog", IE_Pressed, this, &AABPlayerController::CallSprint);
+	InputComponent->BindAction("Jog", IE_Released, this, &AABPlayerController::CallStopSprint);
 
 }
 
@@ -75,7 +77,7 @@ void AABPlayerController::CallLookUpAtRate(float value)
 
 void AABPlayerController::CallJump()
 {
-	if (AnimalCharacter->CanJump() && AnimalCharacter->CanMove())
+	if (AnimalCharacter && AnimalCharacter->CanJump() && AnimalCharacter->CanMove())
 	{
 		AnimalCharacter->StartJumping();
 		AnimalCharacter->Jump();
@@ -87,6 +89,22 @@ void AABPlayerController::CallStopJump()
 	if (AnimalCharacter)
 	{
 		AnimalCharacter->StopJumping();
+	}
+}
+
+void AABPlayerController::CallSprint()
+{
+	if (AnimalCharacter && AnimalCharacter->CanSprint())
+	{
+		AnimalCharacter->StartSprinting();
+	}
+}
+
+void AABPlayerController::CallStopSprint()
+{
+	if (AnimalCharacter && AnimalCharacter->bSprinting == true)
+	{
+		AnimalCharacter->EndSprinting();
 	}
 }
 

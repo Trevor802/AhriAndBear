@@ -26,6 +26,8 @@ public:
 	void CallLookUpAtRate(float value);
 	void CallJump();
 	void CallStopJump();
+	void CallSprint();
+	void CallStopSprint();
 	void CallInteract();
 
 private:

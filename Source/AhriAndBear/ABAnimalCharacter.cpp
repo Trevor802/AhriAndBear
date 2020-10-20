@@ -53,6 +53,18 @@ void AABAnimalCharacter::EndJumping()
 	bJumping = false;
 }
 
+void AABAnimalCharacter::StartSprinting()
+{
+	bSprinting = true;
+	GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
+}
+
+void AABAnimalCharacter::EndSprinting()
+{
+	bSprinting = false;
+	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+}
+
 void AABAnimalCharacter::StartInteracting()
 {
 	if (InteractiveObjectRef && InteractiveObjectRef->bCanBeInteracted == true)
@@ -85,6 +97,19 @@ bool AABAnimalCharacter::CanMove()
 		return true;
 	}
 }
+
+bool AABAnimalCharacter::CanSprint()
+{
+	if (CanMove() && bJumping == false)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 
 bool AABAnimalCharacter::CanInteract()
 {
