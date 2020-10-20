@@ -26,6 +26,6 @@ void AABInteractiveObjectWater::AfterInteraction()
 	Super::AfterInteraction();
 
 	//TODO: add to survival data
-	FindComponentByClass<UVolumeInteractiveComponent>()->Interact();
+	FindComponentByClass<UVolumeInteractiveComponent>()->Interact(OverlappingAnimal);
 	//TODO: play drinking sound
 }

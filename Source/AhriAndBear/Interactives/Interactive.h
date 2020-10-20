@@ -15,6 +15,6 @@ class AHRIANDBEAR_API IInteractive
 {
     GENERATED_BODY()
 public:
-    bool CanInteractive();
+    bool CanInteract();
     void Interact();
 };

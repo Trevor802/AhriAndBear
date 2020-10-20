@@ -2,6 +2,7 @@
 
 #include "ABAnimalCharacter.h"
 #include "Engine.h"
+#include "Interactives/ABInteractiveObjectBase.h"
 #include "Components/InputComponent.h"
 
 // Sets default values
@@ -67,7 +68,7 @@ void AABAnimalCharacter::EndSprinting()
 
 void AABAnimalCharacter::StartInteracting()
 {
-	if (InteractiveObjectRef && InteractiveObjectRef->bCanBeInteracted == true)
+	if (InteractiveObjectRef && InteractiveObjectRef->CanInteract() == true)
 	{
 		bInteracting = true;
 

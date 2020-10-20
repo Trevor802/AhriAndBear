@@ -39,7 +39,7 @@ void AABInteractiveObjectFood::AfterInteraction()
 	if (FoodArray.Num() != 0)
 	{
 		//TODO: add survival data
-		FindComponentByClass<UVolumeInteractiveComponent>()->Interact();
+		FindComponentByClass<UVolumeInteractiveComponent>()->Interact(OverlappingAnimal);
 		//TODO: play eating sound
 
 		FoodArray[0]->SetVisibility(false);

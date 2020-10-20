@@ -11,7 +11,7 @@ UVolumeInteractiveComponent::UVolumeInteractiveComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 
 	// ...
 }
@@ -21,19 +21,12 @@ UVolumeInteractiveComponent::UVolumeInteractiveComponent()
 void UVolumeInteractiveComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	if (CollisionShape)
-	{
-		CollisionShape->OnComponentBeginOverlap.AddDynamic(this, &UVolumeInteractiveComponent::OnEnterCollision);
-		CollisionShape->OnComponentEndOverlap.AddDynamic(this, &UVolumeInteractiveComponent::OnExitCollision);
-	}
 }
 
-void UVolumeInteractiveComponent::OnEnterCollision(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void UVolumeInteractiveComponent::OnEnterCollision(AABAnimalCharacter* character)
 {
-	AABAnimalCharacter* character = Cast<AABAnimalCharacter>(OtherActor);
 	if (character != nullptr)
 	{
-		AnimalOverlapping = character;
 		switch (EventData.TriggerEvent)
 		{
 		case EEventType::SaveGame:
@@ -75,10 +68,9 @@ void UVolumeInteractiveComponent::LoadLevel(ELevelName levelID) const
 	UGameplayStatics::OpenLevel(GetWorld(), FName(*str));
 }
 
-void UVolumeInteractiveComponent::Supply(const FSurvivalData& value)
+void UVolumeInteractiveComponent::Supply(AABAnimalCharacter* character, const FSurvivalData& value) const
 {
-	check(AnimalOverlapping);
-	UAABSurvivalComponent* survivalComp = AnimalOverlapping->GetOwner()->FindComponentByClass<UAABSurvivalComponent>();
+	UAABSurvivalComponent* survivalComp = character->GetOwner()->FindComponentByClass<UAABSurvivalComponent>();
 	if (survivalComp != nullptr)
 	{
 		survivalComp->AddSurvivalData(value);
@@ -95,12 +87,10 @@ void UVolumeInteractiveComponent::ChangeWarmthRate(AABAnimalCharacter* character
 	}
 }
 
-void UVolumeInteractiveComponent::OnExitCollision(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+void UVolumeInteractiveComponent::OnExitCollision(AABAnimalCharacter* character)
 {
-	AABAnimalCharacter* character = Cast<AABAnimalCharacter>(OtherActor);
 	if (character != nullptr)
 	{
-		AnimalOverlapping = nullptr;
 		switch (EventData.TriggerEvent)
 		{
 		case EEventType::SaveGame:
@@ -124,14 +114,14 @@ void UVolumeInteractiveComponent::TickComponent(float DeltaTime, ELevelTick Tick
 	// ...
 }
 
-void UVolumeInteractiveComponent::Interact()
+void UVolumeInteractiveComponent::Interact(AABAnimalCharacter* character)
 {
-	if (AnimalOverlapping != nullptr)
+	if (character != nullptr)
 	{
 		switch (EventData.TriggerEvent)
 		{
 		case EEventType::Supply:
-			Supply(EventData.SurvivalData);
+			Supply(character, EventData.SurvivalData);
 			break;
 		default:
 			break;

@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "Interactives/ABInteractiveObjectBase.h"
 #include "Components/BoxComponent.h"
 #include "GameBase/Define.h"
 #include "ABAnimalCharacter.generated.h"
 
 class UStaticMeshComponent;
 class USpringArmComponent;
+class AABInteractiveObjectBase;
 
 UCLASS()
 class AHRIANDBEAR_API AABAnimalCharacter : public ACharacter
