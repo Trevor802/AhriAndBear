@@ -20,8 +20,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-private:
-	void CheckGateStatus();
+	virtual void AfterInteraction() override;
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")

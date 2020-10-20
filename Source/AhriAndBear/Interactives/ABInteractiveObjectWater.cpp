@@ -12,22 +12,18 @@ AABInteractiveObjectWater::AABInteractiveObjectWater()
 	BowlMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BowlMesh"));
 	BowlMesh->SetupAttachment(RootComponent);
 
-	IteractiveObjectTypes = EABIteractiveObjectTypes::Water;
+	bCanBeInteracted = true;
 }
 
 void AABInteractiveObjectWater::Tick(float DeltaTime)
 {
-	CheckWaterStatus();
+
 }
 
-void AABInteractiveObjectWater::CheckWaterStatus()
+void AABInteractiveObjectWater::AfterInteraction()
 {
-	if (bInteracted == true)
-	{
-		//TODO: add to survival data
+	Super::AfterInteraction();
 
-		//TODO: play drinking sound
-
-		bInteracted = false;
-	}
+	//TODO: add to survival data
+	//TODO: play drinking sound
 }

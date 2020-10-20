@@ -22,20 +22,20 @@ AABInteractiveObjectFood::AABInteractiveObjectFood()
 	FoodArray.Add(FoodMesh2);
 	FoodArray.Add(FoodMesh3);
 
-	IteractiveObjectTypes = EABIteractiveObjectTypes::Food;
+	bCanBeInteracted = true;
 }
 
 // Called every frame
 void AABInteractiveObjectFood::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	CheckFoodStatus();
 }
 
-void AABInteractiveObjectFood::CheckFoodStatus() 
+void AABInteractiveObjectFood::AfterInteraction()
 {
-	if (bInteracted == true && FoodArray.Num() != 0)
+	Super::AfterInteraction();
+
+	if (FoodArray.Num() != 0)
 	{
 		//TODO: add to survival data
 
@@ -43,7 +43,9 @@ void AABInteractiveObjectFood::CheckFoodStatus()
 
 		FoodArray[0]->SetVisibility(false);
 		FoodArray.RemoveAt(0);
-
-		bInteracted = false;
+	}
+	else
+	{
+		bCanBeInteracted = false;
 	}
 }

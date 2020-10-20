@@ -19,10 +19,8 @@ public:
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-private:
-	void CheckFoodStatus();
-
+	virtual void AfterInteraction() override;
+	
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
 	UStaticMeshComponent* FoodMesh1;

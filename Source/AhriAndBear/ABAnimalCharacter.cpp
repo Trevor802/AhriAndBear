@@ -55,22 +55,13 @@ void AABAnimalCharacter::EndJumping()
 
 void AABAnimalCharacter::StartInteracting()
 {
-	if (InteractiveObjectRef)
+	if (InteractiveObjectRef && InteractiveObjectRef->bCanBeInteracted == true)
 	{
 		bInteracting = true;
-		InteractiveObjectRef->bInteracted = true;
-	
+
 		float InteractingCooldown = 0.0f;
 
-		switch (InteractiveObjectRef->IteractiveObjectTypes)
-		{
-			case(EABIteractiveObjectTypes::Food):
-				InteractingCooldown = 2.0f;
-			case(EABIteractiveObjectTypes::Water):
-				InteractingCooldown = 1.0f;
-			case(EABIteractiveObjectTypes::Gate):
-				InteractingCooldown = 0.5f;
-		}
+		InteractingCooldown = InteractiveObjectRef->InteractionDelay;
 
 		FTimerDelegate InteractionTimerDelegate = FTimerDelegate::CreateUObject(this, &AABAnimalCharacter::EndInteracting);
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle, InteractionTimerDelegate, InteractingCooldown, false);
@@ -80,6 +71,7 @@ void AABAnimalCharacter::StartInteracting()
 void AABAnimalCharacter::EndInteracting()
 {
 	bInteracting = false;
+	InteractiveObjectRef->AfterInteraction();
 }
 
 bool AABAnimalCharacter::CanMove()

@@ -13,25 +13,25 @@ AABInteractiveObjectGate::AABInteractiveObjectGate()
 	FrameMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FrameMesh"));
 	FrameMesh->SetupAttachment(RootComponent);
 
-	IteractiveObjectTypes = EABIteractiveObjectTypes::Gate;
-
 	bOpened = false;
+
+	bCanBeInteracted = true;
 }
 
 void AABInteractiveObjectGate::Tick(float DeltaTime)
 {
-	CheckGateStatus();
+
 }
 
-void AABInteractiveObjectGate::CheckGateStatus()
+void AABInteractiveObjectGate::AfterInteraction()
 {
-	if (bInteracted == true && bOpened == false)
+	if (bOpened == false)
 	{
 		//TODO: play gate sound
 
 		//TODO: Release joint or something to open the gate
 
 		bOpened = true;
-		bInteracted = false;
+		bCanBeInteracted = false;
 	}
 }
