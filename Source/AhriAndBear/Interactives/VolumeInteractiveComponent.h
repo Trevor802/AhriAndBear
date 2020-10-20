@@ -25,10 +25,7 @@ protected:
 	virtual void BeginPlay() override;
 	UFUNCTION() void OnEnterCollision(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION() void OnExitCollision(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-	void SaveGame(AABAnimalCharacter*) const;
-	void LoadLevel(ELevelName) const;
-	void ChangeWarmthRate(AABAnimalCharacter*, float);
-	void Supply(const FSurvivalData&);
+	
 
 public:	
 	// Called every frame
@@ -37,10 +34,14 @@ public:
 	UShapeComponent* CollisionShape;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FEventData EventData;
-	FORCEINLINE bool CanInteractive() const { return bCanInteract; }
-	void Interact();
-private:
 	AABAnimalCharacter* AnimalOverlapping = nullptr;
 	bool bCanInteract;
 	float OldWarmthRate;
+
+	FORCEINLINE bool CanInteractive() const { return bCanInteract; }
+	void Interact();
+	void SaveGame(AABAnimalCharacter*) const;
+	void LoadLevel(ELevelName) const;
+	void ChangeWarmthRate(AABAnimalCharacter*, float);
+	void Supply(const FSurvivalData&);
 };
