@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Interactives/ABInteractiveObjectBase.h"
+#include "PhysicsEngine/PhysicsConstraintComponent.h"
 #include "ABInteractiveObjectGate.generated.h"
 
 /**
@@ -27,6 +28,8 @@ public:
 	UStaticMeshComponent* GateMesh;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
 	UStaticMeshComponent* FrameMesh;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Constraint")
+	UPhysicsConstraintComponent* DoorJoint;
 
 private:
 	bool bOpened;

@@ -45,9 +45,12 @@ public:
 	void StartInteracting();
 	void EndInteracting();
 
+	virtual void UseAbility();
+
 	bool CanMove();
 	bool CanSprint();
 	bool CanInteract();
+	bool CanUseAbility();
 
 	UFUNCTION()
 	void OnInteractionOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

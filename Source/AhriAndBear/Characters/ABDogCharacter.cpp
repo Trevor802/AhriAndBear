@@ -3,3 +3,15 @@
 
 #include "ABDogCharacter.h"
 
+AABDogCharacter::AABDogCharacter()
+	: Super()
+{
+
+}
+
+void AABDogCharacter::UseAbility()
+{
+	Super::UseAbility();
+
+	//Xiubo, Add Scent Here ~ ~
+}

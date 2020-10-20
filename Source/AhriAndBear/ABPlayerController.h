@@ -29,6 +29,7 @@ public:
 	void CallSprint();
 	void CallStopSprint();
 	void CallInteract();
+	void CallUseAbility();
 
 private:
 	AABAnimalCharacter* AnimalCharacter;

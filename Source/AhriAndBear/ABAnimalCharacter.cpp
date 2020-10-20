@@ -86,6 +86,11 @@ void AABAnimalCharacter::EndInteracting()
 	InteractiveObjectRef->AfterInteraction();
 }
 
+void AABAnimalCharacter::UseAbility()
+{
+
+}
+
 bool AABAnimalCharacter::CanMove()
 {
 	if (bInteracting == true)
@@ -114,6 +119,18 @@ bool AABAnimalCharacter::CanSprint()
 bool AABAnimalCharacter::CanInteract()
 {
 	if (bInteracting == true || bWithinRange == false)
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+}
+
+bool AABAnimalCharacter::CanUseAbility()
+{
+	if (bInteracting == true)
 	{
 		return false;
 	}
