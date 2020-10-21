@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "ABSurvivalStats.h"
 #include "AABSurvivalComponent.generated.h"
-
 
 UCLASS( Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class AHRIANDBEAR_API UAABSurvivalComponent : public UActorComponent
@@ -15,6 +15,18 @@ class AHRIANDBEAR_API UAABSurvivalComponent : public UActorComponent
 public:	
 	// Sets default values for this component's properties
 	UAABSurvivalComponent();
+
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "Character | Survival")
+	FABSurvivalStat Health;
+
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "Character | Survival")
+	FABSurvivalStat Warmth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "Character | Survival")
+	FABSurvivalStat Thirst;
+
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "Character | Survival")
+	FABSurvivalStat Hunger;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character | Survival")
 	float UpdateInterval = 2.0f;
