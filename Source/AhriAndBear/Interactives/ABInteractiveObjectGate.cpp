@@ -2,11 +2,16 @@
 
 
 #include "ABInteractiveObjectGate.h"
+#include "Components/BoxComponent.h"
 #include "Engine/StaticMesh.h"
+#include "Interactives/EventTrigger.h"
 
 AABInteractiveObjectGate::AABInteractiveObjectGate()
 	: Super()
 {
+	CollisionShape = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionBox"));
+	RootComponent = CollisionShape;
+
 	GateMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GateMesh"));
 	GateMesh->SetupAttachment(RootComponent);
 
@@ -18,6 +23,12 @@ AABInteractiveObjectGate::AABInteractiveObjectGate()
 	DoorJoint->SetDisableCollision(true);
 
 	bCanBeInteracted = true;
+}
+
+void AABInteractiveObjectGate::BeginPlay()
+{
+	Super::BeginPlay();
+	EventTrigger->EventData.TriggerEvent = EEventType::Nothing;
 }
 
 void AABInteractiveObjectGate::Tick(float DeltaTime)

@@ -4,11 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Components/BoxComponent.h"
 #include "Interactive.h"
 #include "ABInteractiveObjectBase.generated.h"
 
-class AABAnimalCharacter;
 UCLASS(Abstract)
 class AHRIANDBEAR_API AABInteractiveObjectBase : public AActor
 {
@@ -26,6 +24,11 @@ protected:
 	UFUNCTION() void OnEnterCollision(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION() void OnExitCollision(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	bool bCanBeInteracted;
+	virtual void OnActorEnter(AActor* OtherActor) {};
+	virtual void OnActorExit(AActor* OtherActor) {};
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
+	class UShapeComponent* CollisionShape;
+	class UEventTrigger* EventTrigger;
 
 public:	
 	// Called every frame
@@ -35,12 +38,8 @@ public:
 	virtual void AfterInteraction() PURE_VIRTUAL (AABInteractiveObjectBase::AfterInteraction,);
 
 public:
-	//virtual void AfterInteraction();
-
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
 	float InteractionDelay;
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
-	UShapeComponent* CollisionShape;
+
 
 };

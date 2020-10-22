@@ -8,30 +8,17 @@
 #include "Interactive.h"
 #include "GameBase/Define.h"
 #include "ABAnimalCharacter.h"
-#include "VolumeInteractiveComponent.generated.h"
+#include "EventTrigger.generated.h"
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class AHRIANDBEAR_API UVolumeInteractiveComponent : public UActorComponent
+class AHRIANDBEAR_API UEventTrigger : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
-	// Sets default values for this component's properties
-	UVolumeInteractiveComponent();
-
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
-	
-	
-
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+public:		
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Gameplay")
 	FEventData EventData;
-	bool bCanInteract;
 	float OldWarmthRate;
 	void OnEnterCollision(AABAnimalCharacter* character);
 	void OnExitCollision(AABAnimalCharacter* character);
