@@ -26,6 +26,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void ShowTrail();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -37,6 +38,6 @@ private:
 	TArray<UNiagaraComponent*> systemArray;
 
 	void InitTrail();
-	void ShowTrail();
-	void HideTrail();
+	
+	//void HideTrail();
 };
