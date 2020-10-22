@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "ABInteractiveObjectManholeCover.h"
 #include "GameBase/Define.h"
 #include "EventTrigger.h"
 #include "NiagaraComponent.h"
 #include "Components/StaticMeshComponent.h"
-#include "ABInteractiveObjectManholeCover.h"
 
 AABInteractiveObjectManholeCover::AABInteractiveObjectManholeCover() : Super()
 {
