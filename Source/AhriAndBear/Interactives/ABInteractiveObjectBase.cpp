@@ -55,3 +55,8 @@ void AABInteractiveObjectBase::OnExitCollision(UPrimitiveComponent* OverlappedCo
 	}
 }
 
+bool AABInteractiveObjectBase::CanInteract() 
+{
+	return bCanBeInteracted;
+}
+

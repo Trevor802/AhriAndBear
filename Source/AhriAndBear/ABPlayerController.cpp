@@ -28,6 +28,7 @@ void AABPlayerController::SetupInputComponent()
 	InputComponent->BindAxis("WalkRight", this, &AABPlayerController::CallMoveRight);
 	InputComponent->BindAxis("Turn", this, &AABPlayerController::CallTurnAtRate);
 	InputComponent->BindAxis("LookUp", this, &AABPlayerController::CallLookUpAtRate);
+	InputComponent->BindAction("Catch", IE_Pressed, this, &AABPlayerController::CallInteract);
 	InputComponent->BindAction("Jump", IE_Pressed, this, &AABPlayerController::CallJump);
 	InputComponent->BindAction("Jump", IE_Released, this, &AABPlayerController::CallStopJump);
 	InputComponent->BindAction("Jog", IE_Pressed, this, &AABPlayerController::CallSprint);

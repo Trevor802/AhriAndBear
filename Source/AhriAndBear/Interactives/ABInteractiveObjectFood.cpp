@@ -52,7 +52,6 @@ void AABInteractiveObjectFood::Tick(float DeltaTime)
 
 void AABInteractiveObjectFood::AfterInteraction()
 {
-	Super::AfterInteraction();
 
 	if (FoodArray.Num() != 0)
 	{

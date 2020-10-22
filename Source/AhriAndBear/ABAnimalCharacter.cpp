@@ -73,6 +73,7 @@ void AABAnimalCharacter::StartInteracting()
 {
 	if (InteractiveObjectRef && InteractiveObjectRef->CanInteract() == true)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("interaction succeed"));
 		bInteracting = true;
 
 		float InteractingCooldown = 0.0f;

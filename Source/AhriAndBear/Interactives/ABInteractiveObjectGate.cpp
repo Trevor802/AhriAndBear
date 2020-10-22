@@ -38,6 +38,7 @@ void AABInteractiveObjectGate::Tick(float DeltaTime)
 
 void AABInteractiveObjectGate::AfterInteraction()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Door Unlocked"));
 	DoorJoint->SetDisableCollision(false);
 	bCanBeInteracted = false;
 }
