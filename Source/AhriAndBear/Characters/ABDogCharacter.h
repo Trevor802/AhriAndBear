@@ -9,6 +9,8 @@
 /**
  * 
  */
+
+
 UCLASS()
 class AHRIANDBEAR_API AABDogCharacter : public AABAnimalCharacter
 {
