@@ -7,7 +7,7 @@
 
 EBTNodeResult::Type UBtTaskClearKey::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) {
 	UBlackboardComponent* blackBoardComponent = OwnerComp.GetBlackboardComponent();
-	blackBoardComponent->ClearValue(KetToClear);
+	blackBoardComponent->ClearValue(KeyToClear);
 
 	return EBTNodeResult::Succeeded;
 }
