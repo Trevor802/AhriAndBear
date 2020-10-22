@@ -46,6 +46,7 @@ enum class EEventType : uint8
 UENUM(BlueprintType)
 enum class ELevelName : uint8
 {
+	Default	 = 0,
 	Level2_1 = 1,
 	Level2_2 = 2,
 	Level2_3 = 3,
