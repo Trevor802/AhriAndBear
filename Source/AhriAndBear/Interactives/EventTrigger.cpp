@@ -1,29 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "VolumeInteractiveComponent.h"
+#include "EventTrigger.h"
 #include "AABSurvivalComponent.h"
 #include "../GameBase/ABGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 
-// Sets default values for this component's properties
-UVolumeInteractiveComponent::UVolumeInteractiveComponent()
-{
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = false;
-
-	// ...
-}
-
-
-// Called when the game starts
-void UVolumeInteractiveComponent::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
-void UVolumeInteractiveComponent::OnEnterCollision(AABAnimalCharacter* character)
+void UEventTrigger::OnEnterCollision(AABAnimalCharacter* character)
 {
 	if (character != nullptr)
 	{
@@ -44,7 +27,7 @@ void UVolumeInteractiveComponent::OnEnterCollision(AABAnimalCharacter* character
 	}
 }
 
-void UVolumeInteractiveComponent::SaveGame(AABAnimalCharacter* character) const
+void UEventTrigger::SaveGame(AABAnimalCharacter* character) const
 {
 	UAABSurvivalComponent* survivalComp = character->GetOwner()->FindComponentByClass<UAABSurvivalComponent>();
 	if (survivalComp != nullptr)
@@ -57,7 +40,7 @@ void UVolumeInteractiveComponent::SaveGame(AABAnimalCharacter* character) const
 	}
 }
 
-void UVolumeInteractiveComponent::LoadLevel(ELevelName levelID) const
+void UEventTrigger::LoadLevel(ELevelName levelID) const
 {
 	const UEnum* enumPtr = FindObject<UEnum>(ANY_PACKAGE, TEXT("ELevelName"), true);
 	FString str = "";
@@ -68,7 +51,7 @@ void UVolumeInteractiveComponent::LoadLevel(ELevelName levelID) const
 	UGameplayStatics::OpenLevel(GetWorld(), FName(*str));
 }
 
-void UVolumeInteractiveComponent::Supply(AABAnimalCharacter* character, const FSurvivalData& value) const
+void UEventTrigger::Supply(AABAnimalCharacter* character, const FSurvivalData& value) const
 {
 	UAABSurvivalComponent* survivalComp = character->GetOwner()->FindComponentByClass<UAABSurvivalComponent>();
 	if (survivalComp != nullptr)
@@ -77,7 +60,7 @@ void UVolumeInteractiveComponent::Supply(AABAnimalCharacter* character, const FS
 	}
 }
 
-void UVolumeInteractiveComponent::ChangeWarmthRate(AABAnimalCharacter* character, float value)
+void UEventTrigger::ChangeWarmthRate(AABAnimalCharacter* character, float value)
 {
 	UAABSurvivalComponent* survivalComp = character->GetOwner()->FindComponentByClass<UAABSurvivalComponent>();
 	if (survivalComp != nullptr)
@@ -87,7 +70,7 @@ void UVolumeInteractiveComponent::ChangeWarmthRate(AABAnimalCharacter* character
 	}
 }
 
-void UVolumeInteractiveComponent::OnExitCollision(AABAnimalCharacter* character)
+void UEventTrigger::OnExitCollision(AABAnimalCharacter* character)
 {
 	if (character != nullptr)
 	{
@@ -106,15 +89,7 @@ void UVolumeInteractiveComponent::OnExitCollision(AABAnimalCharacter* character)
 	}
 }
 
-// Called every frame
-void UVolumeInteractiveComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
-}
-
-void UVolumeInteractiveComponent::Interact(AABAnimalCharacter* character)
+void UEventTrigger::Interact(AABAnimalCharacter* character)
 {
 	if (character != nullptr)
 	{

@@ -37,6 +37,7 @@ enum class EAnimalType : uint8
 UENUM(BlueprintType)
 enum class EEventType : uint8
 {
+	Nothing,
 	SaveGame,
 	LoadLevel,
 	GainWarmth,
@@ -46,6 +47,7 @@ enum class EEventType : uint8
 UENUM(BlueprintType)
 enum class ELevelName : uint8
 {
+	Default	 = 0,
 	Level2_1 = 1,
 	Level2_2 = 2,
 	Level2_3 = 3,
@@ -56,23 +58,12 @@ struct FEventData
 {
 	GENERATED_BODY()
 
-	//FEventData() {};
-	//FEventData(FEventData&&) {};
-	//FEventData(const FEventData&) = default;
-	//FEventData& operator=(const FEventData&) = default;
-	//~FEventData() {};
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Survival")
 	EEventType TriggerEvent;
-	//UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	//TUnion<uint8, float> Data;
 	union
 	{
-		UPROPERTY(BlueprintReadWrite, EditAnywhere)
-		//uint8 LevelID;
 		ELevelName LevelID;
-		UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		float GainWarmthRate;
-		UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		FSurvivalData SurvivalData;
 	};
 };

@@ -20,6 +20,7 @@ public:
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	virtual void BeginPlay() override;
 	FORCEINLINE virtual bool CanInteract() override { return true; }
 
 	virtual void AfterInteraction() override;
