@@ -1,10 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "ABAnimalCharacter.h"
-#include "Engine.h"
 #include "Interactives/ABInteractiveObjectBase.h"
-#include "Components/InputComponent.h"
 #include "AABSurvivalComponent.h"
+
+#include "Engine.h"
+#include "Components/InputComponent.h"
+#include "Components/PawnNoiseEmitterComponent.h"
+#include "Perception/PawnSensingComponent.h"
 
 // Sets default values
 AABAnimalCharacter::AABAnimalCharacter()
@@ -22,6 +25,9 @@ AABAnimalCharacter::AABAnimalCharacter()
 
 	SurvivalComponent = CreateDefaultSubobject<UAABSurvivalComponent>(TEXT("Survival Component"));
 
+	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("Pawn Sensing Component"));
+	PawnNoiseEmitterComponent = CreateDefaultSubobject<UPawnNoiseEmitterComponent>(TEXT("Pawn Noise Emitter Component"));
+
 	baseTurnRate = 45.f;
 	baseLookUpRate = 45.f;
 
@@ -32,7 +38,7 @@ AABAnimalCharacter::AABAnimalCharacter()
 void AABAnimalCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	InterationTrigger->OnComponentBeginOverlap.AddDynamic(this, &AABAnimalCharacter::OnInteractionOverlapBegin);
 	InterationTrigger->OnComponentEndOverlap.AddDynamic(this, &AABAnimalCharacter::OnInteractionOverlapEnd);
 }
@@ -81,7 +87,7 @@ void AABAnimalCharacter::StartInteracting()
 
 		FTimerDelegate InteractionTimerDelegate = FTimerDelegate::CreateUObject(this, &AABAnimalCharacter::EndInteracting);
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle, InteractionTimerDelegate, InteractingCooldown, false);
-	}	
+	}
 }
 
 void AABAnimalCharacter::EndInteracting()
@@ -146,7 +152,7 @@ bool AABAnimalCharacter::CanUseAbility()
 
 void AABAnimalCharacter::OnInteractionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor && OtherActor != this && Cast<AABInteractiveObjectBase>(OtherActor)) 
+	if (OtherActor && OtherActor != this && Cast<AABInteractiveObjectBase>(OtherActor))
 	{
 		InteractiveObjectRef = Cast<AABInteractiveObjectBase>(OtherActor);
 		bWithinRange = true;

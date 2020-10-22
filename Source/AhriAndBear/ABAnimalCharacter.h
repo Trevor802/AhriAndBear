@@ -12,6 +12,9 @@ class UStaticMeshComponent;
 class USpringArmComponent;
 class AABInteractiveObjectBase;
 class UAABSurvivalComponent;
+class UPawnSensingComponent;
+class UPawnNoiseEmitterComponent;
+class UAudioComponent;
 
 UCLASS()
 class AHRIANDBEAR_API AABAnimalCharacter : public ACharacter
@@ -30,6 +33,11 @@ public:
 		UBoxComponent* InterationTrigger;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Survival")
 		UAABSurvivalComponent* SurvivalComponent;
+	UPROPERTY(Category = AI, VisibleDefaultsOnly, BlueprintReadWrite)
+		UPawnSensingComponent* PawnSensingComponent;
+	UPROPERTY(Category = AI, VisibleDefaultsOnly, BlueprintReadWrite)
+		UPawnNoiseEmitterComponent* PawnNoiseEmitterComponent;
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -83,6 +91,9 @@ public:
 		bool bInteracting;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 		EAnimalType AnimalType;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool IsFollowing;
 
 private:
 	bool bWithinRange;
