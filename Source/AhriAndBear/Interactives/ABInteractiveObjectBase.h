@@ -31,9 +31,10 @@ protected:
 	class UEventTrigger* EventTrigger;
 
 public:	
-	// Called every frame
+
+	bool CanInteract();
+
 	virtual void Tick(float DeltaTime) override;
-	virtual bool CanInteract() PURE_VIRTUAL(AABInteractiveObjectBase::CanInteract, return false;);
 	virtual void Interact() PURE_VIRTUAL (AABInteractiveObjectBase::Interact,);
 	virtual void AfterInteraction() PURE_VIRTUAL (AABInteractiveObjectBase::AfterInteraction,);
 

@@ -41,6 +41,8 @@ void AABAnimalCharacter::BeginPlay()
 
 	InterationTrigger->OnComponentBeginOverlap.AddDynamic(this, &AABAnimalCharacter::OnInteractionOverlapBegin);
 	InterationTrigger->OnComponentEndOverlap.AddDynamic(this, &AABAnimalCharacter::OnInteractionOverlapEnd);
+
+	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 }
 
 // Called every frame
@@ -79,6 +81,7 @@ void AABAnimalCharacter::StartInteracting()
 {
 	if (InteractiveObjectRef && InteractiveObjectRef->CanInteract() == true)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("interaction succeed"));
 		bInteracting = true;
 
 		float InteractingCooldown = 0.0f;

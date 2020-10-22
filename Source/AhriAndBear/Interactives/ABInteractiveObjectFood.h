@@ -20,7 +20,7 @@ public:
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
-	FORCEINLINE virtual bool CanInteract() override { return true; }
+	//FORCEINLINE virtual bool CanInteract() override { return true; }
 	virtual void AfterInteraction() override;
 	
 public:
