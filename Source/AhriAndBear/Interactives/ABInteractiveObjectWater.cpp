@@ -33,8 +33,6 @@ void AABInteractiveObjectWater::Tick(float DeltaTime)
 
 void AABInteractiveObjectWater::AfterInteraction()
 {
-	Super::AfterInteraction();
-
 	//TODO: add to survival data
 	FindComponentByClass<UEventTrigger>()->Interact(OverlappingAnimal);
 	//TODO: play drinking sound
