@@ -10,13 +10,20 @@ void UEventTrigger::OnEnterCollision(AABAnimalCharacter* character)
 {
 	if (character != nullptr)
 	{
+		if (bIsInCollision)
+		{
+			return;
+		}
+		bIsInCollision = true;
 		switch (EventData.TriggerEvent)
 		{
 		case EEventType::SaveGame:
 			SaveGame(character);
+			UE_LOG(LogTemp, Log, TEXT("[EventTrigger]SaveGame"));
 			break;
 		case EEventType::LoadLevel:
 			LoadLevel(EventData.LevelID);
+			UE_LOG(LogTemp, Log, TEXT("[EventTrigger]LoadLevel"));
 			break;
 		case EEventType::GainWarmth:
 			ChangeWarmthRate(character, EventData.GainWarmthRate);
@@ -26,6 +33,31 @@ void UEventTrigger::OnEnterCollision(AABAnimalCharacter* character)
 		}
 	}
 }
+
+void UEventTrigger::OnExitCollision(AABAnimalCharacter* character)
+{
+	if (character != nullptr)
+	{
+		if (!bIsInCollision)
+		{
+			return;
+		}
+		bIsInCollision = false;
+		switch (EventData.TriggerEvent)
+		{
+		case EEventType::SaveGame:
+			break;
+		case EEventType::LoadLevel:
+			break;
+		case EEventType::GainWarmth:
+			ChangeWarmthRate(character, OldWarmthRate);
+			break;
+		default:
+			break;
+		}
+	}
+}
+
 
 void UEventTrigger::SaveGame(AABAnimalCharacter* character) const
 {
@@ -53,7 +85,7 @@ void UEventTrigger::LoadLevel(ELevelName levelID) const
 
 void UEventTrigger::Supply(AABAnimalCharacter* character, const FSurvivalData& value) const
 {
-	UAABSurvivalComponent* survivalComp = character->GetOwner()->FindComponentByClass<UAABSurvivalComponent>();
+	UAABSurvivalComponent* survivalComp = character->SurvivalComponent;
 	if (survivalComp != nullptr)
 	{
 		survivalComp->AddSurvivalData(value);
@@ -62,33 +94,14 @@ void UEventTrigger::Supply(AABAnimalCharacter* character, const FSurvivalData& v
 
 void UEventTrigger::ChangeWarmthRate(AABAnimalCharacter* character, float value)
 {
-	UAABSurvivalComponent* survivalComp = character->GetOwner()->FindComponentByClass<UAABSurvivalComponent>();
+	UAABSurvivalComponent* survivalComp = character->SurvivalComponent;
 	if (survivalComp != nullptr)
 	{
+		UE_LOG(LogTemp, Log, TEXT("[EventTrigger]ChangeWarmthRate to %f"), value);
 		OldWarmthRate = survivalComp->WarmthChangeRate;
 		survivalComp->WarmthChangeRate = value;
 	}
 }
-
-void UEventTrigger::OnExitCollision(AABAnimalCharacter* character)
-{
-	if (character != nullptr)
-	{
-		switch (EventData.TriggerEvent)
-		{
-		case EEventType::SaveGame:
-			break;
-		case EEventType::LoadLevel:
-			break;
-		case EEventType::GainWarmth:
-			ChangeWarmthRate(character, OldWarmthRate);
-			break;
-		default:
-			break;
-		}
-	}
-}
-
 void UEventTrigger::Interact(AABAnimalCharacter* character)
 {
 	if (character != nullptr)
@@ -97,6 +110,7 @@ void UEventTrigger::Interact(AABAnimalCharacter* character)
 		{
 		case EEventType::Supply:
 			Supply(character, EventData.SurvivalData);
+			UE_LOG(LogTemp, Log, TEXT("[EventTrigger]Supply"));
 			break;
 		default:
 			break;

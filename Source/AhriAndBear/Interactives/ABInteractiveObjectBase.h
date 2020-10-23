@@ -28,6 +28,7 @@ protected:
 	virtual void OnActorExit(AActor* OtherActor) {};
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
 	class UShapeComponent* CollisionShape;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	class UEventTrigger* EventTrigger;
 
 public:	

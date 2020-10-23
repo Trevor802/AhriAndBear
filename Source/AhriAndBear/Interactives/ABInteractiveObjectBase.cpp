@@ -49,7 +49,7 @@ void AABInteractiveObjectBase::OnExitCollision(UPrimitiveComponent* OverlappedCo
 	OnActorExit(OtherActor);
 	AABAnimalCharacter* character = Cast<AABAnimalCharacter>(OtherActor);
 	OverlappingAnimal = nullptr;
-	if (InteractionDelay)
+	if (EventTrigger)
 	{
 		EventTrigger->OnExitCollision(character);
 	}

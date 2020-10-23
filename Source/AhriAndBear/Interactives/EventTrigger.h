@@ -16,6 +16,9 @@ class AHRIANDBEAR_API UEventTrigger : public UActorComponent
 {
 	GENERATED_BODY()
 
+private:
+	bool bIsInCollision;
+
 public:		
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Gameplay")
 	FEventData EventData;
