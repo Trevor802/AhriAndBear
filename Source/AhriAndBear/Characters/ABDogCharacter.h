@@ -15,17 +15,9 @@ UCLASS()
 class AHRIANDBEAR_API AABDogCharacter : public AABAnimalCharacter
 {
 	GENERATED_BODY()
-
-	void MoveToTargetActor(APawn* Pawn);
 	
 public:
 	AABDogCharacter();
-
-	UFUNCTION()
-	void HandleSeePawn(APawn* Pawn);
-
-	UFUNCTION()
-	void HandleHearNoise(APawn* OtherActor, const FVector& Location, float Volume);
 
 	virtual void UseAbility() override;
 

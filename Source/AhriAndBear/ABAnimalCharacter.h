@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Components/BoxComponent.h"
 #include "GameBase/Define.h"
+#include "BehaviorTree/BehaviorTree.h"
 #include "ABAnimalCharacter.generated.h"
 
 class UStaticMeshComponent;
@@ -33,10 +34,8 @@ public:
 		UBoxComponent* InterationTrigger;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Survival")
 		UAABSurvivalComponent* SurvivalComponent;
-	UPROPERTY(Category = AI, VisibleDefaultsOnly, BlueprintReadWrite)
-		UPawnSensingComponent* PawnSensingComponent;
-	UPROPERTY(Category = AI, VisibleDefaultsOnly, BlueprintReadWrite)
-		UPawnNoiseEmitterComponent* PawnNoiseEmitterComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
+		UBehaviorTree* BehaviorTree;
 
 
 protected:
@@ -92,8 +91,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 		EAnimalType AnimalType;
 
-	UPROPERTY(BlueprintReadOnly)
-	bool IsFollowing;
+	UPROPERTY(BlueprintReadWrite)
+		bool bIsFollowing;
 
 private:
 	bool bWithinRange;

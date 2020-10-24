@@ -25,9 +25,6 @@ AABAnimalCharacter::AABAnimalCharacter()
 
 	SurvivalComponent = CreateDefaultSubobject<UAABSurvivalComponent>(TEXT("Survival Component"));
 
-	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("Pawn Sensing Component"));
-	PawnNoiseEmitterComponent = CreateDefaultSubobject<UPawnNoiseEmitterComponent>(TEXT("Pawn Noise Emitter Component"));
-
 	baseTurnRate = 45.f;
 	baseLookUpRate = 45.f;
 

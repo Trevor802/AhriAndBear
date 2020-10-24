@@ -14,15 +14,6 @@ class AHRIANDBEAR_API AABCatCharacter : public AABAnimalCharacter
 {
 	GENERATED_BODY()
 
-	void MoveToTargetActor(APawn* Pawn);
-
-public:
-	UFUNCTION()
-	void HandleSeePawn(APawn* Pawn);
-
-	UFUNCTION()
-	void HandleHearNoise(APawn* OtherActor, const FVector& Location, float Volume);
-	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

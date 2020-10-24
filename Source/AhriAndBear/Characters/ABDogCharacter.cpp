@@ -19,10 +19,6 @@ AABDogCharacter::AABDogCharacter()
 void AABDogCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	PawnSensingComponent->bHearNoises = true;
-	PawnSensingComponent->OnSeePawn.AddDynamic(this, &AABDogCharacter::HandleSeePawn);
-	PawnSensingComponent->OnHearNoise.AddDynamic(this, &AABDogCharacter::HandleHearNoise);
 }
 
 void AABDogCharacter::UseAbility()
@@ -38,29 +34,5 @@ void AABDogCharacter::UseAbility()
 		AABScentTrail* scent = Cast<AABScentTrail>(FoundActors[i]);
 
 		scent->ShowTrail();
-	}
-}
-
-void AABDogCharacter::HandleSeePawn(APawn* Pawn)
-{
-	MoveToTargetActor(Pawn);
-}
-
-void AABDogCharacter::HandleHearNoise(APawn* OtherActor, const FVector& Location, float Volume)
-{
-	MoveToTargetActor(OtherActor);
-}
-
-void AABDogCharacter::MoveToTargetActor(APawn* Pawn)
-{
-	APlayerController* playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	AABPlayerController* characterController = Cast<AABPlayerController>(playerController);
-
-	EAnimalType animalType = characterController->AnimalCharacter->AnimalType;
-	if (animalType == EAnimalType::Cat && characterController->AnimalCharacter->IsFollowing) {
-		AABCatCharacter* catCharacter = Cast<AABCatCharacter>(Pawn);
-		if (catCharacter != nullptr) {
-			// TODO: Implement AIMoveTo
-		}
 	}
 }
