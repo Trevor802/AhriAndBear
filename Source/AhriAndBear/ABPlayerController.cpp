@@ -33,7 +33,8 @@ void AABPlayerController::SetupInputComponent()
 	InputComponent->BindAction("Jump", IE_Released, this, &AABPlayerController::CallStopJump);
 	InputComponent->BindAction("Jog", IE_Pressed, this, &AABPlayerController::CallSprint);
 	InputComponent->BindAction("Jog", IE_Released, this, &AABPlayerController::CallStopSprint);
-	InputComponent->BindAction("UseSkill", IE_Pressed, this, &AABPlayerController::CallSprint);
+	InputComponent->BindAction("UseSkill", IE_Pressed, this, &AABPlayerController::CallUseAbility);
+	InputComponent->BindAction("AnimalTogether", IE_Pressed, this, &AABPlayerController::CallFollowing);
 
 }
 
@@ -123,6 +124,14 @@ void AABPlayerController::CallUseAbility()
 	if (AnimalCharacter && AnimalCharacter->CanUseAbility())
 	{
 		AnimalCharacter->UseAbility();
+	}
+}
+
+void AABPlayerController::CallFollowing()
+{
+	if (AnimalCharacter)
+	{
+		AnimalCharacter->ChangeOtherFollowingStatus();
 	}
 }
 

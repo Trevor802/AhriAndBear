@@ -30,6 +30,7 @@ public:
 	void CallStopSprint();
 	void CallInteract();
 	void CallUseAbility();
+	void CallFollowing();
 
 	AABAnimalCharacter* AnimalCharacter;
 };

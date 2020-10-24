@@ -25,6 +25,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void OnPossess(APawn* Pawn) override;
 	void SetBlackBoardTarget();
+	void SetBlackBoardFollowing();
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
@@ -36,10 +37,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
 		FName PlayerCharacterKey;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
+		FName IsFollowingKey;
+
 public:
 	bool bBlackBoardSet;
 
 private:
 	AABAnimalCharacter* AICharacter;
-	AABAnimalCharacter* PlayerCharacter;
 };

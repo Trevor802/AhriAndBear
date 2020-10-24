@@ -29,12 +29,15 @@ AABAnimalCharacter::AABAnimalCharacter()
 	baseLookUpRate = 45.f;
 
 	bWithinRange = false;
+	bIsFollowing = false;
 }
 
 // Called when the game starts or when spawned
 void AABAnimalCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	SetOtherAnimal();
 
 	InterationTrigger->OnComponentBeginOverlap.AddDynamic(this, &AABAnimalCharacter::OnInteractionOverlapBegin);
 	InterationTrigger->OnComponentEndOverlap.AddDynamic(this, &AABAnimalCharacter::OnInteractionOverlapEnd);
@@ -94,6 +97,22 @@ void AABAnimalCharacter::EndInteracting()
 {
 	bInteracting = false;
 	InteractiveObjectRef->AfterInteraction();
+}
+
+void AABAnimalCharacter::ChangeOtherFollowingStatus()
+{
+	if (OtherAnimal)
+	{
+		if (OtherAnimal->bIsFollowing == false)
+		{
+			OtherAnimal->bIsFollowing = true;
+		}
+		else
+		{
+			OtherAnimal->bIsFollowing = false;
+			OtherAnimal->GetMovementComponent()->StopMovementImmediately();
+		}
+	}
 }
 
 void AABAnimalCharacter::UseAbility()
@@ -165,5 +184,17 @@ void AABAnimalCharacter::OnInteractionOverlapEnd(UPrimitiveComponent* Overlapped
 	{
 		InteractiveObjectRef = nullptr;
 		bWithinRange = false;
+	}
+}
+
+void AABAnimalCharacter::SetOtherAnimal()
+{
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AABAnimalCharacter::StaticClass(), FoundActors);
+
+	for (AActor* animal : FoundActors) {
+		if (this != animal) {
+			OtherAnimal = Cast<AABAnimalCharacter>(animal);
+		}
 	}
 }

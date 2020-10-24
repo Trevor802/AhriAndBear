@@ -55,6 +55,8 @@ public:
 	void StartInteracting();
 	void EndInteracting();
 
+	void ChangeOtherFollowingStatus();
+
 	virtual void UseAbility();
 
 	bool CanMove();
@@ -70,6 +72,7 @@ public:
 
 protected:
 	FTimerHandle TimerHandle;
+	void SetOtherAnimal();
 
 public:
 	UPROPERTY(Category = Camera, VisibleDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
@@ -93,6 +96,8 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 		bool bIsFollowing;
+
+	AABAnimalCharacter* OtherAnimal;
 
 private:
 	bool bWithinRange;

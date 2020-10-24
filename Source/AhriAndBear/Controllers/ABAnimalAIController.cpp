@@ -4,11 +4,13 @@
 #include "ABAnimalAIController.h"
 #include <Runtime\Engine\Classes\Kismet\GameplayStatics.h>
 #include <BehaviorTree\Blackboard\BlackboardKeyType_Object.h>
+#include <BehaviorTree\Blackboard\BlackboardKeyType_Bool.h>
 
 AABAnimalAIController::AABAnimalAIController()
 	: Super()
 {
 	PlayerCharacterKey = "Target";
+	IsFollowingKey = "IsFollowing";
 	//Initialize the behavior tree and blackboard components
 	//DefaultBehaviorTree = CreateDefaultSubobject<UBehaviorTree>(TEXT("BehaviorTree"));
 	BehaviorTreeComp = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("BehaviorComp"));
@@ -28,6 +30,8 @@ void AABAnimalAIController::Tick(float DeltaTime)
 	{
 		SetBlackBoardTarget();
 	}
+
+	SetBlackBoardFollowing();
 }
 
 void AABAnimalAIController::OnPossess(APawn* Pawn)
@@ -50,19 +54,18 @@ void AABAnimalAIController::OnPossess(APawn* Pawn)
 
 void AABAnimalAIController::SetBlackBoardTarget()
 {
-	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AABAnimalCharacter::StaticClass(), FoundActors);
-
-	for (AActor* animal : FoundActors) {
-		if (this != animal) {
-			PlayerCharacter = Cast<AABAnimalCharacter>(animal);
-		}
-	}
-
-	if (PlayerCharacter)
+	if (AICharacter)
 	{
-		BlackBoardComp->SetValue<UBlackboardKeyType_Object>(PlayerCharacterKey, PlayerCharacter);
+		BlackBoardComp->SetValue<UBlackboardKeyType_Object>(PlayerCharacterKey, AICharacter->OtherAnimal);
 		bBlackBoardSet = true;
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("BB set"));
+	}
+}
+
+void AABAnimalAIController::SetBlackBoardFollowing()
+{
+	if (AICharacter)
+	{
+		BlackBoardComp->SetValue<UBlackboardKeyType_Bool>(IsFollowingKey, AICharacter->bIsFollowing);
 	}
 }
