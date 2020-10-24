@@ -40,9 +40,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
 		FName IsFollowingKey;
 
-public:
-	bool bBlackBoardSet;
-
 private:
 	AABAnimalCharacter* AICharacter;
 };

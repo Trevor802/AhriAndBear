@@ -30,6 +30,8 @@ AABAnimalCharacter::AABAnimalCharacter()
 
 	bWithinRange = false;
 	bIsFollowing = false;
+
+	bBlackBoardSet = false;
 }
 
 // Called when the game starts or when spawned
@@ -113,6 +115,31 @@ void AABAnimalCharacter::ChangeOtherFollowingStatus()
 			OtherAnimal->GetMovementComponent()->StopMovementImmediately();
 		}
 	}
+}
+
+void AABAnimalCharacter::SwitchAnimal()
+{
+	bIsFollowing = false;
+	GetMovementComponent()->StopMovementImmediately();
+
+	OtherAnimal->bIsFollowing = false;
+	OtherAnimal->GetMovementComponent()->StopMovementImmediately();
+
+	if (OtherAnimal && GetController())
+	{
+		AController* tempPlayerController = GetController();
+		AController* tempAIController = OtherAnimal->GetController();
+		if (tempPlayerController && tempAIController)
+		{
+			tempPlayerController->UnPossess();
+			tempAIController->UnPossess();
+
+			tempPlayerController->Possess(OtherAnimal);
+			tempAIController->Possess(this);
+		}
+	}
+
+	OtherAnimal->bBlackBoardSet = false;
 }
 
 void AABAnimalCharacter::UseAbility()

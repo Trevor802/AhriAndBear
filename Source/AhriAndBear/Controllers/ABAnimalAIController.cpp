@@ -15,8 +15,6 @@ AABAnimalAIController::AABAnimalAIController()
 	//DefaultBehaviorTree = CreateDefaultSubobject<UBehaviorTree>(TEXT("BehaviorTree"));
 	BehaviorTreeComp = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("BehaviorComp"));
 	BlackBoardComp = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackboardComp"));
-
-	bBlackBoardSet = false;
 }
 
 void AABAnimalAIController::BeginPlay()
@@ -26,7 +24,7 @@ void AABAnimalAIController::BeginPlay()
 
 void AABAnimalAIController::Tick(float DeltaTime)
 {
-	if (bBlackBoardSet == false)
+	if (AICharacter && AICharacter->bBlackBoardSet == false)
 	{
 		SetBlackBoardTarget();
 	}
@@ -57,7 +55,7 @@ void AABAnimalAIController::SetBlackBoardTarget()
 	if (AICharacter)
 	{
 		BlackBoardComp->SetValue<UBlackboardKeyType_Object>(PlayerCharacterKey, AICharacter->OtherAnimal);
-		bBlackBoardSet = true;
+		AICharacter->bBlackBoardSet = true;
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("BB set"));
 	}
 }

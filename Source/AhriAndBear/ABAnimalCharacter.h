@@ -57,6 +57,8 @@ public:
 
 	void ChangeOtherFollowingStatus();
 
+	void SwitchAnimal();
+
 	virtual void UseAbility();
 
 	bool CanMove();
@@ -98,6 +100,7 @@ public:
 		bool bIsFollowing;
 
 	AABAnimalCharacter* OtherAnimal;
+	bool bBlackBoardSet;
 
 private:
 	bool bWithinRange;
