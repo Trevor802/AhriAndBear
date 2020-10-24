@@ -8,7 +8,7 @@ public class AhriAndBear : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG", "AIModule", "Niagara", "GameplayTasks", "NavigationSystem" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG", "AIModule", "Niagara", "GameplayTasks", "NavigationSystem", "CableComponent" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
