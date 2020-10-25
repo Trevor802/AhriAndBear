@@ -5,11 +5,14 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "CableComponent.h"
+#include "ABInteractiveObjectBase.h"
+#include "Characters/ABCatCharacter.h"
+#include "Characters/ABDogCharacter.h"
 #include "FixedPulley.generated.h"
 
 class UCableComponent;
 UCLASS()
-class AHRIANDBEAR_API AFixedPulley : public AActor
+class AHRIANDBEAR_API AFixedPulley : public AABInteractiveObjectBase
 {
 	GENERATED_BODY()
 	
@@ -18,13 +21,25 @@ public:
 	AFixedPulley();
 
 protected:
-	// Called when the game starts or when spawned
+	virtual void Tick(float DeltaTime) override;
 	virtual void BeginPlay() override;
+	virtual void AfterInteraction() override;
 	class USceneComponent* Root;
 
+public:
+	UFUNCTION()
+		void OnStartOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+		void OnStartOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UFUNCTION()
+		void OnEndOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+		void OnEndOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
 	class UCableComponent* CableStart;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
@@ -36,4 +51,13 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gameplay")
 	float TotalLength = 200.0f;
 
+private:
+	AABDogCharacter* DogRef;
+	AABCatCharacter* CatRef;
+
+	bool bCanAttachDog;
+	bool bCanAttachCat;
+
+	bool bAttachingDog;
+	bool bAttachingCat;
 };
