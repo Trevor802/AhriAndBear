@@ -59,6 +59,8 @@ public:
 
 	void SwitchAnimal();
 
+	void ChangeMovementSetting();
+
 	virtual void UseAbility();
 
 	bool CanMove();
@@ -101,6 +103,7 @@ public:
 
 	AABAnimalCharacter* OtherAnimal;
 	bool bBlackBoardSet;
+	bool bOrientRotationToMovementSetting;
 
 private:
 	bool bWithinRange;

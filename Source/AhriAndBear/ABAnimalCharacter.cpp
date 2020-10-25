@@ -51,7 +51,6 @@ void AABAnimalCharacter::BeginPlay()
 void AABAnimalCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void AABAnimalCharacter::StartJumping()
@@ -140,6 +139,11 @@ void AABAnimalCharacter::SwitchAnimal()
 	}
 
 	OtherAnimal->bBlackBoardSet = false;
+}
+
+void AABAnimalCharacter::ChangeMovementSetting()
+{
+	GetCharacterMovement()->bOrientRotationToMovement = bOrientRotationToMovementSetting;
 }
 
 void AABAnimalCharacter::UseAbility()

@@ -41,6 +41,9 @@ void AABAnimalAIController::OnPossess(APawn* Pawn)
 
 	if (AICharacter)
 	{
+		AICharacter->bOrientRotationToMovementSetting = true;
+		AICharacter->ChangeMovementSetting();
+
 		if (AICharacter->BehaviorTree->BlackboardAsset)
 		{
 			BlackBoardComp->InitializeBlackboard(*(AICharacter->BehaviorTree->BlackboardAsset));

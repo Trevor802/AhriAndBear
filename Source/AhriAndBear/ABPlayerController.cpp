@@ -16,6 +16,8 @@ void AABPlayerController::OnPossess(APawn* Pawn)
 
 	//get reference to character
 	AnimalCharacter = Cast<AABAnimalCharacter>(Pawn);
+	AnimalCharacter->bOrientRotationToMovementSetting = false;
+	AnimalCharacter->ChangeMovementSetting();
 }
 
 void AABPlayerController::SetupInputComponent()
