@@ -5,6 +5,7 @@
 #include "Components/BoxComponent.h"
 #include "Engine/StaticMesh.h"
 #include "Interactives/EventTrigger.h"
+#include "Components/StaticMeshComponent.h"
 
 AABInteractiveObjectGate::AABInteractiveObjectGate()
 	: Super()
@@ -14,7 +15,18 @@ AABInteractiveObjectGate::AABInteractiveObjectGate()
 
 	GateMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GateMesh"));
 	GateMesh->SetupAttachment(RootComponent);
-	GateMesh->SetSimulatePhysics(true);
+
+	GateHinge = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GateHinge"));
+	GateHinge->SetupAttachment(RootComponent);
+	// Set the hinge mesh to a cylinder
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> CylinderAsset(TEXT("/Game/StarterContent/Shapes/Shape_Cylinder.Shape_Cylinder"));
+	if (CylinderAsset.Succeeded())
+	{
+		GateHinge->SetStaticMesh(CylinderAsset.Object);
+		GateHinge->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+		GateHinge->SetWorldScale3D(FVector(0.2f, 0.2f, 2.0f));
+		GateHinge->SetHiddenInGame(true);
+	}
 
 	FrameMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FrameMesh"));
 	FrameMesh->SetupAttachment(RootComponent);
@@ -30,6 +42,7 @@ void AABInteractiveObjectGate::BeginPlay()
 {
 	Super::BeginPlay();
 	EventTrigger->EventData.TriggerEvent = EEventType::Nothing;
+	GateMesh->SetSimulatePhysics(false);
 }
 
 void AABInteractiveObjectGate::Tick(float DeltaTime)
@@ -41,6 +54,7 @@ void AABInteractiveObjectGate::AfterInteraction()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Door Unlocked"));
 	DoorJoint->SetDisableCollision(false);
-	
+	GateMesh->SetSimulatePhysics(true);
+
 	bCanBeInteracted = false;
 }
