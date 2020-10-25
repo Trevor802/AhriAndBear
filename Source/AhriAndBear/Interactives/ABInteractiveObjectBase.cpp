@@ -29,7 +29,7 @@ void AABInteractiveObjectBase::BeginPlay()
 		CollisionShape->OnComponentEndOverlap.AddDynamic(this, &AABInteractiveObjectBase::OnExitCollision);
 	}
 
-	UIWidget->SetWorldLocation(GetActorLocation());
+	//UIWidget->SetWorldLocation(GetActorLocation());
 }
 
 // Called every frame
