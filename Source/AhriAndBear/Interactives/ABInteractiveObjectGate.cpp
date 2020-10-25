@@ -14,6 +14,7 @@ AABInteractiveObjectGate::AABInteractiveObjectGate()
 
 	GateMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GateMesh"));
 	GateMesh->SetupAttachment(RootComponent);
+	GateMesh->SetSimulatePhysics(true);
 
 	FrameMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FrameMesh"));
 	FrameMesh->SetupAttachment(RootComponent);
@@ -40,5 +41,6 @@ void AABInteractiveObjectGate::AfterInteraction()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Door Unlocked"));
 	DoorJoint->SetDisableCollision(false);
+	
 	bCanBeInteracted = false;
 }
