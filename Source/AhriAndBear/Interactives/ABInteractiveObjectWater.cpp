@@ -28,7 +28,7 @@ void AABInteractiveObjectWater::BeginPlay()
 
 void AABInteractiveObjectWater::Tick(float DeltaTime)
 {
-
+	Super::Tick(DeltaTime);
 }
 
 void AABInteractiveObjectWater::AfterInteraction()

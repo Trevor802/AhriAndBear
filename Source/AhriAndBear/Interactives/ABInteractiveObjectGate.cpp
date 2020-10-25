@@ -33,7 +33,7 @@ void AABInteractiveObjectGate::BeginPlay()
 
 void AABInteractiveObjectGate::Tick(float DeltaTime)
 {
-
+	Super::Tick(DeltaTime);
 }
 
 void AABInteractiveObjectGate::AfterInteraction()

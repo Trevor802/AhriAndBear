@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Interactive.h"
+#include "Components/WidgetComponent.h"
 #include "ABInteractiveObjectBase.generated.h"
 
 UCLASS(Abstract)
@@ -22,7 +23,7 @@ protected:
 	class AABAnimalCharacter* OverlappingAnimal;
 
 	UFUNCTION() void OnEnterCollision(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	UFUNCTION() void OnExitCollision(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	UFUNCTION() void OnExitCollision(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex); 
 	bool bCanBeInteracted;
 	virtual void OnActorEnter(AActor* OtherActor) {};
 	virtual void OnActorExit(AActor* OtherActor) {};
@@ -30,6 +31,12 @@ protected:
 	class UShapeComponent* CollisionShape;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	class UEventTrigger* EventTrigger;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "UI")
+	class UWidgetComponent* UIWidget;
+
+	void SetWidgetDistance();
+	void SetWidgetRotation();
+	void SetWidgetVisiability();
 
 public:	
 
@@ -43,5 +50,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
 	float InteractionDelay;
 
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	FLinearColor UIColor;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	float Distance;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	float WidigetChangeDistance;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	FString UIText;
 };

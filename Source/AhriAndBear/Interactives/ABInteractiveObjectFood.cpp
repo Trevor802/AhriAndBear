@@ -9,6 +9,7 @@
 #include "Interactives/EventTrigger.h"
 #include "GameBase/Define.h"
 #include "EventTrigger.h"
+#include "Components/WidgetComponent.h"
 
 
 void AABInteractiveObjectFood::BeginPlay()
