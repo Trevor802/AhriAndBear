@@ -7,11 +7,49 @@
 
 #include "Components/PawnNoiseEmitterComponent.h"
 #include "Perception/PawnSensingComponent.h"
+#include "Components/PostProcessComponent.h"
+#include "Camera/CameraComponent.h"
+#include "Engine/Scene.h"
 
 #include "Kismet/GameplayStatics.h"
+
+AABCatCharacter::AABCatCharacter()
+	: Super()
+{
+	postProcess = CreateDefaultSubobject<UPostProcessComponent>(TEXT("Post Process"));
+	postProcess->bEnabled = true;
+}
 
 void AABCatCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	abilityOn = false;
 }
 
+void AABCatCharacter::UseAbility()
+{
+	Super::UseAbility();
+
+	//UE_LOG(LogTemp, Warning, TEXT("???"));
+	abilityOn = true;
+	FPostProcessSettings NVsetting;
+	NVsetting.bOverride_AutoExposureMinBrightness = true;
+	NVsetting.bOverride_AutoExposureMaxBrightness = true;
+	NVsetting.AutoExposureMinBrightness = 0.1f;
+	NVsetting.AutoExposureMaxBrightness = 0.1f;
+
+	camera->PostProcessSettings = NVsetting;
+	AbilityEnd();
+}
+
+void AABCatCharacter::AbilityEnd()
+{
+	//UE_LOG(LogTemp, Warning, TEXT("???"));
+	FPostProcessSettings NormalSetting;
+	NormalSetting.bOverride_AutoExposureMinBrightness = true;
+	NormalSetting.bOverride_AutoExposureMaxBrightness = true;
+	NormalSetting.AutoExposureMinBrightness = 0.03f;
+	NormalSetting.AutoExposureMaxBrightness = 8.0f;
+
+	camera->PostProcessSettings = NormalSetting;
+}
