@@ -15,6 +15,7 @@ class AHRIANDBEAR_API AABCatCharacter : public AABAnimalCharacter
 
 public:
 	AABCatCharacter();
+	virtual void Tick(float DeltaTime) override;
 	virtual void UseAbility() override;
 
 protected:

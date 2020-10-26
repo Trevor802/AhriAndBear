@@ -26,6 +26,21 @@ void AABCatCharacter::BeginPlay()
 	abilityOn = false;
 }
 
+void AABCatCharacter::Tick(float DeltaTime)
+{
+	float currentAEMB = camera->PostProcessSettings.AutoExposureMinBrightness;
+	if (abilityOn && currentAEMB < 1.0f)
+	{
+		camera->PostProcessSettings.AutoExposureMinBrightness += 0.1f * DeltaTime;
+		if (camera->PostProcessSettings.AutoExposureMinBrightness > 1.0f)
+		{
+			camera->PostProcessSettings.AutoExposureMinBrightness = 1.0f;
+			abilityOn = false;
+		}
+	}
+}
+		
+
 void AABCatCharacter::UseAbility()
 {
 	Super::UseAbility();
@@ -45,11 +60,13 @@ void AABCatCharacter::UseAbility()
 void AABCatCharacter::AbilityEnd()
 {
 	//UE_LOG(LogTemp, Warning, TEXT("???"));
-	FPostProcessSettings NormalSetting;
+	//abilityOn = false;
+	camera->PostProcessSettings.AutoExposureMaxBrightness = 1.0f;
+	/*FPostProcessSettings NormalSetting;
 	NormalSetting.bOverride_AutoExposureMinBrightness = true;
 	NormalSetting.bOverride_AutoExposureMaxBrightness = true;
-	NormalSetting.AutoExposureMinBrightness = 0.03f;
+	NormalSetting.AutoExposureMinBrightness = 1.0f;
 	NormalSetting.AutoExposureMaxBrightness = 8.0f;
 
-	camera->PostProcessSettings = NormalSetting;
+	camera->PostProcessSettings = NormalSetting;*/
 }
