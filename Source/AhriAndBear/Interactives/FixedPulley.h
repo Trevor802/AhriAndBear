@@ -23,7 +23,9 @@ public:
 protected:
 	virtual void Tick(float DeltaTime) override;
 	virtual void BeginPlay() override;
+	virtual void OnConstruction(const FTransform& Transform) override;
 	virtual void AfterInteraction() override;
+	void UpdateHandlers();
 	class USceneComponent* Root;
 
 public:
@@ -41,15 +43,13 @@ public:
 
 public:	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
-	class UCableComponent* CableStart;
+	class UCableComponent* ActionCable;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
-	class UCableComponent* CableEnd;
+	class UCableComponent* ReactionCable;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Gameplay")
-	class USphereComponent* Start;
+	class USphereComponent* ActionHandler;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Gameplay")
-	class USphereComponent* End;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gameplay")
-	float TotalLength = 200.0f;
+	class USphereComponent* ReactionHandler;
 
 private:
 	AABDogCharacter* DogRef;
@@ -60,4 +60,5 @@ private:
 
 	bool bAttachingDog;
 	bool bAttachingCat;
+	float TotalLength = 200.0f;
 };

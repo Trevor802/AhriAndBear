@@ -12,19 +12,21 @@ AFixedPulley::AFixedPulley()
 	PrimaryActorTick.bCanEverTick = true;
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = Root;
-	Start = CreateDefaultSubobject<USphereComponent>(TEXT("Start"));
-	Start->SetupAttachment(RootComponent);
-	End = CreateDefaultSubobject<USphereComponent>(TEXT("End"));
-	End->SetupAttachment(RootComponent);
-	CableStart = CreateDefaultSubobject<UCableComponent>(TEXT("CalbeStart"));
-	CableStart->SetupAttachment(RootComponent);
-	CableStart->EndLocation = FVector::ZeroVector;
-	CableEnd = CreateDefaultSubobject<UCableComponent>(TEXT("CalbeEnd"));
-	CableEnd->SetupAttachment(RootComponent);
-	CableEnd->EndLocation = FVector::ZeroVector;
-	Start->SetRelativeLocation(FVector(0, 0, -1) * TotalLength / 2);
-	End->SetRelativeLocation(FVector(0, 0, -1) * TotalLength / 2);
 
+	ActionHandler = CreateDefaultSubobject<USphereComponent>(TEXT("ActionHandler"));
+	ActionHandler->SetupAttachment(RootComponent);
+	ReactionHandler = CreateDefaultSubobject<USphereComponent>(TEXT("ReactionHandler"));
+	ReactionHandler->SetupAttachment(RootComponent);
+
+	UE_LOG(LogTemp, Log, TEXT("Constructor"));
+	ActionCable = CreateDefaultSubobject<UCableComponent>(TEXT("ActionCable"));
+	ActionCable->SetupAttachment(RootComponent);
+	ReactionCable = CreateDefaultSubobject<UCableComponent>(TEXT("ReactionCable"));
+	ReactionCable->SetupAttachment(RootComponent);
+	ActionCable->EndLocation = FVector::ZeroVector;
+	ReactionCable->EndLocation = FVector::ZeroVector;
+	ActionCable->SetAttachEndToComponent(ActionHandler);
+	ReactionCable->SetAttachEndToComponent(ReactionHandler);
 	bCanBeInteracted = true;
 	bCanAttachDog = false;
 	bCanAttachCat = false;
@@ -32,19 +34,27 @@ AFixedPulley::AFixedPulley()
 	bAttachingCat = false;
 }
 
+void AFixedPulley::OnConstruction(const FTransform& Transform)
+{
+	Super::OnConstruction(Transform);
+	UE_LOG(LogTemp, Log, TEXT("OnConstruction"));
+	ActionCable->SetAttachEndToComponent(ActionHandler);
+	ReactionCable->SetAttachEndToComponent(ReactionHandler);
+}
+
 // Called when the game starts or when spawned
 void AFixedPulley::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	CableStart->SetAttachEndToComponent(Start);
-	CableEnd->SetAttachEndToComponent(End);
+	ActionCable->SetAttachEndToComponent(ActionHandler);
+	ReactionCable->SetAttachEndToComponent(ReactionHandler);
 
-	Start->OnComponentBeginOverlap.AddDynamic(this, &AFixedPulley::OnStartOverlapBegin);
-	Start->OnComponentEndOverlap.AddDynamic(this, &AFixedPulley::OnStartOverlapEnd);
+	TotalLength = ActionHandler->GetRelativeLocation().Size() + ReactionHandler->GetRelativeLocation().Size();
+	ActionHandler->OnComponentBeginOverlap.AddDynamic(this, &AFixedPulley::OnStartOverlapBegin);
+	ActionHandler->OnComponentEndOverlap.AddDynamic(this, &AFixedPulley::OnStartOverlapEnd);
 
-	End->OnComponentBeginOverlap.AddDynamic(this, &AFixedPulley::OnEndOverlapBegin);
-	End->OnComponentEndOverlap.AddDynamic(this, &AFixedPulley::OnEndOverlapEnd);
+	ReactionHandler->OnComponentBeginOverlap.AddDynamic(this, &AFixedPulley::OnEndOverlapBegin);
+	ReactionHandler->OnComponentEndOverlap.AddDynamic(this, &AFixedPulley::OnEndOverlapEnd);
 }
 
 void AFixedPulley::AfterInteraction()
@@ -113,19 +123,23 @@ void AFixedPulley::OnEndOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* 
 void AFixedPulley::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	float startLength = Start->GetRelativeLocation().Size();
+	UpdateHandlers();
+}
+
+void AFixedPulley::UpdateHandlers()
+{
+	float startLength = ActionHandler->GetRelativeLocation().Size();
 	float endLength = FMath::Clamp(TotalLength - startLength, 10.0f, TotalLength / 2);
-	CableEnd->CableLength = endLength;
-	End->SetRelativeLocation(FVector(0, 0, -1) * endLength);
+	ReactionHandler->SetRelativeLocation(FVector(0, 0, -1) * endLength);
 
 	if (bAttachingDog && DogRef)
 	{
-		Start->SetWorldLocation(DogRef->GetActorLocation());
+		ActionHandler->SetWorldLocation(DogRef->GetActorLocation());
 	}
 
 	if (bAttachingCat && CatRef)
 	{
-		CatRef->SetActorLocation(End->GetComponentLocation());
+		CatRef->SetActorLocation(ReactionHandler->GetComponentLocation());
 	}
 }
 
