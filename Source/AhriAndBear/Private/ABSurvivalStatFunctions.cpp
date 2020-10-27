@@ -8,5 +8,14 @@ FABSurvivalStat::FABSurvivalStat() {
 }
 
 FORCEINLINE float UABSurvivalStatFunctions::GetStatPercentage(const FABSurvivalStat& stat) {
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("Dividing %f by %f"), stat.CurrentValue, stat.MaxValue));
 	return stat.CurrentValue / stat.MaxValue;
+}
+
+FORCEINLINE void UABSurvivalStatFunctions::TickStat(FABSurvivalStat& stat, float deltaTime) {
+	stat.CurrentValue += stat.RateOfChange * deltaTime;
+}
+
+FORCEINLINE void UABSurvivalStatFunctions::StartStat(FABSurvivalStat& stat) {
+	stat.CurrentValue = stat.StartingValue;
 }

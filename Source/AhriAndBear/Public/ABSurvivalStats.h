@@ -37,4 +37,8 @@ class AHRIANDBEAR_API UABSurvivalStatFunctions : public UBlueprintFunctionLibrar
 public:
 	UFUNCTION(BlueprintPure, Category = "Character | Survival")
 	static float GetStatPercentage(const FABSurvivalStat& stat);
+
+	static void TickStat(FABSurvivalStat& stat, float deltaTime);
+
+	static void StartStat(FABSurvivalStat& stat);
 };
