@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Interactives/ABInteractiveObjectBase.h"
+#include "GameBase/Define.h"
 #include "ABInteractiveObjectWater.generated.h"
 
 /**
@@ -19,9 +20,10 @@ public:
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-private:
-	void CheckWaterStatus();
+	virtual void BeginPlay() override;
+	virtual void AfterInteraction() override;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gameplay")
+	FSurvivalData SurvivalEffect;
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")

@@ -16,6 +16,8 @@ void AABPlayerController::OnPossess(APawn* Pawn)
 
 	//get reference to character
 	AnimalCharacter = Cast<AABAnimalCharacter>(Pawn);
+	AnimalCharacter->bOrientRotationToMovementSetting = false;
+	AnimalCharacter->ChangeMovementSetting();
 }
 
 void AABPlayerController::SetupInputComponent()
@@ -28,9 +30,14 @@ void AABPlayerController::SetupInputComponent()
 	InputComponent->BindAxis("WalkRight", this, &AABPlayerController::CallMoveRight);
 	InputComponent->BindAxis("Turn", this, &AABPlayerController::CallTurnAtRate);
 	InputComponent->BindAxis("LookUp", this, &AABPlayerController::CallLookUpAtRate);
+	InputComponent->BindAction("Catch", IE_Pressed, this, &AABPlayerController::CallInteract);
 	InputComponent->BindAction("Jump", IE_Pressed, this, &AABPlayerController::CallJump);
 	InputComponent->BindAction("Jump", IE_Released, this, &AABPlayerController::CallStopJump);
-
+	InputComponent->BindAction("Jog", IE_Pressed, this, &AABPlayerController::CallSprint);
+	InputComponent->BindAction("Jog", IE_Released, this, &AABPlayerController::CallStopSprint);
+	InputComponent->BindAction("UseSkill", IE_Pressed, this, &AABPlayerController::CallUseAbility);
+	InputComponent->BindAction("AnimalTogether", IE_Pressed, this, &AABPlayerController::CallFollowing);
+	InputComponent->BindAction("ChangeAnimal", IE_Pressed, this, &AABPlayerController::CallSwitchAnimal);
 }
 
 void AABPlayerController::CallMoveForward(float value)
@@ -75,7 +82,7 @@ void AABPlayerController::CallLookUpAtRate(float value)
 
 void AABPlayerController::CallJump()
 {
-	if (AnimalCharacter->CanJump() && AnimalCharacter->CanMove())
+	if (AnimalCharacter && AnimalCharacter->CanJump() && AnimalCharacter->CanMove())
 	{
 		AnimalCharacter->StartJumping();
 		AnimalCharacter->Jump();
@@ -90,11 +97,51 @@ void AABPlayerController::CallStopJump()
 	}
 }
 
+void AABPlayerController::CallSprint()
+{
+	if (AnimalCharacter && AnimalCharacter->CanSprint())
+	{
+		AnimalCharacter->StartSprinting();
+	}
+}
+
+void AABPlayerController::CallStopSprint()
+{
+	if (AnimalCharacter && AnimalCharacter->bSprinting == true)
+	{
+		AnimalCharacter->EndSprinting();
+	}
+}
+
 void AABPlayerController::CallInteract()
 {
 	if (AnimalCharacter && AnimalCharacter->CanInteract())
 	{
 		AnimalCharacter->StartInteracting();
+	}
+}
+
+void AABPlayerController::CallUseAbility()
+{
+	if (AnimalCharacter && AnimalCharacter->CanUseAbility())
+	{
+		AnimalCharacter->UseAbility();
+	}
+}
+
+void AABPlayerController::CallFollowing()
+{
+	if (AnimalCharacter)
+	{
+		AnimalCharacter->ChangeOtherFollowingStatus();
+	}
+}
+
+void AABPlayerController::CallSwitchAnimal()
+{
+	if (AnimalCharacter)
+	{
+		AnimalCharacter->SwitchAnimal();
 	}
 }
 

@@ -6,12 +6,25 @@
 #include "ABAnimalCharacter.h"
 #include "ABCatCharacter.generated.h"
 
-/**
- * 
- */
+class UPostProcessComponent;
+
 UCLASS()
 class AHRIANDBEAR_API AABCatCharacter : public AABAnimalCharacter
 {
 	GENERATED_BODY()
-	
+
+public:
+	AABCatCharacter();
+	virtual void Tick(float DeltaTime) override;
+	virtual void UseAbility() override;
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+private:
+	UPostProcessComponent* postProcess;
+	bool abilityOn;
+
+	void AbilityEnd();
 };

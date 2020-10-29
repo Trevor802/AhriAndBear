@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "ABSurvivalStats.h"
+#include "GameBase/Define.h"
 #include "AABSurvivalComponent.generated.h"
 
 UCLASS( Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -80,4 +81,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	FORCEINLINE FSurvivalData GetSurvivalData() const { return FSurvivalData{ CurrentHealth, CurrentFullness, CurrentThirst, CurrentWarmth }; }
+	void AddSurvivalData(const FSurvivalData& value);
 };

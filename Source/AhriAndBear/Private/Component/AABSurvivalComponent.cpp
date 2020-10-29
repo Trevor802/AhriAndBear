@@ -41,3 +41,8 @@ void UAABSurvivalComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 
 	UpdateStats(DeltaTime);
 }
+
+void UAABSurvivalComponent::AddSurvivalData(const FSurvivalData& value)
+{
+		
+}
