@@ -31,7 +31,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character | Survival")
 	float UpdateInterval = 2.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character | Survival | Health")
+	/*UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character | Survival | Health")
 	float MaxHealth = 100.f;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character | Survival | Health")
 	float CurrentHealth;
@@ -68,7 +68,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character | Survival | Warmth")
 	float WarmthChangeRate = -1.f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character | Survival | Warmth")
-	float StartingWarmth;
+	float StartingWarmth;*/
 
 	UFUNCTION()
 	void UpdateStats(float deltaTime);
@@ -80,7 +80,4 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
-	// Updates the specified stat.
-	void TickStat(float& currentValue, int maxValue, float delta, float deltaTime);
 };

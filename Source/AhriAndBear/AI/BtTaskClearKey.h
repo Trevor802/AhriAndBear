@@ -15,7 +15,7 @@ class AHRIANDBEAR_API UBtTaskClearKey : public UBTTaskNode
 	GENERATED_BODY()
 
 	UPROPERTY(Category = "AI", EditAnywhere)
-		FName KetToClear;
+		FName KeyToClear;
 	
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override; // Receive Execute AI
 };
