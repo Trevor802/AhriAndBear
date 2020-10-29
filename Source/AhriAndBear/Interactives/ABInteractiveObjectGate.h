@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Interactives/ABInteractiveObjectBase.h"
+#include "PhysicsEngine/PhysicsConstraintComponent.h"
 #include "ABInteractiveObjectGate.generated.h"
 
 /**
@@ -19,16 +20,18 @@ public:
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	virtual void BeginPlay() override;
+	//FORCEINLINE virtual bool CanInteract() override { return true; }
 
-private:
-	void CheckGateStatus();
+	virtual void AfterInteraction() override;
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
 	UStaticMeshComponent* GateMesh;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
+	UStaticMeshComponent* GateHinge;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
 	UStaticMeshComponent* FrameMesh;
-
-private:
-	bool bOpened;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Constraint")
+	UPhysicsConstraintComponent* DoorJoint;
 };

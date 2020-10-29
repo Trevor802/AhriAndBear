@@ -26,9 +26,12 @@ public:
 	void CallLookUpAtRate(float value);
 	void CallJump();
 	void CallStopJump();
+	void CallSprint();
+	void CallStopSprint();
 	void CallInteract();
+	void CallUseAbility();
+	void CallFollowing();
+	void CallSwitchAnimal();
 
-private:
 	AABAnimalCharacter* AnimalCharacter;
-
 };

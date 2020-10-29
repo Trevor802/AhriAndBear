@@ -54,3 +54,8 @@ FORCEINLINE void UAABSurvivalComponent::TickStat(float& currentValue, int maxVal
 	currentValue = FMath::Clamp<float>(currentValue + delta * deltaTime, 0, maxValue);
 }
 
+void UAABSurvivalComponent::AddSurvivalData(const FSurvivalData& value)
+{
+		
+}
+
