@@ -62,6 +62,9 @@ public:
 	void ChangeMovementSetting();
 	void ChangeMovementMode(EMovementMode MovementMode);
 
+	void LerpCameraToFP(float DeltaTime);
+	void LerpCameraToTP(float DeltaTime);
+
 	virtual void UseAbility();
 
 	bool CanMove();
@@ -85,6 +88,10 @@ public:
 		float baseTurnRate;
 	UPROPERTY(Category = Camera, VisibleDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 		float baseLookUpRate;
+	UPROPERTY(Category = Camera, VisibleDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+		float cameraLerpSpeed;
+	UPROPERTY(Category = Camera, VisibleDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+		FVector FPCameraTargetLocation;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float WalkSpeed;
@@ -115,4 +122,6 @@ public:
 private:
 	bool bWithinRange;
 	AABInteractiveObjectBase* InteractiveObjectRef;
+
+	FVector OriginalCameraPosition;
 };

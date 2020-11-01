@@ -32,7 +32,6 @@ public:
 	void CallUseAbility();
 	void CallFollowing();
 	void CallSwitchAnimal();
-	void CallClimb();
 
 	AABAnimalCharacter* AnimalCharacter;
 };

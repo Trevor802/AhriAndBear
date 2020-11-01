@@ -27,6 +27,7 @@ AABAnimalCharacter::AABAnimalCharacter()
 
 	baseTurnRate = 45.f;
 	baseLookUpRate = 45.f;
+	cameraLerpSpeed = 1.0f;
 
 	bWithinRange = false;
 	bIsFollowing = false;
@@ -48,6 +49,8 @@ void AABAnimalCharacter::BeginPlay()
 	InterationTrigger->OnComponentEndOverlap.AddDynamic(this, &AABAnimalCharacter::OnInteractionOverlapEnd);
 
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+
+	OriginalCameraPosition = camera->GetRelativeLocation();
 }
 
 // Called every frame
@@ -165,6 +168,30 @@ void AABAnimalCharacter::ChangeMovementSetting()
 void AABAnimalCharacter::ChangeMovementMode(EMovementMode MovementMode)
 {
 	GetCharacterMovement()->SetMovementMode(MovementMode);
+}
+
+void AABAnimalCharacter::LerpCameraToFP(float DeltaTime)
+{
+	const float dist = FVector::Dist(camera->GetRelativeLocation(), FPCameraTargetLocation) / 100.f;
+
+	if (dist >= 0.01)
+	{
+		FVector temp = FMath::Lerp(camera->GetRelativeLocation(), FPCameraTargetLocation, cameraLerpSpeed * DeltaTime);
+
+		camera->SetRelativeLocation(temp);
+	}
+}
+
+void AABAnimalCharacter::LerpCameraToTP(float DeltaTime)
+{
+	const float dist = FVector::Dist(camera->GetRelativeLocation(), OriginalCameraPosition) / 100.f;
+
+	if (dist >= 0.01)
+	{
+		FVector temp = FMath::Lerp(camera->GetRelativeLocation(), OriginalCameraPosition, cameraLerpSpeed * DeltaTime);
+
+		camera->SetRelativeLocation(temp);
+	}
 }
 
 void AABAnimalCharacter::UseAbility()
