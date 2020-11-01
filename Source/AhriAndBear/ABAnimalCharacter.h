@@ -32,20 +32,35 @@ public:
 		class UCameraComponent* camera;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		UBoxComponent* InterationTrigger;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
+	class USphereComponent* ProjectileStart;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Survival")
 		UAABSurvivalComponent* SurvivalComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
 		UBehaviorTree* BehaviorTree;
-
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
+	float JumpingSpeed = 500.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
+	float MinDepth = 500.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
+	float MaxDepth = 500.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
+	float MinHeight = 500.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
+	float MaxHeight = 500.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
+	float EdgeForwardOffset = 500.f;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual bool CanJumpInternal_Implementation() const override;
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	virtual void Jump() override;
 	void StartJumping();
 	void EndJumping();
 
@@ -62,7 +77,6 @@ public:
 	void ChangeMovementSetting();
 
 	virtual void UseAbility();
-
 	bool CanMove();
 	bool CanSprint();
 	bool CanInteract();
@@ -108,4 +122,7 @@ public:
 private:
 	bool bWithinRange;
 	AABInteractiveObjectBase* InteractiveObjectRef;
+	bool CheckJumping(FVector&);
+	bool bCanJump;
+	FVector JumpingVelocity;
 };
