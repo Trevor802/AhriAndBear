@@ -119,6 +119,18 @@ void AABAnimalCharacter::EndInteracting()
 	InteractiveObjectRef->AfterInteraction();
 }
 
+void AABAnimalCharacter::StartCrouch()
+{
+	bCrouching = true;
+	GetCharacterMovement()->MaxWalkSpeed = CrouchSpeed;
+}
+
+void AABAnimalCharacter::EndCrouch()
+{
+	bCrouching = false;
+	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+}
+
 void AABAnimalCharacter::ChangeOtherFollowingStatus()
 {
 	if (OtherAnimal)
@@ -251,6 +263,18 @@ bool AABAnimalCharacter::CanUseAbility()
 bool AABAnimalCharacter::CanClimb()
 {
 	if (bInClimbingZone == true && bSprinting == true && AnimalType == EAnimalType::Cat)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool AABAnimalCharacter::CanCrouch()
+{
+	if (CanMove() == true && bSprinting == false && GetMovementComponent()->IsMovingOnGround() == true)
 	{
 		return true;
 	}

@@ -55,6 +55,9 @@ public:
 	void StartInteracting();
 	void EndInteracting();
 
+	void StartCrouch();
+	void EndCrouch();
+
 	void ChangeOtherFollowingStatus();
 
 	void SwitchAnimal();
@@ -72,6 +75,7 @@ public:
 	bool CanInteract();
 	bool CanUseAbility();
 	bool CanClimb();
+	bool CanCrouch();
 
 	UFUNCTION()
 	void OnInteractionOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -98,8 +102,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float SprintSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float ClimbSpeed;
+		float CrouchSpeed;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
+		bool bCrouching;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
 		bool bJumping;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)

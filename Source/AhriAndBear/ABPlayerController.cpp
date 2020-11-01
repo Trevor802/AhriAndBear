@@ -35,6 +35,8 @@ void AABPlayerController::SetupInputComponent()
 	InputComponent->BindAction("Jump", IE_Released, this, &AABPlayerController::CallStopJump);
 	InputComponent->BindAction("Jog", IE_Pressed, this, &AABPlayerController::CallSprint);
 	InputComponent->BindAction("Jog", IE_Released, this, &AABPlayerController::CallStopSprint);
+	InputComponent->BindAction("Crouch", IE_Pressed, this, &AABPlayerController::CallCrouch);
+	InputComponent->BindAction("Crouch", IE_Released, this, &AABPlayerController::CallStopCrouch);
 	InputComponent->BindAction("UseSkill", IE_Pressed, this, &AABPlayerController::CallUseAbility);
 	InputComponent->BindAction("AnimalTogether", IE_Pressed, this, &AABPlayerController::CallFollowing);
 	InputComponent->BindAction("ChangeAnimal", IE_Pressed, this, &AABPlayerController::CallSwitchAnimal);
@@ -164,6 +166,22 @@ void AABPlayerController::CallSwitchAnimal()
 	if (AnimalCharacter)
 	{
 		AnimalCharacter->SwitchAnimal();
+	}
+}
+
+void AABPlayerController::CallCrouch()
+{
+	if (AnimalCharacter && AnimalCharacter->CanCrouch())
+	{
+		AnimalCharacter->StartCrouch();
+	}
+}
+
+void AABPlayerController::CallStopCrouch()
+{
+	if (AnimalCharacter)
+	{
+		AnimalCharacter->EndCrouch();
 	}
 }
 
