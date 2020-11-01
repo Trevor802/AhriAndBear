@@ -39,17 +39,19 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
 		UBehaviorTree* BehaviorTree;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
-	float JumpingSpeed = 500.f;
+	float JumpingSpeed = 700.f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
-	float MinDepth = 500.f;
+	float MinDepth = -100.f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
-	float MaxDepth = 500.f;
+	float MaxDepth = -500.f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
-	float MinHeight = 500.f;
+	float MinHeight = 50.f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
 	float MaxHeight = 500.f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
-	float EdgeForwardOffset = 500.f;
+	float EdgeForwardOffset = 50.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Debug")
+	bool bDebugJumping = false;
 
 protected:
 	// Called when the game starts or when spawned
@@ -61,6 +63,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void Jump() override;
+	void UpdateChecking();
 	void StartJumping();
 	void EndJumping();
 
@@ -103,11 +106,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float SprintSpeed;
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		bool bJumping;
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		bool bSprinting;
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		bool bInteracting;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 		EAnimalType AnimalType;

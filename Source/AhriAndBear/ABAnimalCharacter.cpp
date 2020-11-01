@@ -62,12 +62,16 @@ bool AABAnimalCharacter::CanJumpInternal_Implementation() const
 void AABAnimalCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	bCanJump = CheckJumping(JumpingVelocity);
 }
 
 void AABAnimalCharacter::Jump()
 {
 	LaunchCharacter(JumpingVelocity, true, true);
+}
+
+void AABAnimalCharacter::UpdateChecking()
+{
+	bCanJump = CheckJumping(JumpingVelocity);
 }
 
 void AABAnimalCharacter::StartJumping()
@@ -251,7 +255,10 @@ bool AABAnimalCharacter::CheckJumping(FVector& OutVelocity)
 {
 	FVector launchVel = (GetActorRotation().RotateVector(FVector::UpVector) + GetActorRotation().RotateVector(FVector::ForwardVector)) * 0.707f * JumpingSpeed;
 	FPredictProjectilePathParams inParams = FPredictProjectilePathParams(3.0f, ProjectileStart->GetComponentLocation(), launchVel, 2.0f, ECollisionChannel::ECC_WorldStatic, this);
-	inParams.DrawDebugType = EDrawDebugTrace::ForOneFrame;
+	if (bDebugJumping)
+	{
+		inParams.DrawDebugType = EDrawDebugTrace::ForOneFrame;
+	}
 	FPredictProjectilePathResult outParams;
 	bool hasHole = false;
 	if (!UGameplayStatics::PredictProjectilePath(GetWorld(), inParams, outParams))
@@ -280,7 +287,8 @@ bool AABAnimalCharacter::CheckJumping(FVector& OutVelocity)
 		}
 		else
 		{
-			DrawDebugLine(GetWorld(), p.Location, groundHit.Location, FColor::Red);
+			if (bDebugJumping)
+				DrawDebugLine(GetWorld(), p.Location, groundHit.Location, FColor::Red);
 			heightDiff = groundHit.Location.Z - ProjectileStart->GetComponentLocation().Z;
 			bool canJump = false;
 			canJump |= (hasHole && heightDiff < MinDepth&& heightDiff > MaxDepth && heightDiff - holeDiff > MinHeight);
@@ -293,7 +301,8 @@ bool AABAnimalCharacter::CheckJumping(FVector& OutVelocity)
 				{
 					return false;
 				}
-				UKismetSystemLibrary::DrawDebugSphere(GetWorld(), endLoc, 10.f, 12, FLinearColor::Yellow);
+				if (bDebugJumping)
+					UKismetSystemLibrary::DrawDebugSphere(GetWorld(), endLoc, 10.f, 12, FLinearColor::Yellow);
 				OutVelocity = tossVel;
 				return true;
 			}
