@@ -34,6 +34,7 @@ AABAnimalCharacter::AABAnimalCharacter()
 	bBlackBoardSet = false;
 
 	bInClimbingZone = false;
+	bClimbing = false;
 }
 
 // Called when the game starts or when spawned
@@ -53,6 +54,19 @@ void AABAnimalCharacter::BeginPlay()
 void AABAnimalCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (bClimbing == false && GetMovementComponent()->IsMovingOnGround() == false)
+	{
+		ChangeMovementMode(MOVE_Falling);
+	}
+	else if (bClimbing == false)
+	{
+		ChangeMovementMode(MOVE_Walking);
+	}
+	else if (bClimbing == true)
+	{
+		ChangeMovementMode(MOVE_Flying);
+	}
 }
 
 void AABAnimalCharacter::StartJumping()
@@ -209,7 +223,7 @@ bool AABAnimalCharacter::CanUseAbility()
 
 bool AABAnimalCharacter::CanClimb()
 {
-	if (bInClimbingZone == true && bSprinting == true)
+	if (bInClimbingZone == true && bSprinting == true && AnimalType == EAnimalType::Cat)
 	{
 		return true;
 	}
@@ -243,7 +257,6 @@ void AABAnimalCharacter::OnInteractionOverlapEnd(UPrimitiveComponent* Overlapped
 
 	if (OtherActor && OtherActor != this && Cast<AABClimbZone>(OtherActor))
 	{
-		GetMovementComponent()->StopMovementImmediately();
 		bInClimbingZone = false;
 	}
 }

@@ -110,6 +110,7 @@ public:
 	bool bOrientRotationToMovementSetting;
 
 	bool bInClimbingZone;
+	bool bClimbing;
 
 private:
 	bool bWithinRange;
