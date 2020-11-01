@@ -3,7 +3,7 @@
 #include "ABAnimalCharacter.h"
 #include "Interactives/ABInteractiveObjectBase.h"
 #include "AABSurvivalComponent.h"
-
+#include "Interactives/ABClimbZone.h"
 #include "Engine.h"
 #include "Components/InputComponent.h"
 #include "Components/PawnNoiseEmitterComponent.h"
@@ -32,6 +32,8 @@ AABAnimalCharacter::AABAnimalCharacter()
 	bIsFollowing = false;
 
 	bBlackBoardSet = false;
+
+	bInClimbingZone = false;
 }
 
 // Called when the game starts or when spawned
@@ -146,6 +148,11 @@ void AABAnimalCharacter::ChangeMovementSetting()
 	GetCharacterMovement()->bOrientRotationToMovement = bOrientRotationToMovementSetting;
 }
 
+void AABAnimalCharacter::ChangeMovementMode(EMovementMode MovementMode)
+{
+	GetCharacterMovement()->SetMovementMode(MovementMode);
+}
+
 void AABAnimalCharacter::UseAbility()
 {
 
@@ -200,12 +207,29 @@ bool AABAnimalCharacter::CanUseAbility()
 	}
 }
 
+bool AABAnimalCharacter::CanClimb()
+{
+	if (bInClimbingZone == true && bSprinting == true)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 void AABAnimalCharacter::OnInteractionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (OtherActor && OtherActor != this && Cast<AABInteractiveObjectBase>(OtherActor))
 	{
 		InteractiveObjectRef = Cast<AABInteractiveObjectBase>(OtherActor);
 		bWithinRange = true;
+	}
+
+	if (OtherActor && OtherActor != this && Cast<AABClimbZone>(OtherActor))
+	{
+		bInClimbingZone = true;
 	}
 }
 
@@ -215,6 +239,12 @@ void AABAnimalCharacter::OnInteractionOverlapEnd(UPrimitiveComponent* Overlapped
 	{
 		InteractiveObjectRef = nullptr;
 		bWithinRange = false;
+	}
+
+	if (OtherActor && OtherActor != this && Cast<AABClimbZone>(OtherActor))
+	{
+		GetMovementComponent()->StopMovementImmediately();
+		bInClimbingZone = false;
 	}
 }
 

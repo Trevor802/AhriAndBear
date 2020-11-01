@@ -60,6 +60,7 @@ public:
 	void SwitchAnimal();
 
 	void ChangeMovementSetting();
+	void ChangeMovementMode(EMovementMode MovementMode);
 
 	virtual void UseAbility();
 
@@ -67,6 +68,7 @@ public:
 	bool CanSprint();
 	bool CanInteract();
 	bool CanUseAbility();
+	bool CanClimb();
 
 	UFUNCTION()
 	void OnInteractionOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -88,6 +90,8 @@ public:
 		float WalkSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float SprintSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float ClimbSpeed;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
 		bool bJumping;
@@ -104,6 +108,8 @@ public:
 	AABAnimalCharacter* OtherAnimal;
 	bool bBlackBoardSet;
 	bool bOrientRotationToMovementSetting;
+
+	bool bInClimbingZone;
 
 private:
 	bool bWithinRange;

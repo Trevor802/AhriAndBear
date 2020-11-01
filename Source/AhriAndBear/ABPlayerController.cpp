@@ -42,25 +42,51 @@ void AABPlayerController::SetupInputComponent()
 
 void AABPlayerController::CallMoveForward(float value)
 {
-	if ( AnimalCharacter && value != 0.f && AnimalCharacter->CanMove())
+	if (AnimalCharacter->CanClimb() == false || AnimalCharacter->bSprinting == false) // not climbing
 	{
-		const FRotator rotation = GetControlRotation();
-		const FRotator YawRotation(0, rotation.Yaw, 0);
+		if (AnimalCharacter && value != 0.f && AnimalCharacter->CanMove())
+		{
+			AnimalCharacter->ChangeMovementMode(MOVE_Walking);
 
-		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-		AnimalCharacter->AddMovementInput(Direction, value);
+			const FRotator rotation = GetControlRotation();
+			const FRotator YawRotation(0, rotation.Yaw, 0);
+
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("walking"));
+
+			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+			AnimalCharacter->AddMovementInput(Direction, value);
+		}
+	}
+	else // climb up
+	{
+		if (AnimalCharacter && value != 0.f && AnimalCharacter->CanMove())
+		{
+			AnimalCharacter->ChangeMovementMode(MOVE_Flying);
+
+			const FRotator rotation = GetControlRotation();
+			const FRotator YawRotation(0, rotation.Yaw, 0);
+
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("climbing"));
+
+			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Z);
+
+			AnimalCharacter->AddMovementInput(Direction, value);
+		}
 	}
 }
 
 void AABPlayerController::CallMoveRight(float value)
 {
-	if (AnimalCharacter && value != 0.f && AnimalCharacter->CanMove())
+	if (AnimalCharacter->CanClimb() == false || AnimalCharacter->bSprinting == false) // not climbing
 	{
-		const FRotator rotation = GetControlRotation();
-		const FRotator YawRotation(0, rotation.Yaw, 0);
+		if (AnimalCharacter && value != 0.f && AnimalCharacter->CanMove())
+		{
+			const FRotator rotation = GetControlRotation();
+			const FRotator YawRotation(0, rotation.Yaw, 0);
 
-		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-		AnimalCharacter->AddMovementInput(Direction, value);
+			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+			AnimalCharacter->AddMovementInput(Direction, value);
+		}
 	}
 }
 
