@@ -27,7 +27,7 @@ AABAnimalCharacter::AABAnimalCharacter()
 
 	baseTurnRate = 45.f;
 	baseLookUpRate = 45.f;
-	cameraLerpSpeed = 1.0f;
+	cameraLerpSpeed = 2.0f;
 
 	bWithinRange = false;
 	bIsFollowing = false;
@@ -58,18 +58,8 @@ void AABAnimalCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (bClimbing == false && GetMovementComponent()->IsMovingOnGround() == false)
-	{
-		ChangeMovementMode(MOVE_Falling);
-	}
-	else if (bClimbing == false)
-	{
-		ChangeMovementMode(MOVE_Walking);
-	}
-	else if (bClimbing == true)
-	{
-		ChangeMovementMode(MOVE_Flying);
-	}
+	ChangeMovementMode();
+	ChangeCameraLocation(DeltaTime);
 }
 
 void AABAnimalCharacter::StartJumping()
@@ -177,9 +167,20 @@ void AABAnimalCharacter::ChangeMovementSetting()
 	GetCharacterMovement()->bOrientRotationToMovement = bOrientRotationToMovementSetting;
 }
 
-void AABAnimalCharacter::ChangeMovementMode(EMovementMode MovementMode)
+void AABAnimalCharacter::ChangeMovementMode()
 {
-	GetCharacterMovement()->SetMovementMode(MovementMode);
+	if (bClimbing == false && GetMovementComponent()->IsMovingOnGround() == false)
+	{
+		GetCharacterMovement()->SetMovementMode(MOVE_Falling);
+	}
+	else if (bClimbing == false)
+	{
+		GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+	}
+	else if (bClimbing == true)
+	{
+		GetCharacterMovement()->SetMovementMode(MOVE_Flying);
+	}
 }
 
 void AABAnimalCharacter::LerpCameraToFP(float DeltaTime)
@@ -203,6 +204,18 @@ void AABAnimalCharacter::LerpCameraToTP(float DeltaTime)
 		FVector temp = FMath::Lerp(camera->GetRelativeLocation(), OriginalCameraPosition, cameraLerpSpeed * DeltaTime);
 
 		camera->SetRelativeLocation(temp);
+	}
+}
+
+void AABAnimalCharacter::ChangeCameraLocation(float DeltaTime)
+{
+	if (bCrouching == true)
+	{
+		LerpCameraToFP(DeltaTime);
+	}
+	else
+	{
+		LerpCameraToTP(DeltaTime);
 	}
 }
 

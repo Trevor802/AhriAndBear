@@ -63,10 +63,11 @@ public:
 	void SwitchAnimal();
 
 	void ChangeMovementSetting();
-	void ChangeMovementMode(EMovementMode MovementMode);
+	void ChangeMovementMode();
 
 	void LerpCameraToFP(float DeltaTime);
 	void LerpCameraToTP(float DeltaTime);
+	void ChangeCameraLocation(float DeltaTime);
 
 	virtual void UseAbility();
 
@@ -94,7 +95,7 @@ public:
 		float baseLookUpRate;
 	UPROPERTY(Category = Camera, VisibleDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 		float cameraLerpSpeed;
-	UPROPERTY(Category = Camera, VisibleDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(Category = Camera, EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 		FVector FPCameraTargetLocation;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
