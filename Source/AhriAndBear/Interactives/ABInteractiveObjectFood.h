@@ -22,7 +22,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	//FORCEINLINE virtual bool CanInteract() override { return true; }
 	virtual void AfterInteraction() override;
-	
+	virtual void Interact() override;
+
 public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")

@@ -51,6 +51,11 @@ void AABInteractiveObjectFood::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void AABInteractiveObjectFood::Interact()
+{
+
+}
+
 void AABInteractiveObjectFood::AfterInteraction()
 {
 
