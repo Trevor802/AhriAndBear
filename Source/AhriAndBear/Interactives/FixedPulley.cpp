@@ -3,7 +3,7 @@
 
 #include "FixedPulley.h"
 #include "Components/SphereComponent.h"
-#include <Runtime\Engine\Classes\Kismet\GameplayStatics.h>
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AFixedPulley::AFixedPulley()
@@ -18,7 +18,6 @@ AFixedPulley::AFixedPulley()
 	ReactionHandler = CreateDefaultSubobject<USphereComponent>(TEXT("ReactionHandler"));
 	ReactionHandler->SetupAttachment(RootComponent);
 
-	UE_LOG(LogTemp, Log, TEXT("Constructor"));
 	ActionCable = CreateDefaultSubobject<UCableComponent>(TEXT("ActionCable"));
 	ActionCable->SetupAttachment(RootComponent);
 	ReactionCable = CreateDefaultSubobject<UCableComponent>(TEXT("ReactionCable"));
@@ -26,7 +25,7 @@ AFixedPulley::AFixedPulley()
 	ActionCable->EndLocation = FVector::ZeroVector;
 	ReactionCable->EndLocation = FVector::ZeroVector;
 	ActionCable->SetAttachEndToComponent(ActionHandler);
-	ReactionCable->SetAttachEndToComponent(ReactionHandler);
+	ReactionCable->SetAttachEndToComponent(ReactionHandler);	
 	bCanBeInteracted = true;
 	bCanAttachDog = false;
 	bCanAttachCat = false;
@@ -37,7 +36,8 @@ AFixedPulley::AFixedPulley()
 void AFixedPulley::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
-	UE_LOG(LogTemp, Log, TEXT("OnConstruction"));
+	if (ReactionObject)
+		ReactionObject->AttachToComponent(ReactionHandler, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
 	ActionCable->SetAttachEndToComponent(ActionHandler);
 	ReactionCable->SetAttachEndToComponent(ReactionHandler);
 }
@@ -48,7 +48,8 @@ void AFixedPulley::BeginPlay()
 	Super::BeginPlay();
 	ActionCable->SetAttachEndToComponent(ActionHandler);
 	ReactionCable->SetAttachEndToComponent(ReactionHandler);
-
+	if (ReactionObject)
+		ReactionObject->AttachToComponent(ReactionHandler, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
 	TotalLength = ActionHandler->GetRelativeLocation().Size() + ReactionHandler->GetRelativeLocation().Size();
 	ActionHandler->OnComponentBeginOverlap.AddDynamic(this, &AFixedPulley::OnStartOverlapBegin);
 	ActionHandler->OnComponentEndOverlap.AddDynamic(this, &AFixedPulley::OnStartOverlapEnd);

@@ -50,6 +50,8 @@ public:
 	class USphereComponent* ActionHandler;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	class USphereComponent* ReactionHandler;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+	class AActor* ReactionObject;
 
 private:
 	AABDogCharacter* DogRef;

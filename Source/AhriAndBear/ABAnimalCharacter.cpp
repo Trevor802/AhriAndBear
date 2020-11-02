@@ -278,7 +278,7 @@ bool AABAnimalCharacter::CheckJumping(FVector& OutVelocity)
 			groundHit,
 			p.Location, 
 			p.Location + FVector::DownVector * 500.f, 
-			ECollisionChannel::ECC_WorldStatic,
+			ECollisionChannel::ECC_Visibility,
 			param1,
 			param2))
 		{
