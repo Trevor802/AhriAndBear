@@ -59,6 +59,9 @@ void AABAnimalCharacter::BeginPlay()
 
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 
+	FPCameraTargetLocation.X = camera->GetRelativeLocation().X;
+
+	OriginalSpringArmLength = springArm->TargetArmLength;
 	OriginalCameraPosition = camera->GetRelativeLocation();
 }
 
@@ -220,8 +223,10 @@ void AABAnimalCharacter::LerpCameraToFP(float DeltaTime)
 	if (dist >= 0.01)
 	{
 		FVector temp = FMath::Lerp(camera->GetRelativeLocation(), FPCameraTargetLocation, cameraLerpSpeed * DeltaTime);
-
 		camera->SetRelativeLocation(temp);
+
+		float length = FMath::Lerp(springArm->TargetArmLength, FPSpringArmTargetLength, cameraLerpSpeed * DeltaTime);
+		springArm->TargetArmLength = length;
 	}
 }
 
@@ -232,8 +237,10 @@ void AABAnimalCharacter::LerpCameraToTP(float DeltaTime)
 	if (dist >= 0.01)
 	{
 		FVector temp = FMath::Lerp(camera->GetRelativeLocation(), OriginalCameraPosition, cameraLerpSpeed * DeltaTime);
-
 		camera->SetRelativeLocation(temp);
+
+		float length = FMath::Lerp(springArm->TargetArmLength, OriginalSpringArmLength, cameraLerpSpeed * DeltaTime);
+		springArm->TargetArmLength = length;
 	}
 }
 

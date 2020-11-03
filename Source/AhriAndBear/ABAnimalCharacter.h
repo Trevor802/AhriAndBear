@@ -114,6 +114,8 @@ public:
 		float cameraLerpSpeed;
 	UPROPERTY(Category = Camera, EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 		FVector FPCameraTargetLocation;
+	UPROPERTY(Category = Camera, EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+		float FPSpringArmTargetLength;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float WalkSpeed;
@@ -151,4 +153,5 @@ private:
 	FVector JumpingVelocity;
 
 	FVector OriginalCameraPosition;
+	float OriginalSpringArmLength;
 };
