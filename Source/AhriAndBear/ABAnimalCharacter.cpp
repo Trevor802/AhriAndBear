@@ -36,6 +36,8 @@ AABAnimalCharacter::AABAnimalCharacter()
 
 	bInClimbingZone = false;
 	bClimbing = false;
+
+	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
 }
 
 // Called when the game starts or when spawned
@@ -113,12 +115,18 @@ void AABAnimalCharacter::StartCrouch()
 {
 	bCrouching = true;
 	GetCharacterMovement()->MaxWalkSpeed = CrouchSpeed;
+	GetCharacterMovement()->bWantsToCrouch = true;
+	//GetCharacterMovement()->Crouch();
+	//GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
 }
 
 void AABAnimalCharacter::EndCrouch()
 {
 	bCrouching = false;
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+	GetCharacterMovement()->bWantsToCrouch = false;
+	//GetCharacterMovement()->UnCrouch();
+	//GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = false;
 }
 
 void AABAnimalCharacter::ChangeOtherFollowingStatus()
