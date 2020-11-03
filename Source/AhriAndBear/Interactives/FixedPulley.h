@@ -8,6 +8,7 @@
 #include "ABInteractiveObjectBase.h"
 #include "Characters/ABCatCharacter.h"
 #include "Characters/ABDogCharacter.h"
+#include "Misc/ScopeLock.h"
 #include "FixedPulley.generated.h"
 
 class UCableComponent;
@@ -50,8 +51,11 @@ public:
 	class USphereComponent* ActionHandler;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	class USphereComponent* ReactionHandler;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+	class AActor* ReactionObject;
 
 private:
+	void SwitchReaction(bool);
 	AABDogCharacter* DogRef;
 	AABCatCharacter* CatRef;
 
@@ -61,4 +65,6 @@ private:
 	bool bAttachingDog;
 	bool bAttachingCat;
 	float TotalLength = 200.0f;
+	FVector ReleasedPoint;
+	FCriticalSection Mutex;
 };
