@@ -20,6 +20,15 @@ void AABPlayerController::OnPossess(APawn* Pawn)
 	AnimalCharacter->ChangeMovementSetting();
 }
 
+void AABPlayerController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	if (AnimalCharacter)
+	{
+		AnimalCharacter->UpdateChecking();
+	}
+}
+
 void AABPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
@@ -35,6 +44,8 @@ void AABPlayerController::SetupInputComponent()
 	InputComponent->BindAction("Jump", IE_Released, this, &AABPlayerController::CallStopJump);
 	InputComponent->BindAction("Jog", IE_Pressed, this, &AABPlayerController::CallSprint);
 	InputComponent->BindAction("Jog", IE_Released, this, &AABPlayerController::CallStopSprint);
+	InputComponent->BindAction("Crouch", IE_Pressed, this, &AABPlayerController::CallCrouch);
+	InputComponent->BindAction("Crouch", IE_Released, this, &AABPlayerController::CallStopCrouch);
 	InputComponent->BindAction("UseSkill", IE_Pressed, this, &AABPlayerController::CallUseAbility);
 	InputComponent->BindAction("AnimalTogether", IE_Pressed, this, &AABPlayerController::CallFollowing);
 	InputComponent->BindAction("ChangeAnimal", IE_Pressed, this, &AABPlayerController::CallSwitchAnimal);
@@ -42,25 +53,47 @@ void AABPlayerController::SetupInputComponent()
 
 void AABPlayerController::CallMoveForward(float value)
 {
-	if ( AnimalCharacter && value != 0.f && AnimalCharacter->CanMove())
+	if (AnimalCharacter->CanClimb() == false || AnimalCharacter->bSprinting == false) // not climbing
 	{
-		const FRotator rotation = GetControlRotation();
-		const FRotator YawRotation(0, rotation.Yaw, 0);
+		if (AnimalCharacter && value != 0.f && AnimalCharacter->CanMove())
+		{
+			const FRotator rotation = GetControlRotation();
+			const FRotator YawRotation(0, rotation.Yaw, 0);
 
-		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-		AnimalCharacter->AddMovementInput(Direction, value);
+			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+			AnimalCharacter->AddMovementInput(Direction, value);
+
+			AnimalCharacter->bClimbing = false;
+		}
+	}
+	else // climb up
+	{
+		if (AnimalCharacter && value != 0.f && AnimalCharacter->CanMove())
+		{
+			const FRotator rotation = GetControlRotation();
+			const FRotator YawRotation(0, rotation.Yaw, 0);
+
+			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Z);
+
+			AnimalCharacter->AddMovementInput(Direction, value);
+
+			AnimalCharacter->bClimbing = true;
+		}
 	}
 }
 
 void AABPlayerController::CallMoveRight(float value)
 {
-	if (AnimalCharacter && value != 0.f && AnimalCharacter->CanMove())
+	if (AnimalCharacter->CanClimb() == false || AnimalCharacter->bSprinting == false) // not climbing
 	{
-		const FRotator rotation = GetControlRotation();
-		const FRotator YawRotation(0, rotation.Yaw, 0);
+		if (AnimalCharacter && value != 0.f && AnimalCharacter->CanMove())
+		{
+			const FRotator rotation = GetControlRotation();
+			const FRotator YawRotation(0, rotation.Yaw, 0);
 
-		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-		AnimalCharacter->AddMovementInput(Direction, value);
+			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+			AnimalCharacter->AddMovementInput(Direction, value);
+		}
 	}
 }
 
@@ -142,6 +175,22 @@ void AABPlayerController::CallSwitchAnimal()
 	if (AnimalCharacter)
 	{
 		AnimalCharacter->SwitchAnimal();
+	}
+}
+
+void AABPlayerController::CallCrouch()
+{
+	if (AnimalCharacter && AnimalCharacter->CanCrouch())
+	{
+		AnimalCharacter->StartCrouch();
+	}
+}
+
+void AABPlayerController::CallStopCrouch()
+{
+	if (AnimalCharacter)
+	{
+		AnimalCharacter->EndCrouch();
 	}
 }
 
