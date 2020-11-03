@@ -5,6 +5,7 @@
 #include "AABSurvivalComponent.h"
 #include "../GameBase/ABGameInstance.h"
 #include "Kismet/GameplayStatics.h"
+#include "ABSurvivalStats.h"
 
 void UEventTrigger::OnEnterCollision(AABAnimalCharacter* character)
 {
@@ -98,8 +99,8 @@ void UEventTrigger::ChangeWarmthRate(AABAnimalCharacter* character, float value)
 	if (survivalComp != nullptr)
 	{
 		UE_LOG(LogTemp, Log, TEXT("[EventTrigger]ChangeWarmthRate to %f"), value);
-		OldWarmthRate = survivalComp->WarmthChangeRate;
-		survivalComp->WarmthChangeRate = value;
+		OldWarmthRate = survivalComp->Warmth.RateOfChange;
+		survivalComp->Warmth.RateOfChange = value;
 	}
 }
 void UEventTrigger::Interact(AABAnimalCharacter* character)
