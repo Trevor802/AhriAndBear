@@ -11,33 +11,26 @@ UAABSurvivalComponent::UAABSurvivalComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
-	StartingHealth = MaxHealth;
-	StartingThirst = MaxThirst;
-	StartingFullness = MaxFullness;
-	StartingWarmth = MaxWarmth;
 }
 
 
 void UAABSurvivalComponent::UpdateStats(float deltaTime)
 {
-	TickStat(CurrentHealth, MaxHealth, HealthChangeRate, deltaTime);
-	TickStat(CurrentThirst, MaxThirst, ThirstChangeRate, deltaTime);
-	TickStat(CurrentFullness, MaxFullness, FullnessChangeRate, deltaTime);
-	TickStat(CurrentWarmth, MaxWarmth, WarmthChangeRate, deltaTime);
+	UABSurvivalStatFunctions::TickStat(Health, deltaTime);
+	UABSurvivalStatFunctions::TickStat(Thirst, deltaTime);
+	UABSurvivalStatFunctions::TickStat(Hunger, deltaTime);
+	UABSurvivalStatFunctions::TickStat(Warmth, deltaTime);
 }
 
 // Called when the game starts
 void UAABSurvivalComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
-	CurrentHealth = StartingHealth;
-	CurrentFullness = StartingFullness;
-	CurrentThirst = StartingThirst;
-	CurrentWarmth = StartingWarmth;
+	
+	UABSurvivalStatFunctions::StartStat(Health);
+	UABSurvivalStatFunctions::StartStat(Thirst);
+	UABSurvivalStatFunctions::StartStat(Hunger);
+	UABSurvivalStatFunctions::StartStat(Warmth);
 }
 
 
@@ -49,13 +42,7 @@ void UAABSurvivalComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 	UpdateStats(DeltaTime);
 }
 
-FORCEINLINE void UAABSurvivalComponent::TickStat(float& currentValue, int maxValue, float delta, float deltaTime)
-{
-	currentValue = FMath::Clamp<float>(currentValue + delta * deltaTime, 0, maxValue);
-}
-
 void UAABSurvivalComponent::AddSurvivalData(const FSurvivalData& value)
 {
 		
 }
-
