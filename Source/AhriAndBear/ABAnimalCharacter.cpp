@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/GameplayStaticsTypes.h"
 #include "Components/SphereComponent.h"
+#include "Interactives/ABClimbZone.h"
 #include "Engine.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Components/InputComponent.h"
@@ -33,11 +34,17 @@ AABAnimalCharacter::AABAnimalCharacter()
 
 	baseTurnRate = 45.f;
 	baseLookUpRate = 45.f;
+	cameraLerpSpeed = 2.0f;
 
 	bWithinRange = false;
 	bIsFollowing = false;
 
 	bBlackBoardSet = false;
+
+	bInClimbingZone = false;
+	bClimbing = false;
+
+	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
 }
 
 // Called when the game starts or when spawned
@@ -51,6 +58,8 @@ void AABAnimalCharacter::BeginPlay()
 	InterationTrigger->OnComponentEndOverlap.AddDynamic(this, &AABAnimalCharacter::OnInteractionOverlapEnd);
 
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+
+	OriginalCameraPosition = camera->GetRelativeLocation();
 }
 
 bool AABAnimalCharacter::CanJumpInternal_Implementation() const
@@ -62,6 +71,9 @@ bool AABAnimalCharacter::CanJumpInternal_Implementation() const
 void AABAnimalCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	ChangeMovementMode();
+	ChangeCameraLocation(DeltaTime);
 }
 
 void AABAnimalCharacter::Jump()
@@ -121,6 +133,24 @@ void AABAnimalCharacter::EndInteracting()
 	InteractiveObjectRef->AfterInteraction();
 }
 
+void AABAnimalCharacter::StartCrouch()
+{
+	bCrouching = true;
+	GetCharacterMovement()->MaxWalkSpeed = CrouchSpeed;
+	GetCharacterMovement()->bWantsToCrouch = true;
+	//GetCharacterMovement()->Crouch();
+	//GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
+}
+
+void AABAnimalCharacter::EndCrouch()
+{
+	bCrouching = false;
+	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+	GetCharacterMovement()->bWantsToCrouch = false;
+	//GetCharacterMovement()->UnCrouch();
+	//GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = false;
+}
+
 void AABAnimalCharacter::ChangeOtherFollowingStatus()
 {
 	if (OtherAnimal)
@@ -165,6 +195,58 @@ void AABAnimalCharacter::SwitchAnimal()
 void AABAnimalCharacter::ChangeMovementSetting()
 {
 	GetCharacterMovement()->bOrientRotationToMovement = bOrientRotationToMovementSetting;
+}
+
+void AABAnimalCharacter::ChangeMovementMode()
+{
+	if (bClimbing == false && GetMovementComponent()->IsMovingOnGround() == false)
+	{
+		GetCharacterMovement()->SetMovementMode(MOVE_Falling);
+	}
+	else if (bClimbing == false)
+	{
+		GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+	}
+	else if (bClimbing == true)
+	{
+		GetCharacterMovement()->SetMovementMode(MOVE_Flying);
+	}
+}
+
+void AABAnimalCharacter::LerpCameraToFP(float DeltaTime)
+{
+	const float dist = FVector::Dist(camera->GetRelativeLocation(), FPCameraTargetLocation) / 100.f;
+
+	if (dist >= 0.01)
+	{
+		FVector temp = FMath::Lerp(camera->GetRelativeLocation(), FPCameraTargetLocation, cameraLerpSpeed * DeltaTime);
+
+		camera->SetRelativeLocation(temp);
+	}
+}
+
+void AABAnimalCharacter::LerpCameraToTP(float DeltaTime)
+{
+	const float dist = FVector::Dist(camera->GetRelativeLocation(), OriginalCameraPosition) / 100.f;
+
+	if (dist >= 0.01)
+	{
+		FVector temp = FMath::Lerp(camera->GetRelativeLocation(), OriginalCameraPosition, cameraLerpSpeed * DeltaTime);
+
+		camera->SetRelativeLocation(temp);
+	}
+}
+
+void AABAnimalCharacter::ChangeCameraLocation(float DeltaTime)
+{
+	if (bCrouching == true)
+	{
+		LerpCameraToFP(DeltaTime);
+	}
+	else
+	{
+		LerpCameraToTP(DeltaTime);
+	}
 }
 
 void AABAnimalCharacter::UseAbility()
@@ -221,12 +303,41 @@ bool AABAnimalCharacter::CanUseAbility()
 	}
 }
 
+bool AABAnimalCharacter::CanClimb()
+{
+	if (bInClimbingZone == true && bSprinting == true && AnimalType == EAnimalType::Cat)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool AABAnimalCharacter::CanCrouch()
+{
+	if (CanMove() == true && bSprinting == false && GetMovementComponent()->IsMovingOnGround() == true)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 void AABAnimalCharacter::OnInteractionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (OtherActor && OtherActor != this && Cast<AABInteractiveObjectBase>(OtherActor))
 	{
 		InteractiveObjectRef = Cast<AABInteractiveObjectBase>(OtherActor);
 		bWithinRange = true;
+	}
+
+	if (OtherActor && OtherActor != this && Cast<AABClimbZone>(OtherActor))
+	{
+		bInClimbingZone = true;
 	}
 }
 
@@ -236,6 +347,11 @@ void AABAnimalCharacter::OnInteractionOverlapEnd(UPrimitiveComponent* Overlapped
 	{
 		InteractiveObjectRef = nullptr;
 		bWithinRange = false;
+	}
+
+	if (OtherActor && OtherActor != this && Cast<AABClimbZone>(OtherActor))
+	{
+		bInClimbingZone = false;
 	}
 }
 

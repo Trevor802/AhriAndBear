@@ -73,17 +73,27 @@ public:
 	void StartInteracting();
 	void EndInteracting();
 
+	void StartCrouch();
+	void EndCrouch();
+
 	void ChangeOtherFollowingStatus();
 
 	void SwitchAnimal();
 
 	void ChangeMovementSetting();
+	void ChangeMovementMode();
+
+	void LerpCameraToFP(float DeltaTime);
+	void LerpCameraToTP(float DeltaTime);
+	void ChangeCameraLocation(float DeltaTime);
 
 	virtual void UseAbility();
 	bool CanMove();
 	bool CanSprint();
 	bool CanInteract();
 	bool CanUseAbility();
+	bool CanClimb();
+	bool CanCrouch();
 
 	UFUNCTION()
 	void OnInteractionOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -100,13 +110,21 @@ public:
 		float baseTurnRate;
 	UPROPERTY(Category = Camera, VisibleDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 		float baseLookUpRate;
+	UPROPERTY(Category = Camera, VisibleDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+		float cameraLerpSpeed;
+	UPROPERTY(Category = Camera, EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+		FVector FPCameraTargetLocation;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float WalkSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float SprintSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float CrouchSpeed;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
+		bool bCrouching;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
 		bool bJumping;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		bool bSprinting;
@@ -122,10 +140,15 @@ public:
 	bool bBlackBoardSet;
 	bool bOrientRotationToMovementSetting;
 
+	bool bInClimbingZone;
+	bool bClimbing;
+
 private:
 	bool bWithinRange;
 	AABInteractiveObjectBase* InteractiveObjectRef;
 	bool CheckJumping(FVector&);
 	bool bCanJump;
 	FVector JumpingVelocity;
+
+	FVector OriginalCameraPosition;
 };
