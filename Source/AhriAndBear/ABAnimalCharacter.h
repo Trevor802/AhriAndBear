@@ -122,7 +122,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float CrouchSpeed;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
 		bool bCrouching;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
