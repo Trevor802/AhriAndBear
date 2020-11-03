@@ -38,17 +38,17 @@ public:
 		UAABSurvivalComponent* SurvivalComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
 		UBehaviorTree* BehaviorTree;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Jumping")
 	float JumpingSpeed = 700.f;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
-	float MinDepth = -100.f;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
-	float MaxDepth = -500.f;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
-	float MinHeight = 50.f;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
-	float MaxHeight = 500.f;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Jumping")
+	float MinJumpDepth = -100.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Jumping")
+	float MaxJumpDepth = -500.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Jumping")
+	float MinJumpHeight = 50.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Jumping")
+	float MaxJumpHeight = 500.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Jumping")
 	float EdgeForwardOffset = 50.f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Debug")
 	bool bDebugJumping = false;

@@ -407,8 +407,8 @@ bool AABAnimalCharacter::CheckJumping(FVector& OutVelocity)
 				DrawDebugLine(GetWorld(), p.Location, groundHit.Location, FColor::Red);
 			heightDiff = groundHit.Location.Z - ProjectileStart->GetComponentLocation().Z;
 			bool canJump = false;
-			canJump |= (hasHole && heightDiff < MinDepth&& heightDiff > MaxDepth && heightDiff - holeDiff > MinHeight);
-			canJump |= (heightDiff - holeDiff > MinHeight && heightDiff < MaxHeight && (heightDiff > MinHeight || hasHole));
+			canJump |= (hasHole && heightDiff < MinJumpDepth&& heightDiff > MaxJumpDepth && heightDiff - holeDiff > MinJumpHeight);
+			canJump |= (heightDiff - holeDiff > MinJumpHeight && heightDiff < MaxJumpHeight && (heightDiff > MinJumpHeight || hasHole));
 			if (canJump)
 			{
 				FVector tossVel;
@@ -423,7 +423,7 @@ bool AABAnimalCharacter::CheckJumping(FVector& OutVelocity)
 				return true;
 			}
 		}
-		hasHole = heightDiff < MinDepth;
+		hasHole = heightDiff < MinJumpDepth;
 		holeDiff = heightDiff;
 	}
 	return false;

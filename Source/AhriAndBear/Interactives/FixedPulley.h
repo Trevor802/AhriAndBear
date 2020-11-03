@@ -15,56 +15,56 @@ class UCableComponent;
 UCLASS()
 class AHRIANDBEAR_API AFixedPulley : public AABInteractiveObjectBase
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
+    
 public:	
-	// Sets default values for this actor's properties
-	AFixedPulley();
+    // Sets default values for this actor's properties
+    AFixedPulley();
 
 protected:
-	virtual void Tick(float DeltaTime) override;
-	virtual void BeginPlay() override;
-	virtual void OnConstruction(const FTransform& Transform) override;
-	virtual void AfterInteraction() override;
-	void UpdateHandlers();
-	class USceneComponent* Root;
+    virtual void Tick(float DeltaTime) override;
+    virtual void BeginPlay() override;
+    virtual void OnConstruction(const FTransform& Transform) override;
+    virtual void AfterInteraction() override;
+    void UpdateHandlers();
+    class USceneComponent* Root;
 
 public:
-	UFUNCTION()
-		void OnStartOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+    UFUNCTION()
+        void OnStartOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	UFUNCTION()
-		void OnStartOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+    UFUNCTION()
+        void OnStartOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	UFUNCTION()
-		void OnEndOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+    UFUNCTION()
+        void OnEndOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	UFUNCTION()
-		void OnEndOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+    UFUNCTION()
+        void OnEndOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 public:	
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
-	class UCableComponent* ActionCable;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
-	class UCableComponent* ReactionCable;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Gameplay")
-	class USphereComponent* ActionHandler;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Gameplay")
-	class USphereComponent* ReactionHandler;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
-	class AActor* ReactionObject;
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
+    class UCableComponent* ActionCable;
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
+    class UCableComponent* ReactionCable;
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Gameplay")
+    class USphereComponent* ActionHandler;
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Gameplay")
+    class USphereComponent* ReactionHandler;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+    class AActor* ReactionObject;
 
 private:
-	void SwitchReaction(bool);
-	AABDogCharacter* DogRef;
-	AABCatCharacter* CatRef;
+    void SwitchReaction(bool);
+    AABDogCharacter* DogRef;
+    AABCatCharacter* CatRef;
 
-	bool bCanAttachDog;
-	bool bCanAttachCat;
+    bool bCanAttachDog;
+    bool bCanAttachCat;
 
-	bool bAttachingDog;
-	bool bAttachingCat;
-	float TotalLength = 200.0f;
-	FVector ReleasedPoint;
-	FCriticalSection Mutex;
+    bool bAttachingDog;
+    bool bAttachingCat;
+    float TotalLength = 200.0f;
+    FVector ReleasedPoint;
+    FCriticalSection Mutex;
 };
