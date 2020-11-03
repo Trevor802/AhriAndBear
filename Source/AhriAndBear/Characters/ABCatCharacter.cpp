@@ -28,6 +28,8 @@ void AABCatCharacter::BeginPlay()
 
 void AABCatCharacter::Tick(float DeltaTime)
 {
+	Super::Tick(DeltaTime);
+
 	float currentAEMB = camera->PostProcessSettings.AutoExposureMinBrightness;
 	if (abilityOn && currentAEMB < 1.0f)
 	{
