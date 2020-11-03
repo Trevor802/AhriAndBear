@@ -32,20 +32,38 @@ public:
 		class UCameraComponent* camera;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		UBoxComponent* InterationTrigger;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
+	class USphereComponent* ProjectileStart;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Survival")
 		UAABSurvivalComponent* SurvivalComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
 		UBehaviorTree* BehaviorTree;
-
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
+	float JumpingSpeed = 700.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
+	float MinDepth = -100.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
+	float MaxDepth = -500.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
+	float MinHeight = 50.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
+	float MaxHeight = 500.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
+	float EdgeForwardOffset = 50.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Debug")
+	bool bDebugJumping = false;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual bool CanJumpInternal_Implementation() const override;
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	virtual void Jump() override;
+	void UpdateChecking();
 	void StartJumping();
 	void EndJumping();
 
@@ -70,7 +88,6 @@ public:
 	void ChangeCameraLocation(float DeltaTime);
 
 	virtual void UseAbility();
-
 	bool CanMove();
 	bool CanSprint();
 	bool CanInteract();
@@ -105,13 +122,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float CrouchSpeed;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
 		bool bCrouching;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
 		bool bJumping;
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		bool bSprinting;
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		bool bInteracting;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 		EAnimalType AnimalType;
@@ -129,6 +147,9 @@ public:
 private:
 	bool bWithinRange;
 	AABInteractiveObjectBase* InteractiveObjectRef;
+	bool CheckJumping(FVector&);
+	bool bCanJump;
+	FVector JumpingVelocity;
 
 	FVector OriginalCameraPosition;
 };

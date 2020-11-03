@@ -20,6 +20,15 @@ void AABPlayerController::OnPossess(APawn* Pawn)
 	AnimalCharacter->ChangeMovementSetting();
 }
 
+void AABPlayerController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	if (AnimalCharacter)
+	{
+		AnimalCharacter->UpdateChecking();
+	}
+}
+
 void AABPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();

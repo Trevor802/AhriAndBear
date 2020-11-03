@@ -3,7 +3,7 @@
 
 #include "FixedPulley.h"
 #include "Components/SphereComponent.h"
-#include <Runtime\Engine\Classes\Kismet\GameplayStatics.h>
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AFixedPulley::AFixedPulley()
@@ -18,7 +18,6 @@ AFixedPulley::AFixedPulley()
 	ReactionHandler = CreateDefaultSubobject<USphereComponent>(TEXT("ReactionHandler"));
 	ReactionHandler->SetupAttachment(RootComponent);
 
-	UE_LOG(LogTemp, Log, TEXT("Constructor"));
 	ActionCable = CreateDefaultSubobject<UCableComponent>(TEXT("ActionCable"));
 	ActionCable->SetupAttachment(RootComponent);
 	ReactionCable = CreateDefaultSubobject<UCableComponent>(TEXT("ReactionCable"));
@@ -37,9 +36,37 @@ AFixedPulley::AFixedPulley()
 void AFixedPulley::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
-	UE_LOG(LogTemp, Log, TEXT("OnConstruction"));
 	ActionCable->SetAttachEndToComponent(ActionHandler);
 	ReactionCable->SetAttachEndToComponent(ReactionHandler);
+
+	SwitchReaction(bAttachingDog);
+}
+
+void AFixedPulley::SwitchReaction(bool isPulling)
+{
+	if (ReactionObject == nullptr)
+		return;
+    if (isPulling)
+    {	
+		//ReactionHandler->DetachFromParent(true);
+		//ReactionHandler->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
+		//ReactionHandler->AttachTo(RootComponent);
+		ReactionHandler->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepWorld, true));
+		//ReactionHandler->SetWorldLocation(GetActorLocation() - FVector::DownVector * 500.f);
+		UpdateHandlers();
+		//ReactionHandler->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepWorld, true));
+		//ReactionCable->SetAttachEndToComponent(ReactionHandler);
+        ReactionObject->AttachToComponent(ReactionHandler, FAttachmentTransformRules(EAttachmentRule::KeepWorld, true));
+		ReactionObject->SetActorLocation(ReactionHandler->GetComponentLocation());
+		ReactionObject->SetActorRotation(FQuat::Identity);
+        ReactionObject->FindComponentByClass<UPrimitiveComponent>()->SetSimulatePhysics(false);
+    }
+	else
+	{
+		ReactionObject->FindComponentByClass<UPrimitiveComponent>()->SetSimulatePhysics(true);
+		ReactionHandler->AttachToComponent(ReactionObject->FindComponentByClass<UPrimitiveComponent>(), FAttachmentTransformRules(EAttachmentRule::KeepWorld, true));
+		ReactionHandler->SetWorldLocation(ReactionObject->GetActorLocation());
+	}
 }
 
 // Called when the game starts or when spawned
@@ -48,8 +75,9 @@ void AFixedPulley::BeginPlay()
 	Super::BeginPlay();
 	ActionCable->SetAttachEndToComponent(ActionHandler);
 	ReactionCable->SetAttachEndToComponent(ReactionHandler);
-
-	TotalLength = ActionHandler->GetRelativeLocation().Size() + ReactionHandler->GetRelativeLocation().Size();
+	ReleasedPoint = ActionHandler->GetRelativeLocation();
+	SwitchReaction(bAttachingDog);
+	TotalLength = ActionHandler->GetRelativeLocation().Size() + (ReactionHandler->GetComponentLocation() - GetActorLocation()).Size();
 	ActionHandler->OnComponentBeginOverlap.AddDynamic(this, &AFixedPulley::OnStartOverlapBegin);
 	ActionHandler->OnComponentEndOverlap.AddDynamic(this, &AFixedPulley::OnStartOverlapEnd);
 
@@ -68,7 +96,12 @@ void AFixedPulley::AfterInteraction()
 		else
 		{
 			bAttachingDog = false;
-				bCanAttachDog = false;
+			bCanAttachDog = false;
+			ActionHandler->SetRelativeLocation(ReleasedPoint);
+		}
+		{
+            FScopeLock ScopeLock(&Mutex);
+            SwitchReaction(bAttachingDog);
 		}
 	}
 	else if (Cast<AABCatCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0)))
@@ -128,10 +161,6 @@ void AFixedPulley::Tick(float DeltaTime)
 
 void AFixedPulley::UpdateHandlers()
 {
-	float startLength = ActionHandler->GetRelativeLocation().Size();
-	float endLength = FMath::Clamp(TotalLength - startLength, 10.0f, TotalLength / 2);
-	ReactionHandler->SetRelativeLocation(FVector(0, 0, -1) * endLength);
-
 	if (bAttachingDog && DogRef)
 	{
 		ActionHandler->SetWorldLocation(DogRef->GetActorLocation());
@@ -140,6 +169,13 @@ void AFixedPulley::UpdateHandlers()
 	if (bAttachingCat && CatRef)
 	{
 		CatRef->SetActorLocation(ReactionHandler->GetComponentLocation());
+	}
+	float startLength, endLength;
+	if (bAttachingDog)
+	{
+        startLength = ActionHandler->GetRelativeLocation().Size();
+        endLength = FMath::Clamp(TotalLength - startLength, 10.0f, TotalLength / 2);
+        ReactionHandler->SetRelativeLocation(FVector(0, 0, -1) * endLength);
 	}
 }
 

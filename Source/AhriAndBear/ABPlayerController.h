@@ -19,6 +19,7 @@ public:
 
 	virtual void SetupInputComponent() override;
 	virtual void OnPossess(APawn* Pawn) override;
+	virtual void Tick(float DeltaTime) override;
 
 	void CallMoveForward(float value);
 	void CallMoveRight(float value);
