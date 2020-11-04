@@ -23,6 +23,8 @@ public:
 
 	void CallMoveForward(float value);
 	void CallMoveRight(float value);
+	void CallTurn(float value);
+	void CallLookUp(float value);
 	void CallTurnAtRate(float value);
 	void CallLookUpAtRate(float value);
 	void CallJump();
