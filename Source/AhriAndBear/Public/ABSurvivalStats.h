@@ -57,6 +57,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Character | Survival")
 		static float GetCurrentValue(const FABSurvivalStat& stat);
 
+	UFUNCTION(BlueprintCallable, Category = "Character | Survival")
+		static void AddToCurrentValue(FABSurvivalStat& stat, float value);
+
 	/**
 	* Gets the max value of the given stat.
 	* 

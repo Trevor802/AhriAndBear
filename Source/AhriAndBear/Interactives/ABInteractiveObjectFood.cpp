@@ -9,6 +9,9 @@
 #include "Interactives/EventTrigger.h"
 #include "GameBase/Define.h"
 #include "EventTrigger.h"
+#include "ABAnimalCharacter.h"
+#include "AABSurvivalComponent.h"
+#include "ABSurvivalStats.h"
 #include "Components/WidgetComponent.h"
 
 
@@ -49,6 +52,11 @@ AABInteractiveObjectFood::AABInteractiveObjectFood()
 void AABInteractiveObjectFood::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (FoodArray.Num() == 0)
+	{
+		TempGymRespawn();
+	}
 }
 
 void AABInteractiveObjectFood::AfterInteraction()
@@ -56,7 +64,8 @@ void AABInteractiveObjectFood::AfterInteraction()
 
 	if (FoodArray.Num() != 0)
 	{
-		//TODO: add survival data
+		UABSurvivalStatFunctions::AddToCurrentValue(OverlappingAnimal->SurvivalComponent->Hunger, SurvivalEffect.Hunger);
+
 		FindComponentByClass<UEventTrigger>()->Interact(OverlappingAnimal);
 		//TODO: play eating sound
 
@@ -65,6 +74,22 @@ void AABInteractiveObjectFood::AfterInteraction()
 	}
 	else
 	{
+		//FTimerDelegate RespawnTimerDelegate = FTimerDelegate::CreateUObject(this, &AABInteractiveObjectFood::TempGymRespawn); // for planet fitness meat heads only
+		//GetWorld()->GetTimerManager().SetTimer(TimerHandle, RespawnTimerDelegate, 0.5f, false);
+
 		bCanBeInteracted = false;
 	}
+}
+
+void AABInteractiveObjectFood::TempGymRespawn() 
+{
+	FoodArray.Add(FoodMesh1);
+	FoodArray.Add(FoodMesh2);
+	FoodArray.Add(FoodMesh3);
+
+	FoodMesh1->SetVisibility(true);
+	FoodMesh2->SetVisibility(true);
+	FoodMesh3->SetVisibility(true);
+
+	bCanBeInteracted = true;
 }

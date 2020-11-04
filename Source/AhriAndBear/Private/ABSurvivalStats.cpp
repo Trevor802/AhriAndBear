@@ -16,6 +16,11 @@ FORCEINLINE float UABSurvivalStatFunctions::GetCurrentValue(const FABSurvivalSta
 	return stat.CurrentValue;
 }
 
+void UABSurvivalStatFunctions::AddToCurrentValue(FABSurvivalStat& stat, float value)
+{
+	stat.CurrentValue = FMath::Clamp(stat.CurrentValue + value, 0.f, stat.MaxValue);
+}
+
 // For blueprint side
 FORCEINLINE float UABSurvivalStatFunctions::GetMaxValue(const FABSurvivalStat& stat) {
 	return stat.MaxValue;

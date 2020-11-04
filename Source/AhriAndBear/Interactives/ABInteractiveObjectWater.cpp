@@ -6,6 +6,9 @@
 #include "Engine/StaticMesh.h"
 #include "Components/BoxComponent.h"
 #include "Engine/CollisionProfile.h"
+#include "ABAnimalCharacter.h"
+#include "AABSurvivalComponent.h"
+#include "ABSurvivalStats.h"
 #include "EventTrigger.h"
 
 AABInteractiveObjectWater::AABInteractiveObjectWater()
@@ -34,6 +37,8 @@ void AABInteractiveObjectWater::Tick(float DeltaTime)
 void AABInteractiveObjectWater::AfterInteraction()
 {
 	//TODO: add to survival data
+	UABSurvivalStatFunctions::AddToCurrentValue(OverlappingAnimal->SurvivalComponent->Thirst, SurvivalEffect.Thirst);
+
 	FindComponentByClass<UEventTrigger>()->Interact(OverlappingAnimal);
 	//TODO: play drinking sound
 }
