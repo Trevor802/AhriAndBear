@@ -103,7 +103,7 @@ void AABPlayerController::CallMoveRight(float value)
 
 void AABPlayerController::CallTurnAtRate(float value)
 {
-	if (AnimalCharacter)
+	if (AnimalCharacter && AnimalCharacter->CanMove())
 	{
 		AnimalCharacter->AddControllerYawInput(value * AnimalCharacter->baseTurnRate * GetWorld()->GetDeltaSeconds());
 	}
@@ -111,7 +111,7 @@ void AABPlayerController::CallTurnAtRate(float value)
 
 void AABPlayerController::CallLookUpAtRate(float value)
 {
-	if (AnimalCharacter)
+	if (AnimalCharacter && AnimalCharacter->CanMove())
 	{
 		AnimalCharacter->AddControllerPitchInput(value * AnimalCharacter->baseLookUpRate * GetWorld()->GetDeltaSeconds());
 	}
@@ -119,7 +119,7 @@ void AABPlayerController::CallLookUpAtRate(float value)
 
 void AABPlayerController::CallTurn(float value)
 {
-	if (AnimalCharacter)
+	if (AnimalCharacter && AnimalCharacter->CanMove())
 	{
 		AnimalCharacter->AddControllerYawInput(value);
 	}
@@ -127,7 +127,7 @@ void AABPlayerController::CallTurn(float value)
 
 void AABPlayerController::CallLookUp(float value)
 {
-	if (AnimalCharacter)
+	if (AnimalCharacter && AnimalCharacter->CanMove())
 	{
 		AnimalCharacter->AddControllerPitchInput(value);
 	}
