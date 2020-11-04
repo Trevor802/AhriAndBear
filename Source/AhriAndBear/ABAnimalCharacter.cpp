@@ -77,6 +77,7 @@ void AABAnimalCharacter::Tick(float DeltaTime)
 
 	ChangeMovementMode();
 	ChangeCameraLocation(DeltaTime);
+	SprintStaminaUpdate(DeltaTime);
 }
 
 void AABAnimalCharacter::Jump()
@@ -86,6 +87,12 @@ void AABAnimalCharacter::Jump()
 
 void AABAnimalCharacter::UpdateChecking()
 {
+	if (SurvivalComponent->Stamina.CurrentValue < JumpStamina)
+	{
+		bCanJump = false;
+		return;
+	}
+
 	bCanJump = CheckJumping(JumpingVelocity);
 }
 
@@ -104,8 +111,22 @@ void AABAnimalCharacter::EndJumping()
 
 void AABAnimalCharacter::StartSprinting()
 {
+	if (SurvivalComponent->Stamina.CurrentValue <= 0)
+	{
+		return;
+	}
+
 	bSprinting = true;
 	GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
+}
+
+void AABAnimalCharacter::SprintStaminaUpdate(float DeltaTime)
+{
+	UABSurvivalStatFunctions::AddToCurrentValue(SurvivalComponent->Stamina, -SprintStaminaRateOfChange * DeltaTime);
+	if (SurvivalComponent->Stamina.CurrentValue <= 0)
+	{
+		EndSprinting();
+	}
 }
 
 void AABAnimalCharacter::EndSprinting()
@@ -399,8 +420,8 @@ bool AABAnimalCharacter::CheckJumping(FVector& OutVelocity)
 		FCollisionResponseParams param2 = FCollisionResponseParams();
 		if (!GetWorld()->LineTraceSingleByChannel(
 			groundHit,
-			p.Location, 
-			p.Location + FVector::DownVector * 500.f, 
+			p.Location,
+			p.Location + FVector::DownVector * 500.f,
 			ECollisionChannel::ECC_Visibility,
 			param1,
 			param2))

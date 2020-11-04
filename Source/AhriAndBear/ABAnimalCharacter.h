@@ -33,32 +33,36 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		UBoxComponent* InterationTrigger;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
-	class USphereComponent* ProjectileStart;
+		class USphereComponent* ProjectileStart;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Survival")
 		UAABSurvivalComponent* SurvivalComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
 		UBehaviorTree* BehaviorTree;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Jumping")
-	float JumpingSpeed = 700.f;
+		float JumpingSpeed = 700.f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Jumping")
-	float MinJumpDepth = -100.f;
+		float MinJumpDepth = -100.f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Jumping")
-	float MaxJumpDepth = -500.f;
+		float MaxJumpDepth = -500.f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Jumping")
-	float MinJumpHeight = 50.f;
+		float MinJumpHeight = 50.f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Jumping")
-	float MaxJumpHeight = 500.f;
+		float MaxJumpHeight = 500.f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Jumping")
-	float EdgeForwardOffset = 50.f;
+		float JumpStamina = 25;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Jumping")
+		float EdgeForwardOffset = 50.f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Debug")
-	bool bDebugJumping = false;
+		bool bDebugJumping = false;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Sprint")
+		float SprintStaminaRateOfChange = 1;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual bool CanJumpInternal_Implementation() const override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -69,6 +73,7 @@ public:
 
 	void StartSprinting();
 	void EndSprinting();
+	void SprintStaminaUpdate(float DeltaTime);
 
 	void StartInteracting();
 	void EndInteracting();
@@ -96,10 +101,10 @@ public:
 	bool CanCrouch();
 
 	UFUNCTION()
-	void OnInteractionOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+		void OnInteractionOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION()
-	void OnInteractionOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+		void OnInteractionOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 protected:
 	FTimerHandle TimerHandle;
