@@ -20,6 +20,7 @@ void UAABSurvivalComponent::UpdateStats(float deltaTime)
 	UABSurvivalStatFunctions::TickStat(Thirst, deltaTime);
 	UABSurvivalStatFunctions::TickStat(Hunger, deltaTime);
 	UABSurvivalStatFunctions::TickStat(Warmth, deltaTime);
+	UABSurvivalStatFunctions::TickStat(Stamina, deltaTime);
 }
 
 // Called when the game starts
@@ -31,6 +32,7 @@ void UAABSurvivalComponent::BeginPlay()
 	UABSurvivalStatFunctions::StartStat(Thirst);
 	UABSurvivalStatFunctions::StartStat(Hunger);
 	UABSurvivalStatFunctions::StartStat(Warmth);
+	UABSurvivalStatFunctions::StartStat(Stamina);
 }
 
 
