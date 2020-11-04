@@ -18,6 +18,7 @@ FORCEINLINE float UABSurvivalStatFunctions::GetCurrentValue(const FABSurvivalSta
 
 void UABSurvivalStatFunctions::AddToCurrentValue(FABSurvivalStat& stat, float value)
 {
+	auto finalValue = FMath::Clamp(stat.CurrentValue + value, 0.f, stat.MaxValue);
 	stat.CurrentValue = FMath::Clamp(stat.CurrentValue + value, 0.f, stat.MaxValue);
 }
 
@@ -33,7 +34,7 @@ FORCEINLINE float UABSurvivalStatFunctions::SetRateOfChange(FABSurvivalStat& sta
 }
 
 FORCEINLINE void UABSurvivalStatFunctions::TickStat(FABSurvivalStat& stat, float deltaTime) {
-	stat.CurrentValue += stat.RateOfChange * deltaTime;
+	stat.CurrentValue = FMath::Clamp(stat.CurrentValue + stat.RateOfChange * deltaTime, 0.f, stat.MaxValue);
 }
 
 FORCEINLINE void UABSurvivalStatFunctions::StartStat(FABSurvivalStat& stat) {
