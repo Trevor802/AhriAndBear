@@ -32,7 +32,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character | Survival")
 	float UpdateInterval = 2.0f;
 
-	UFUNCTION()
 	void UpdateStats(float deltaTime);
 
 protected:

@@ -25,10 +25,17 @@ class AHRIANDBEAR_API IABStatModifierInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	int GetMaxHungerModifier(AABSurvivalComponent* mainComp) PURE_VIRTUAL(":D", return 0;);
-	int GetHungerRateModifier(AABSurvivalComponent* mainComp) PURE_VIRTUAL("Or do I need text", return 0;);
 
-	int GetMaxThirstModifier(AABSurvivalComponent* mainComp) PURE_VIRTUAL("Compile", return 0;);
+	int GetPriority() const PURE_VIRTUAL("Must define a priority for this Stat Modifier. Should be inline.", return 0;);
 
-	int GetThirstRateModifier(AABSurvivalComponent* mainComp) PURE_VIRTUAL("Hmm", return 0;);
+	int GetMaxHungerModifier(AABSurvivalComponent* mainComp) PURE_VIRTUAL("A max hunger modifier must be defined.", return 0;);
+	int GetHungerRateModifier(AABSurvivalComponent* mainComp) PURE_VIRTUAL("A hunger change rate modifier must be defined.", return 0;);
+
+	int GetMaxThirstModifier(AABSurvivalComponent* mainComp) PURE_VIRTUAL("A max thirst modifier must be defined.", return 0;);
+
+	int GetThirstRateModifier(AABSurvivalComponent* mainComp) PURE_VIRTUAL("A current ", return 0;);
+
+	bool operator<(const IABStatModifierInterface* right) const;
+protected:
+	int priority = 0;
 };
