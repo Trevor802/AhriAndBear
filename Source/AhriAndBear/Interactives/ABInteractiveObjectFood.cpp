@@ -9,6 +9,9 @@
 #include "Interactives/EventTrigger.h"
 #include "GameBase/Define.h"
 #include "EventTrigger.h"
+#include "ABAnimalCharacter.h"
+#include "AABSurvivalComponent.h"
+#include "ABSurvivalStats.h"
 #include "Components/WidgetComponent.h"
 
 
@@ -56,7 +59,8 @@ void AABInteractiveObjectFood::AfterInteraction()
 
 	if (FoodArray.Num() != 0)
 	{
-		//TODO: add survival data
+		UABSurvivalStatFunctions::AddToCurrentValue(OverlappingAnimal->SurvivalComponent->Hunger, SurvivalEffect.Hunger);
+
 		FindComponentByClass<UEventTrigger>()->Interact(OverlappingAnimal);
 		//TODO: play eating sound
 
