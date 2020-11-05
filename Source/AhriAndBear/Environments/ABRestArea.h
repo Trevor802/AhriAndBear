@@ -18,17 +18,17 @@ public:
 	// Sets default values for this actor's properties
 	AABRestArea();
 
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "Rest Area")
 	UBoxComponent* Collider;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-private:
-	void OnActorBeginOverlap(UPrimitiveComponent* OverlappedComponent,
-		AActor* OtherActor,
-		UPrimitiveComponent* OtherComp,
-		int32 OtherBodyIndex,
-		bool bFromSweep,
-		const FHitResult& SweepResult);
+public:
+	UFUNCTION()
+	void BeginOverlap(AActor* self, AActor* OtherActor);
+
+	UFUNCTION()
+	void EndOverlap(AActor* self, AActor* OtherActor);
 };
