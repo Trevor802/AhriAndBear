@@ -52,6 +52,7 @@ void AABPlayerController::SetupInputComponent()
 	InputComponent->BindAction("UseSkill", IE_Pressed, this, &AABPlayerController::CallUseAbility);
 	InputComponent->BindAction("AnimalTogether", IE_Pressed, this, &AABPlayerController::CallFollowing);
 	InputComponent->BindAction("ChangeAnimal", IE_Pressed, this, &AABPlayerController::CallSwitchAnimal);
+	InputComponent->BindAction("ESC", IE_Pressed, this, &AABPlayerController::QuitGame);
 
 }
 
@@ -212,6 +213,11 @@ void AABPlayerController::CallStopCrouch()
 	{
 		AnimalCharacter->EndCrouch();
 	}
+}
+
+void AABPlayerController::QuitGame() 
+{
+	FGenericPlatformMisc::RequestExit(true);
 }
 
 

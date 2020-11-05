@@ -37,6 +37,8 @@ public:
 	void CallSwitchAnimal();
 	void CallCrouch();
 	void CallStopCrouch();
+	
+	void QuitGame();
 
 	AABAnimalCharacter* AnimalCharacter;
 };
