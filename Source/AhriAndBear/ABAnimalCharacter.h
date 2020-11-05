@@ -140,6 +140,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 		EAnimalType AnimalType;
 
+	bool bAttached;
+
 	UPROPERTY(BlueprintReadWrite)
 		bool bIsFollowing;
 

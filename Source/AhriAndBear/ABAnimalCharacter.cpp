@@ -44,6 +44,8 @@ AABAnimalCharacter::AABAnimalCharacter()
 	bInClimbingZone = false;
 	bClimbing = false;
 
+	bAttached = false;
+
 	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
 }
 
@@ -125,6 +127,7 @@ void AABAnimalCharacter::SprintStaminaUpdate(float DeltaTime)
 	UABSurvivalStatFunctions::AddToCurrentValue(SurvivalComponent->Stamina, -SprintStaminaRateOfChange * DeltaTime);
 	if (SurvivalComponent->Stamina.CurrentValue <= 0)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("end sprinting"));
 		EndSprinting();
 	}
 }
@@ -357,7 +360,7 @@ bool AABAnimalCharacter::CanCrouch()
 
 void AABAnimalCharacter::OnInteractionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor && OtherActor != this && Cast<AABInteractiveObjectBase>(OtherActor))
+	if (OtherActor && OtherActor != this && Cast<AABInteractiveObjectBase>(OtherActor) && bAttached == false)
 	{
 		InteractiveObjectRef = Cast<AABInteractiveObjectBase>(OtherActor);
 		bWithinRange = true;
@@ -371,7 +374,7 @@ void AABAnimalCharacter::OnInteractionOverlapBegin(UPrimitiveComponent* Overlapp
 
 void AABAnimalCharacter::OnInteractionOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (OtherActor && OtherActor != this && Cast<AABInteractiveObjectBase>(OtherActor))
+	if (OtherActor && OtherActor != this && Cast<AABInteractiveObjectBase>(OtherActor) && bAttached == false)
 	{
 		InteractiveObjectRef = nullptr;
 		bWithinRange = false;
