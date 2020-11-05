@@ -5,6 +5,6 @@
 
 // Add default functionality here for any IABStatModifierInterface functions that are not pure virtual.
 
-FORCEINLINE bool IABStatModifierInterface::operator<(const IABStatModifierInterface* right) const {
+bool IABStatModifierInterface::operator<(const IABStatModifierInterface* right) const {
 	return GetPriority() < right->GetPriority();
 }
