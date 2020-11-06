@@ -15,6 +15,9 @@ AFixedPulley::AFixedPulley()
 
     ActionHandler = CreateDefaultSubobject<USphereComponent>(TEXT("ActionHandler"));
     ActionHandler->SetupAttachment(RootComponent);
+
+    //UIWidget->SetupAttachment(ActionHandler);
+
     ReactionHandler = CreateDefaultSubobject<USphereComponent>(TEXT("ReactionHandler"));
     ReactionHandler->SetupAttachment(RootComponent);
 
@@ -91,13 +94,17 @@ void AFixedPulley::AfterInteraction()
     {
         if (bAttachingDog == false && bCanAttachDog)
         {
+            DogRef->bAttached = true;
             bAttachingDog = true;
+            UIWidget->SetVisibility(false);
         }
-        else
+        else if(bAttachingDog == true)
         {
+            DogRef->bAttached = false;
             bAttachingDog = false;
             bCanAttachDog = false;
             ActionHandler->SetRelativeLocation(ReleasedPoint);
+            UIWidget->SetVisibility(true);
         }
         {
             FScopeLock ScopeLock(&Mutex);

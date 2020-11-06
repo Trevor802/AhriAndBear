@@ -37,8 +37,11 @@ void AABPlayerController::SetupInputComponent()
 
 	InputComponent->BindAxis("WalkForward", this, &AABPlayerController::CallMoveForward);
 	InputComponent->BindAxis("WalkRight", this, &AABPlayerController::CallMoveRight);
-	InputComponent->BindAxis("Turn", this, &AABPlayerController::CallTurnAtRate);
-	InputComponent->BindAxis("LookUp", this, &AABPlayerController::CallLookUpAtRate);
+	InputComponent->BindAxis("TurnRate", this, &AABPlayerController::CallTurnAtRate);
+	InputComponent->BindAxis("LookUpRate", this, &AABPlayerController::CallLookUpAtRate);
+	InputComponent->BindAxis("Turn", this, &AABPlayerController::CallTurn);
+	InputComponent->BindAxis("LookUp", this, &AABPlayerController::CallLookUp);
+
 	InputComponent->BindAction("Catch", IE_Pressed, this, &AABPlayerController::CallInteract);
 	InputComponent->BindAction("Jump", IE_Pressed, this, &AABPlayerController::CallJump);
 	InputComponent->BindAction("Jump", IE_Released, this, &AABPlayerController::CallStopJump);
@@ -49,6 +52,8 @@ void AABPlayerController::SetupInputComponent()
 	InputComponent->BindAction("UseSkill", IE_Pressed, this, &AABPlayerController::CallUseAbility);
 	InputComponent->BindAction("AnimalTogether", IE_Pressed, this, &AABPlayerController::CallFollowing);
 	InputComponent->BindAction("ChangeAnimal", IE_Pressed, this, &AABPlayerController::CallSwitchAnimal);
+	InputComponent->BindAction("ESC", IE_Pressed, this, &AABPlayerController::QuitGame);
+
 }
 
 void AABPlayerController::CallMoveForward(float value)
@@ -110,6 +115,22 @@ void AABPlayerController::CallLookUpAtRate(float value)
 	if (AnimalCharacter && AnimalCharacter->CanMove())
 	{
 		AnimalCharacter->AddControllerPitchInput(value * AnimalCharacter->baseLookUpRate * GetWorld()->GetDeltaSeconds());
+	}
+}
+
+void AABPlayerController::CallTurn(float value)
+{
+	if (AnimalCharacter && AnimalCharacter->CanMove())
+	{
+		AnimalCharacter->AddControllerYawInput(value);
+	}
+}
+
+void AABPlayerController::CallLookUp(float value)
+{
+	if (AnimalCharacter && AnimalCharacter->CanMove())
+	{
+		AnimalCharacter->AddControllerPitchInput(value);
 	}
 }
 
@@ -192,6 +213,11 @@ void AABPlayerController::CallStopCrouch()
 	{
 		AnimalCharacter->EndCrouch();
 	}
+}
+
+void AABPlayerController::QuitGame() 
+{
+	FGenericPlatformMisc::RequestExit(true);
 }
 
 

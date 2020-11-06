@@ -44,6 +44,8 @@ AABAnimalCharacter::AABAnimalCharacter()
 	bInClimbingZone = false;
 	bClimbing = false;
 
+	bAttached = false;
+
 	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
 }
 
@@ -59,6 +61,9 @@ void AABAnimalCharacter::BeginPlay()
 
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 
+	FPCameraTargetLocation.X = camera->GetRelativeLocation().X;
+
+	OriginalSpringArmLength = springArm->TargetArmLength;
 	OriginalCameraPosition = camera->GetRelativeLocation();
 }
 
@@ -74,6 +79,7 @@ void AABAnimalCharacter::Tick(float DeltaTime)
 
 	ChangeMovementMode();
 	ChangeCameraLocation(DeltaTime);
+	SprintStaminaUpdate(DeltaTime);
 }
 
 void AABAnimalCharacter::Jump()
@@ -83,6 +89,12 @@ void AABAnimalCharacter::Jump()
 
 void AABAnimalCharacter::UpdateChecking()
 {
+	if (SurvivalComponent->Stamina.CurrentValue < JumpStamina)
+	{
+		bCanJump = false;
+		return;
+	}
+
 	bCanJump = CheckJumping(JumpingVelocity);
 }
 
@@ -101,8 +113,23 @@ void AABAnimalCharacter::EndJumping()
 
 void AABAnimalCharacter::StartSprinting()
 {
+	if (SurvivalComponent->Stamina.CurrentValue <= 0)
+	{
+		return;
+	}
+
 	bSprinting = true;
 	GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
+}
+
+void AABAnimalCharacter::SprintStaminaUpdate(float DeltaTime)
+{
+	UABSurvivalStatFunctions::AddToCurrentValue(SurvivalComponent->Stamina, -SprintStaminaRateOfChange * DeltaTime);
+	if (SurvivalComponent->Stamina.CurrentValue <= 0)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("end sprinting"));
+		EndSprinting();
+	}
 }
 
 void AABAnimalCharacter::EndSprinting()
@@ -220,8 +247,10 @@ void AABAnimalCharacter::LerpCameraToFP(float DeltaTime)
 	if (dist >= 0.01)
 	{
 		FVector temp = FMath::Lerp(camera->GetRelativeLocation(), FPCameraTargetLocation, cameraLerpSpeed * DeltaTime);
-
 		camera->SetRelativeLocation(temp);
+
+		float length = FMath::Lerp(springArm->TargetArmLength, FPSpringArmTargetLength, cameraLerpSpeed * DeltaTime);
+		springArm->TargetArmLength = length;
 	}
 }
 
@@ -232,8 +261,10 @@ void AABAnimalCharacter::LerpCameraToTP(float DeltaTime)
 	if (dist >= 0.01)
 	{
 		FVector temp = FMath::Lerp(camera->GetRelativeLocation(), OriginalCameraPosition, cameraLerpSpeed * DeltaTime);
-
 		camera->SetRelativeLocation(temp);
+
+		float length = FMath::Lerp(springArm->TargetArmLength, OriginalSpringArmLength, cameraLerpSpeed * DeltaTime);
+		springArm->TargetArmLength = length;
 	}
 }
 
@@ -329,7 +360,7 @@ bool AABAnimalCharacter::CanCrouch()
 
 void AABAnimalCharacter::OnInteractionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor && OtherActor != this && Cast<AABInteractiveObjectBase>(OtherActor))
+	if (OtherActor && OtherActor != this && Cast<AABInteractiveObjectBase>(OtherActor) && bAttached == false)
 	{
 		InteractiveObjectRef = Cast<AABInteractiveObjectBase>(OtherActor);
 		bWithinRange = true;
@@ -343,7 +374,7 @@ void AABAnimalCharacter::OnInteractionOverlapBegin(UPrimitiveComponent* Overlapp
 
 void AABAnimalCharacter::OnInteractionOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (OtherActor && OtherActor != this && Cast<AABInteractiveObjectBase>(OtherActor))
+	if (OtherActor && OtherActor != this && Cast<AABInteractiveObjectBase>(OtherActor) && bAttached == false)
 	{
 		InteractiveObjectRef = nullptr;
 		bWithinRange = false;
@@ -392,8 +423,8 @@ bool AABAnimalCharacter::CheckJumping(FVector& OutVelocity)
 		FCollisionResponseParams param2 = FCollisionResponseParams();
 		if (!GetWorld()->LineTraceSingleByChannel(
 			groundHit,
-			p.Location, 
-			p.Location + FVector::DownVector * 500.f, 
+			p.Location,
+			p.Location + FVector::DownVector * 500.f,
 			ECollisionChannel::ECC_Visibility,
 			param1,
 			param2))
