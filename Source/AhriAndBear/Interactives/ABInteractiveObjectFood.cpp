@@ -59,11 +59,6 @@ void AABInteractiveObjectFood::Tick(float DeltaTime)
 	}
 }
 
-void AABInteractiveObjectFood::Interact()
-{
-
-}
-
 void AABInteractiveObjectFood::AfterInteraction()
 {
 
