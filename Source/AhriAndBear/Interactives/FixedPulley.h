@@ -25,7 +25,7 @@ protected:
     virtual void Tick(float DeltaTime) override;
     virtual void BeginPlay() override;
     virtual void OnConstruction(const FTransform& Transform) override;
-    virtual void AfterInteraction() override;
+    virtual void AfterInteraction(bool) override;
     void UpdateHandlers();
     class USceneComponent* Root;
 

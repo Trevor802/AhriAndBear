@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Interactives/ABInteractiveObjectBase.h"
+#include "Interactives/OccupyingInteractive.h"
 #include "GameBase/Define.h"
 #include "ABInteractiveObjectFood.generated.h"
 
@@ -11,7 +11,7 @@
  * 
  */
 UCLASS()
-class AHRIANDBEAR_API AABInteractiveObjectFood : public AABInteractiveObjectBase
+class AHRIANDBEAR_API AABInteractiveObjectFood : public AOccupyingInteractive
 {
 	GENERATED_BODY()
 	
@@ -20,8 +20,8 @@ public:
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
-	//FORCEINLINE virtual bool CanInteract() override { return true; }
-	virtual void AfterInteraction() override;
+	FORCEINLINE virtual bool CanInteract(UCharacterInteractionComponent* component) const override { return FoodArray.Num() > 0; }
+	virtual void AfterInteraction(bool) override;
 
 	void TempGymRespawn();
 	
@@ -41,8 +41,5 @@ public:
 
 private:
 	TArray<UStaticMeshComponent*> FoodArray;
-
-protected:
-	FTimerHandle TimerHandle;
 
 };

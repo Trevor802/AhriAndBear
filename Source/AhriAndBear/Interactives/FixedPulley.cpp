@@ -29,7 +29,6 @@ AFixedPulley::AFixedPulley()
     ReactionCable->EndLocation = FVector::ZeroVector;
     ActionCable->SetAttachEndToComponent(ActionHandler);
     ReactionCable->SetAttachEndToComponent(ReactionHandler);
-    bCanBeInteracted = true;
     bCanAttachDog = false;
     bCanAttachCat = false;
     bAttachingDog = false;
@@ -88,7 +87,7 @@ void AFixedPulley::BeginPlay()
     ReactionHandler->OnComponentEndOverlap.AddDynamic(this, &AFixedPulley::OnEndOverlapEnd);
 }
 
-void AFixedPulley::AfterInteraction()
+void AFixedPulley::AfterInteraction(bool bResutl)
 {
     if (Cast<AABDogCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0)))
     {

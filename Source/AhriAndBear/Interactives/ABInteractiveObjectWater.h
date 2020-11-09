@@ -21,7 +21,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	virtual void BeginPlay() override;
-	virtual void AfterInteraction() override;
+	virtual void AfterInteraction(bool) override;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gameplay")
 	FSurvivalData SurvivalEffect;
 

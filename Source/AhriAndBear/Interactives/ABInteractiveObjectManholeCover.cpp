@@ -20,6 +20,4 @@ AABInteractiveObjectManholeCover::AABInteractiveObjectManholeCover() : Super()
 void AABInteractiveObjectManholeCover::BeginPlay()
 {
     Super::BeginPlay();
-    EventTrigger->EventData.TriggerEvent = EEventType::GainWarmth;
-    EventTrigger->EventData.GainWarmthRate = WarmthRecoveryRate;
 }

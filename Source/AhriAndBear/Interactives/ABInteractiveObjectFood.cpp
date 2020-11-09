@@ -11,6 +11,7 @@
 #include "EventTrigger.h"
 #include "ABAnimalCharacter.h"
 #include "AABSurvivalComponent.h"
+#include "CharacterInteractionComponent.h"
 #include "ABSurvivalStats.h"
 #include "Components/WidgetComponent.h"
 
@@ -18,8 +19,6 @@
 void AABInteractiveObjectFood::BeginPlay()
 {
 	Super::BeginPlay();
-	EventTrigger->EventData.TriggerEvent = EEventType::Supply;
-	EventTrigger->EventData.SurvivalData = SurvivalEffect;
 }
 
 AABInteractiveObjectFood::AABInteractiveObjectFood()
@@ -44,8 +43,6 @@ AABInteractiveObjectFood::AABInteractiveObjectFood()
 	FoodArray.Add(FoodMesh1);
 	FoodArray.Add(FoodMesh2);
 	FoodArray.Add(FoodMesh3);
-
-	bCanBeInteracted = true;
 }
 
 // Called every frame
@@ -59,14 +56,12 @@ void AABInteractiveObjectFood::Tick(float DeltaTime)
 	}
 }
 
-void AABInteractiveObjectFood::AfterInteraction()
+void AABInteractiveObjectFood::AfterInteraction(bool bResult)
 {
-
+	InteractingComponent->GetOwner()->FindComponentByClass<UAABSurvivalComponent>()->AddSurvivalData(SurvivalEffect);
 	if (FoodArray.Num() != 0)
 	{
-		UABSurvivalStatFunctions::AddToCurrentValue(OverlappingAnimal->SurvivalComponent->Hunger, SurvivalEffect.Hunger);
 
-		FindComponentByClass<UEventTrigger>()->Interact(OverlappingAnimal);
 		//TODO: play eating sound
 
 		FoodArray[0]->SetVisibility(false);
@@ -74,11 +69,10 @@ void AABInteractiveObjectFood::AfterInteraction()
 	}
 	else
 	{
-		//FTimerDelegate RespawnTimerDelegate = FTimerDelegate::CreateUObject(this, &AABInteractiveObjectFood::TempGymRespawn); // for planet fitness meat heads only
-		//GetWorld()->GetTimerManager().SetTimer(TimerHandle, RespawnTimerDelegate, 0.5f, false);
-
-		bCanBeInteracted = false;
+		FTimerDelegate RespawnTimerDelegate = FTimerDelegate::CreateUObject(this, &AABInteractiveObjectFood::TempGymRespawn); // for planet fitness meat heads only
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, RespawnTimerDelegate, 0.5f, false);
 	}
+	Super::AfterInteraction(bResult);
 }
 
 void AABInteractiveObjectFood::TempGymRespawn() 
@@ -91,5 +85,4 @@ void AABInteractiveObjectFood::TempGymRespawn()
 	FoodMesh2->SetVisibility(true);
 	FoodMesh3->SetVisibility(true);
 
-	bCanBeInteracted = true;
 }

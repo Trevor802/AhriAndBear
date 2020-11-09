@@ -4,9 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Interactive.h"
 #include "Components/WidgetComponent.h"
 #include "ABInteractiveObjectBase.generated.h"
+
+class UCharacterInteractionComponent;
 
 UCLASS(Abstract)
 class AHRIANDBEAR_API AABInteractiveObjectBase : public AActor
@@ -20,17 +21,13 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	class AABAnimalCharacter* OverlappingAnimal;
 
 	UFUNCTION() void OnEnterCollision(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION() void OnExitCollision(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex); 
-	bool bCanBeInteracted;
 	virtual void OnActorEnter(AActor* OtherActor) {};
 	virtual void OnActorExit(AActor* OtherActor) {};
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
 	class UShapeComponent* CollisionShape;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Gameplay")
-	class UEventTrigger* EventTrigger;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "UI")
 	class UWidgetComponent* UIWidget;
 
@@ -38,17 +35,20 @@ protected:
 	void SetWidgetRotation();
 	void SetWidgetVisiability();
 
+	FDelegateHandle StopInteractionHandle;
+	UCharacterInteractionComponent* InteractingComponent;
+	bool bInteracting;
+	virtual void AfterInteraction(bool) PURE_VIRTUAL (AABInteractiveObjectBase::AfterInteraction,);
+	virtual bool CanInteract(UCharacterInteractionComponent*) const PURE_VIRTUAL(AABInteractiveObjectBase::CanInteract, return false;);
+
 public:	
 
-	bool CanInteract();
-
 	virtual void Tick(float DeltaTime) override;
-	virtual void Interact() PURE_VIRTUAL (AABInteractiveObjectBase::Interact,);
-	virtual void AfterInteraction() PURE_VIRTUAL (AABInteractiveObjectBase::AfterInteraction,);
+	virtual bool TryInteracting(UCharacterInteractionComponent*) PURE_VIRTUAL(AABInteractiveObjectBase::Interact, return false;);
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
-	float InteractionDelay;
+	int InteractionPriority;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	FLinearColor UIColor;

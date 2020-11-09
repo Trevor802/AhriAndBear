@@ -19,14 +19,11 @@ AABInteractiveObjectWater::AABInteractiveObjectWater()
 	BowlMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BowlMesh"));
 	BowlMesh->SetupAttachment(RootComponent);
 
-	bCanBeInteracted = true;
 }
 
 void AABInteractiveObjectWater::BeginPlay()
 {
 	Super::BeginPlay();
-	EventTrigger->EventData.TriggerEvent = EEventType::Supply;
-	EventTrigger->EventData.SurvivalData = SurvivalEffect;
 }
 
 void AABInteractiveObjectWater::Tick(float DeltaTime)
@@ -34,11 +31,9 @@ void AABInteractiveObjectWater::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AABInteractiveObjectWater::AfterInteraction()
+void AABInteractiveObjectWater::AfterInteraction(bool bResult)
 {
 	//TODO: add to survival data
-	UABSurvivalStatFunctions::AddToCurrentValue(OverlappingAnimal->SurvivalComponent->Thirst, SurvivalEffect.Thirst);
 
-	FindComponentByClass<UEventTrigger>()->Interact(OverlappingAnimal);
 	//TODO: play drinking sound
 }

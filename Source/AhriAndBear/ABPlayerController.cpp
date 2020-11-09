@@ -53,7 +53,6 @@ void AABPlayerController::SetupInputComponent()
 	InputComponent->BindAction("AnimalTogether", IE_Pressed, this, &AABPlayerController::CallFollowing);
 	InputComponent->BindAction("ChangeAnimal", IE_Pressed, this, &AABPlayerController::CallSwitchAnimal);
 	InputComponent->BindAction("ESC", IE_Pressed, this, &AABPlayerController::QuitGame);
-
 }
 
 void AABPlayerController::CallMoveForward(float value)

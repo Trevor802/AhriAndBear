@@ -140,24 +140,23 @@ void AABAnimalCharacter::EndSprinting()
 
 void AABAnimalCharacter::StartInteracting()
 {
-	if (InteractiveObjectRef && InteractiveObjectRef->CanInteract() == true)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("interaction succeed"));
-		bInteracting = true;
+	//if (InteractiveObjectRef && InteractiveObjectRef->CanInteract(FindComponentByClass<UCharacterInteractionComponent>()) == true)
+	//{
+	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("interaction succeed"));
+	//	bInteracting = true;
 
-		float InteractingCooldown = 0.0f;
+	//	float InteractingCooldown = 0.0f;
 
-		InteractingCooldown = InteractiveObjectRef->InteractionDelay;
 
-		FTimerDelegate InteractionTimerDelegate = FTimerDelegate::CreateUObject(this, &AABAnimalCharacter::EndInteracting);
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle, InteractionTimerDelegate, InteractingCooldown, false);
-	}
+	//	FTimerDelegate InteractionTimerDelegate = FTimerDelegate::CreateUObject(this, &AABAnimalCharacter::EndInteracting);
+	//	GetWorld()->GetTimerManager().SetTimer(TimerHandle, InteractionTimerDelegate, InteractingCooldown, false);
+	//}
 }
 
 void AABAnimalCharacter::EndInteracting()
 {
-	bInteracting = false;
-	InteractiveObjectRef->AfterInteraction();
+	/*bInteracting = false;
+	InteractiveObjectRef->AfterInteraction(true);*/
 }
 
 void AABAnimalCharacter::StartCrouch()

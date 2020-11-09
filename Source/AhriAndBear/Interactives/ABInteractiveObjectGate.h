@@ -23,7 +23,7 @@ public:
 	virtual void BeginPlay() override;
 	//FORCEINLINE virtual bool CanInteract() override { return true; }
 
-	virtual void AfterInteraction() override;
+	virtual void AfterInteraction(bool) override;
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
