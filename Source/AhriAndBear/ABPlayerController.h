@@ -32,6 +32,7 @@ public:
 	void CallSprint();
 	void CallStopSprint();
 	void CallInteract();
+	void CallStopInteract();
 	void CallUseAbility();
 	void CallFollowing();
 	void CallSwitchAnimal();
@@ -41,4 +42,9 @@ public:
 	void QuitGame();
 
 	AABAnimalCharacter* AnimalCharacter;
+	void BindInput() const;
+	void UnbindInput() const;
+protected:
+	TArray<FInputActionBinding*> ActionBindings;
+	TArray<FInputAxisBinding*> AxisBindings;
 };

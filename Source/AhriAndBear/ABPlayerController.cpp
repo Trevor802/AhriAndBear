@@ -2,6 +2,7 @@
 
 #include "ABPlayerController.h"
 #include "Engine/World.h"
+#include "Interactives/CharacterInteractionComponent.h"
 #include "Components/InputComponent.h"
 
 AABPlayerController::AABPlayerController()
@@ -35,23 +36,24 @@ void AABPlayerController::SetupInputComponent()
 
 	check(InputComponent);
 
-	InputComponent->BindAxis("WalkForward", this, &AABPlayerController::CallMoveForward);
-	InputComponent->BindAxis("WalkRight", this, &AABPlayerController::CallMoveRight);
-	InputComponent->BindAxis("TurnRate", this, &AABPlayerController::CallTurnAtRate);
-	InputComponent->BindAxis("LookUpRate", this, &AABPlayerController::CallLookUpAtRate);
-	InputComponent->BindAxis("Turn", this, &AABPlayerController::CallTurn);
-	InputComponent->BindAxis("LookUp", this, &AABPlayerController::CallLookUp);
+	AxisBindings.Add(&(InputComponent->BindAxis("WalkForward", this, &AABPlayerController::CallMoveForward)));
+	AxisBindings.Add(&(InputComponent->BindAxis("WalkRight", this, &AABPlayerController::CallMoveRight)));
+	AxisBindings.Add(&(InputComponent->BindAxis("TurnRate", this, &AABPlayerController::CallTurnAtRate)));
+	AxisBindings.Add(&(InputComponent->BindAxis("Turn", this, &AABPlayerController::CallTurn)));
+	AxisBindings.Add(&(InputComponent->BindAxis("LookUp", this, &AABPlayerController::CallLookUp)));
+	AxisBindings.Add(&(InputComponent->BindAxis("LookUpRate", this, &AABPlayerController::CallLookUpAtRate)));
 
-	InputComponent->BindAction("Catch", IE_Pressed, this, &AABPlayerController::CallInteract);
-	InputComponent->BindAction("Jump", IE_Pressed, this, &AABPlayerController::CallJump);
-	InputComponent->BindAction("Jump", IE_Released, this, &AABPlayerController::CallStopJump);
-	InputComponent->BindAction("Jog", IE_Pressed, this, &AABPlayerController::CallSprint);
-	InputComponent->BindAction("Jog", IE_Released, this, &AABPlayerController::CallStopSprint);
-	InputComponent->BindAction("Crouch", IE_Pressed, this, &AABPlayerController::CallCrouch);
-	InputComponent->BindAction("Crouch", IE_Released, this, &AABPlayerController::CallStopCrouch);
-	InputComponent->BindAction("UseSkill", IE_Pressed, this, &AABPlayerController::CallUseAbility);
-	InputComponent->BindAction("AnimalTogether", IE_Pressed, this, &AABPlayerController::CallFollowing);
-	InputComponent->BindAction("ChangeAnimal", IE_Pressed, this, &AABPlayerController::CallSwitchAnimal);
+	ActionBindings.Add(&(InputComponent->BindAction("Catch", IE_Pressed, this, &AABPlayerController::CallInteract)));
+	ActionBindings.Add(&(InputComponent->BindAction("Catch", IE_Released, this, &AABPlayerController::CallStopInteract)));
+	ActionBindings.Add(&(InputComponent->BindAction("Jump", IE_Pressed, this, &AABPlayerController::CallJump)));
+	ActionBindings.Add(&(InputComponent->BindAction("Jump", IE_Released, this, &AABPlayerController::CallStopJump)));
+	ActionBindings.Add(&(InputComponent->BindAction("Jog", IE_Pressed, this, &AABPlayerController::CallSprint)));
+	ActionBindings.Add(&(InputComponent->BindAction("Jog", IE_Released, this, &AABPlayerController::CallStopSprint)));
+	ActionBindings.Add(&(InputComponent->BindAction("Crouch", IE_Pressed, this, &AABPlayerController::CallCrouch)));
+	ActionBindings.Add(&(InputComponent->BindAction("Crouch", IE_Released, this, &AABPlayerController::CallStopCrouch)));
+	ActionBindings.Add(&(InputComponent->BindAction("UseSkill", IE_Pressed, this, &AABPlayerController::CallUseAbility)));
+	ActionBindings.Add(&(InputComponent->BindAction("AnimalTogether", IE_Pressed, this, &AABPlayerController::CallFollowing)));
+	ActionBindings.Add(&(InputComponent->BindAction("ChangeAnimal", IE_Pressed, this, &AABPlayerController::CallSwitchAnimal)));
 	InputComponent->BindAction("ESC", IE_Pressed, this, &AABPlayerController::QuitGame);
 }
 
@@ -168,9 +170,11 @@ void AABPlayerController::CallStopSprint()
 
 void AABPlayerController::CallInteract()
 {
-	if (AnimalCharacter && AnimalCharacter->CanInteract())
+	if (AnimalCharacter)
 	{
-		AnimalCharacter->StartInteracting();
+		auto interactionComponent = AnimalCharacter->FindComponentByClass<UCharacterInteractionComponent>();
+		interactionComponent->TryInteracting();
+		return;
 	}
 }
 
@@ -179,6 +183,15 @@ void AABPlayerController::CallUseAbility()
 	if (AnimalCharacter && AnimalCharacter->CanUseAbility())
 	{
 		AnimalCharacter->UseAbility();
+	}
+}
+
+void AABPlayerController::CallStopInteract()
+{
+	if (AnimalCharacter)
+	{
+		auto interactionComponent = AnimalCharacter->FindComponentByClass<UCharacterInteractionComponent>();
+		interactionComponent->OnInteractionStopped.Broadcast();
 	}
 }
 
@@ -219,4 +232,30 @@ void AABPlayerController::QuitGame()
 	FGenericPlatformMisc::RequestExit(true);
 }
 
+void AABPlayerController::BindInput() const
+{
+	for (auto& a : ActionBindings)
+	{
+		InputComponent->AddActionBinding(*a);
+	}
+	for (auto& a : AxisBindings)
+	{
+		InputComponent->AxisBindings.Add(*a);
+	}
+}
+
+void AABPlayerController::UnbindInput() const
+{
+	for (auto& a : ActionBindings)
+	{
+		InputComponent->RemoveActionBindingForHandle(a->GetHandle());
+	}
+	for (auto& a : AxisBindings)
+	{
+		InputComponent->AxisBindings.RemoveAllSwap([&a](const FInputAxisBinding& x)
+												   {
+													   return x.AxisName == a->AxisName;
+												   });
+	}
+}
 

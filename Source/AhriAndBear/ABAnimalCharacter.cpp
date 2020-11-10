@@ -10,6 +10,7 @@
 #include "Engine.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Components/InputComponent.h"
+#include "Interactives/CharacterInteractionComponent.h"
 #include "Components/PawnNoiseEmitterComponent.h"
 #include "Perception/PawnSensingComponent.h"
 
@@ -29,6 +30,9 @@ AABAnimalCharacter::AABAnimalCharacter()
 
 	ProjectileStart = CreateDefaultSubobject<USphereComponent>(TEXT("ProjectileStart"));
 	ProjectileStart->SetupAttachment(RootComponent);
+
+	auto interactionComponent = CreateDefaultSubobject<UCharacterInteractionComponent>(TEXT("InteractionComp"));
+	interactionComponent->SetupAttachment(RootComponent);
 
 	SurvivalComponent = CreateDefaultSubobject<UAABSurvivalComponent>(TEXT("Survival Component"));
 

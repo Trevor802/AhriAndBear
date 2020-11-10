@@ -3,7 +3,61 @@
 
 #include "MovableInteractive.h"
 #include "ABPlayerController.h"
+#include "Components/InputComponent.h"
+#include "ABPlayerController.h"
 #include "CharacterInteractionComponent.h"
+
+AMovableInteractive::AMovableInteractive()
+{
+    auto action = FInputActionBinding("Jump", IE_Pressed);
+    action.ActionDelegate.BindDelegate(this, &AMovableInteractive::CallJump);
+    ActionBindings.Add(&action);
+    action = FInputActionBinding("Sprint", IE_Pressed);
+    action.ActionDelegate.BindDelegate(this, &AMovableInteractive::CallSprint);
+    ActionBindings.Add(&action);
+    action = FInputActionBinding("Sprint", IE_Released);
+    action.ActionDelegate.BindDelegate(this, &AMovableInteractive::CallStopSprint);
+    ActionBindings.Add(&action);
+    action = FInputActionBinding("Catch", IE_Pressed);
+    action.ActionDelegate.BindDelegate(this, &AMovableInteractive::CallInteract);
+    ActionBindings.Add(&action);
+    action = FInputActionBinding("Catch", IE_Released);
+    action.ActionDelegate.BindDelegate(this, &AMovableInteractive::CallStopInteract);
+    ActionBindings.Add(&action);
+    action = FInputActionBinding("UseSkill", IE_Pressed);
+    action.ActionDelegate.BindDelegate(this, &AMovableInteractive::CallUseAbility);
+    ActionBindings.Add(&action);
+    action = FInputActionBinding("AnimalTogether", IE_Pressed);
+    action.ActionDelegate.BindDelegate(this, &AMovableInteractive::CallFollowing);
+    ActionBindings.Add(&action);
+    action = FInputActionBinding("ChangeAnimal", IE_Pressed);
+    action.ActionDelegate.BindDelegate(this, &AMovableInteractive::CallSwitchAnimal);
+    ActionBindings.Add(&action);
+    action = FInputActionBinding("Crouch", IE_Pressed);
+    action.ActionDelegate.BindDelegate(this, &AMovableInteractive::CallCrouch);
+    ActionBindings.Add(&action);
+    action = FInputActionBinding("Crouch", IE_Released);
+    action.ActionDelegate.BindDelegate(this, &AMovableInteractive::CallStopCrouch);
+    ActionBindings.Add(&action);
+    auto axis = FInputAxisBinding("WalkForward");
+    axis.AxisDelegate.BindDelegate(this, &AMovableInteractive::CallMoveForward);
+    AxisBindings.Add(&axis);
+    axis = FInputAxisBinding("WalkRight");
+    axis.AxisDelegate.BindDelegate(this, &AMovableInteractive::CallMoveRight);
+    AxisBindings.Add(&axis);
+    axis = FInputAxisBinding("TurnRate");
+    axis.AxisDelegate.BindDelegate(this, &AMovableInteractive::CallTurnAtRate);
+    AxisBindings.Add(&axis);
+    axis = FInputAxisBinding("LookUpRate");
+    axis.AxisDelegate.BindDelegate(this, &AMovableInteractive::CallLookUpAtRate);
+    AxisBindings.Add(&axis);
+    axis = FInputAxisBinding("Turn");
+    axis.AxisDelegate.BindDelegate(this, &AMovableInteractive::CallTurn);
+    AxisBindings.Add(&axis);
+    axis = FInputAxisBinding("LookUp");
+    axis.AxisDelegate.BindDelegate(this, &AMovableInteractive::CallLookUp);
+    AxisBindings.Add(&axis);
+}
 
 bool AMovableInteractive::TryInteracting(UCharacterInteractionComponent* component)
 {
@@ -16,41 +70,41 @@ bool AMovableInteractive::TryInteracting(UCharacterInteractionComponent* compone
             InteractingComponent->SetMouthInteracting(true);
         if (bOccupyPaw)
             InteractingComponent->SetPawInteracting(true);
-        StopInteractionHandle = component->OnInteractionStopped.AddLambda([this]()
-                                                                          {
-                                                                              AfterInteraction(false);
-                                                                          });
+        Controller = Cast<AABPlayerController>(Cast<APawn>(InteractingComponent->GetOwner())->GetController());
+        Controller->UnbindInput();
+        BindInput(Controller->InputComponent);
         return true;
     }
     return false;
 }
 
-void AMovableInteractive::BindInput(AABPlayerController* controller) const
+void AMovableInteractive::BindInput(UInputComponent* inputComponent) const
 {
-    UInputComponent* playerInput = controller->InputComponent;
-    //playerInput->actionbind
-    //playerInput->BindAxis("WalkForward", this, &AABPlayerController::CallMoveForward);
-    //playerInput->BindAxis("WalkRight", this, &AABPlayerController::CallMoveRight);
-    //playerInput->BindAxis("TurnRate", this, &AABPlayerController::CallTurnAtRate);
-    //playerInput->BindAxis("LookUpRate", this, &AABPlayerController::CallLookUpAtRate);
-    //playerInput->BindAxis("Turn", this, &AABPlayerController::CallTurn);
-    //playerInput->BindAxis("LookUp", this, &AABPlayerController::CallLookUp);
-
-    //playerInput->BindAction("Catch", IE_Pressed, this, &AABPlayerController::CallInteract);
-    //playerInput->BindAction("Jump", IE_Pressed, this, &AABPlayerController::CallJump);
-    //playerInput->BindAction("Jump", IE_Released, this, &AABPlayerController::CallStopJump);
-    //playerInput->BindAction("Jog", IE_Pressed, this, &AABPlayerController::CallSprint);
-    //playerInput->BindAction("Jog", IE_Released, this, &AABPlayerController::CallStopSprint);
-    //playerInput->BindAction("Crouch", IE_Pressed, this, &AABPlayerController::CallCrouch);
-    //playerInput->BindAction("Crouch", IE_Released, this, &AABPlayerController::CallStopCrouch);
-    //playerInput->BindAction("UseSkill", IE_Pressed, this, &AABPlayerController::CallUseAbility);
-    //playerInput->BindAction("AnimalTogether", IE_Pressed, this, &AABPlayerController::CallFollowing);
-    //playerInput->BindAction("ChangeAnimal", IE_Pressed, this, &AABPlayerController::CallSwitchAnimal);
-    //playerInput->BindAction("ESC", IE_Pressed, this, &AABPlayerController::QuitGame);
+    for (auto& a : ActionBindings)
+    {
+        inputComponent->AddActionBinding(*a);
+    }
+    for (auto& a : AxisBindings)
+    {
+        inputComponent->AxisBindings.Add(*a);
+    }
 }
 
-void AMovableInteractive::UnbindInput(AABPlayerController*) const
-{}
+void AMovableInteractive::UnbindInput(UInputComponent* inputComponent) const
+{
+    for (auto& a : ActionBindings)
+    {
+        inputComponent->RemoveActionBindingForHandle(a->GetHandle());
+    }
+    for (auto& a : AxisBindings)
+    {
+        //inputComponent->AxisBindings.RemoveSwap(*a);
+        inputComponent->AxisBindings.RemoveAllSwap([&a](const FInputAxisBinding& x)
+                                                   {
+                                                       return x.AxisName == a->AxisName;
+                                                   });
+    }
+}
 
 void AMovableInteractive::AfterInteraction(bool bResult)
 {
@@ -59,6 +113,7 @@ void AMovableInteractive::AfterInteraction(bool bResult)
         InteractingComponent->SetMouthInteracting(false);
     if (bOccupyPaw)
         InteractingComponent->SetPawInteracting(false);
-    InteractingComponent->OnInteractionStopped.Remove(StopInteractionHandle);
+    UnbindInput(Controller->InputComponent);
+    Controller->BindInput();
     InteractingComponent = nullptr;
 }
