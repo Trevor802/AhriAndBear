@@ -4,12 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "Interactives/ABInteractiveObjectBase.h"
 #include "Components/BoxComponent.h"
+#include "GameBase/Define.h"
+#include "BehaviorTree/BehaviorTree.h"
 #include "ABAnimalCharacter.generated.h"
 
 class UStaticMeshComponent;
 class USpringArmComponent;
+class AABInteractiveObjectBase;
+class UAABSurvivalComponent;
+class UPawnSensingComponent;
+class UPawnNoiseEmitterComponent;
+class UAudioComponent;
 
 UCLASS()
 class AHRIANDBEAR_API AABAnimalCharacter : public ACharacter
@@ -26,45 +32,133 @@ public:
 		class UCameraComponent* camera;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		UBoxComponent* InterationTrigger;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
+		class USphereComponent* ProjectileStart;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Survival")
+		UAABSurvivalComponent* SurvivalComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
+		UBehaviorTree* BehaviorTree;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Jumping")
+		float JumpingSpeed = 700.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Jumping")
+		float MinJumpDepth = -100.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Jumping")
+		float MaxJumpDepth = -500.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Jumping")
+		float MinJumpHeight = 50.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Jumping")
+		float MaxJumpHeight = 500.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Jumping")
+		float JumpStamina = 25;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Jumping")
+		float EdgeForwardOffset = 50.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Debug")
+		bool bDebugJumping = false;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Sprint")
+		float SprintStaminaRateOfChange = 1;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual bool CanJumpInternal_Implementation() const override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	virtual void Jump() override;
+	void UpdateChecking();
 	void StartJumping();
 	void EndJumping();
+
+	void StartSprinting();
+	void EndSprinting();
+	void SprintStaminaUpdate(float DeltaTime);
 
 	void StartInteracting();
 	void EndInteracting();
 
+	void StartCrouch();
+	void EndCrouch();
+
+	void ChangeOtherFollowingStatus();
+
+	void SwitchAnimal();
+
+	void ChangeMovementSetting();
+	void ChangeMovementMode();
+
+	void LerpCameraToFP(float DeltaTime);
+	void LerpCameraToTP(float DeltaTime);
+	void ChangeCameraLocation(float DeltaTime);
+
+	virtual void UseAbility();
 	bool CanMove();
+	bool CanSprint();
 	bool CanInteract();
+	bool CanUseAbility();
+	bool CanClimb();
+	bool CanCrouch();
 
 	UFUNCTION()
-	void OnInteractionOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+		void OnInteractionOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION()
-	void OnInteractionOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+		void OnInteractionOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 protected:
 	FTimerHandle TimerHandle;
+	void SetOtherAnimal();
 
 public:
 	UPROPERTY(Category = Camera, VisibleDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 		float baseTurnRate;
 	UPROPERTY(Category = Camera, VisibleDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 		float baseLookUpRate;
+	UPROPERTY(Category = Camera, VisibleDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+		float cameraLerpSpeed;
+	UPROPERTY(Category = Camera, EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+		FVector FPCameraTargetLocation;
+	UPROPERTY(Category = Camera, EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+		float FPSpringArmTargetLength;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float WalkSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float SprintSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float CrouchSpeed;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
-		bool bJumping;
+		bool bCrouching;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
+		bool bJumping;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		bool bSprinting;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		bool bInteracting;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+		EAnimalType AnimalType;
+
+	bool bAttached;
+
+	UPROPERTY(BlueprintReadWrite)
+		bool bIsFollowing;
+
+	AABAnimalCharacter* OtherAnimal;
+	bool bBlackBoardSet;
+	bool bOrientRotationToMovementSetting;
+
+	bool bInClimbingZone;
+	bool bClimbing;
 
 private:
 	bool bWithinRange;
 	AABInteractiveObjectBase* InteractiveObjectRef;
+	bool CheckJumping(FVector&);
+	bool bCanJump;
+	FVector JumpingVelocity;
+
+	FVector OriginalCameraPosition;
+	float OriginalSpringArmLength;
 };

@@ -19,16 +19,26 @@ public:
 
 	virtual void SetupInputComponent() override;
 	virtual void OnPossess(APawn* Pawn) override;
+	virtual void Tick(float DeltaTime) override;
 
 	void CallMoveForward(float value);
 	void CallMoveRight(float value);
+	void CallTurn(float value);
+	void CallLookUp(float value);
 	void CallTurnAtRate(float value);
 	void CallLookUpAtRate(float value);
 	void CallJump();
 	void CallStopJump();
+	void CallSprint();
+	void CallStopSprint();
 	void CallInteract();
+	void CallUseAbility();
+	void CallFollowing();
+	void CallSwitchAnimal();
+	void CallCrouch();
+	void CallStopCrouch();
+	
+	void QuitGame();
 
-private:
 	AABAnimalCharacter* AnimalCharacter;
-
 };

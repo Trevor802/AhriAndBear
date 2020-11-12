@@ -4,30 +4,41 @@
 #include "ABInteractiveObjectWater.h"
 #include "Engine.h"
 #include "Engine/StaticMesh.h"
+#include "Components/BoxComponent.h"
 #include "Engine/CollisionProfile.h"
+#include "ABAnimalCharacter.h"
+#include "AABSurvivalComponent.h"
+#include "ABSurvivalStats.h"
+#include "EventTrigger.h"
 
 AABInteractiveObjectWater::AABInteractiveObjectWater()
 	: Super()
 {
+	CollisionShape = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionBox"));
+	RootComponent = CollisionShape;
 	BowlMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BowlMesh"));
 	BowlMesh->SetupAttachment(RootComponent);
 
-	IteractiveObjectTypes = EABIteractiveObjectTypes::Water;
+	bCanBeInteracted = true;
+}
+
+void AABInteractiveObjectWater::BeginPlay()
+{
+	Super::BeginPlay();
+	EventTrigger->EventData.TriggerEvent = EEventType::Supply;
+	EventTrigger->EventData.SurvivalData = SurvivalEffect;
 }
 
 void AABInteractiveObjectWater::Tick(float DeltaTime)
 {
-	CheckWaterStatus();
+	Super::Tick(DeltaTime);
 }
 
-void AABInteractiveObjectWater::CheckWaterStatus()
+void AABInteractiveObjectWater::AfterInteraction()
 {
-	if (bInteracted == true)
-	{
-		//TODO: add to survival data
+	//TODO: add to survival data
+	UABSurvivalStatFunctions::AddToCurrentValue(OverlappingAnimal->SurvivalComponent->Thirst, SurvivalEffect.Thirst);
 
-		//TODO: play drinking sound
-
-		bInteracted = false;
-	}
+	FindComponentByClass<UEventTrigger>()->Interact(OverlappingAnimal);
+	//TODO: play drinking sound
 }
