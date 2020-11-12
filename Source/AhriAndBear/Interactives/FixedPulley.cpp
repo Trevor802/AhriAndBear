@@ -3,7 +3,11 @@
 
 #include "FixedPulley.h"
 #include "Components/SphereComponent.h"
+#include "Interactives/CharacterInteractionComponent.h"
+#include "ABAnimalCharacter.h"
+#include "ABPlayerController.h"
 #include "Kismet/GameplayStatics.h"
+
 
 // Sets default values
 AFixedPulley::AFixedPulley()
@@ -29,10 +33,7 @@ AFixedPulley::AFixedPulley()
     ReactionCable->EndLocation = FVector::ZeroVector;
     ActionCable->SetAttachEndToComponent(ActionHandler);
     ReactionCable->SetAttachEndToComponent(ReactionHandler);
-    bCanAttachDog = false;
-    bCanAttachCat = false;
-    bAttachingDog = false;
-    bAttachingCat = false;
+    bOccupyMouth = true;
 }
 
 void AFixedPulley::OnConstruction(const FTransform& Transform)
@@ -41,7 +42,7 @@ void AFixedPulley::OnConstruction(const FTransform& Transform)
     ActionCable->SetAttachEndToComponent(ActionHandler);
     ReactionCable->SetAttachEndToComponent(ReactionHandler);
 
-    SwitchReaction(bAttachingDog);
+    SwitchReaction(InteractingComponent != nullptr);
 }
 
 void AFixedPulley::SwitchReaction(bool isPulling)
@@ -50,14 +51,8 @@ void AFixedPulley::SwitchReaction(bool isPulling)
         return;
     if (isPulling)
     {	
-        //ReactionHandler->DetachFromParent(true);
-        //ReactionHandler->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
-        //ReactionHandler->AttachTo(RootComponent);
         ReactionHandler->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepWorld, true));
-        //ReactionHandler->SetWorldLocation(GetActorLocation() - FVector::DownVector * 500.f);
         UpdateHandlers();
-        //ReactionHandler->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepWorld, true));
-        //ReactionCable->SetAttachEndToComponent(ReactionHandler);
         ReactionObject->AttachToComponent(ReactionHandler, FAttachmentTransformRules(EAttachmentRule::KeepWorld, true));
         ReactionObject->SetActorLocation(ReactionHandler->GetComponentLocation());
         ReactionObject->SetActorRotation(FQuat::Identity);
@@ -78,84 +73,8 @@ void AFixedPulley::BeginPlay()
     ActionCable->SetAttachEndToComponent(ActionHandler);
     ReactionCable->SetAttachEndToComponent(ReactionHandler);
     ReleasedPoint = ActionHandler->GetRelativeLocation();
-    SwitchReaction(bAttachingDog);
+    SwitchReaction(InteractingComponent != nullptr);
     TotalLength = ActionHandler->GetRelativeLocation().Size() + (ReactionHandler->GetComponentLocation() - GetActorLocation()).Size();
-    ActionHandler->OnComponentBeginOverlap.AddDynamic(this, &AFixedPulley::OnStartOverlapBegin);
-    ActionHandler->OnComponentEndOverlap.AddDynamic(this, &AFixedPulley::OnStartOverlapEnd);
-
-    ReactionHandler->OnComponentBeginOverlap.AddDynamic(this, &AFixedPulley::OnEndOverlapBegin);
-    ReactionHandler->OnComponentEndOverlap.AddDynamic(this, &AFixedPulley::OnEndOverlapEnd);
-}
-
-void AFixedPulley::AfterInteraction(bool bResutl)
-{
-    if (Cast<AABDogCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0)))
-    {
-        if (bAttachingDog == false && bCanAttachDog)
-        {
-            DogRef->bAttached = true;
-            bAttachingDog = true;
-            UIWidget->SetVisibility(false);
-        }
-        else if(bAttachingDog == true)
-        {
-            DogRef->bAttached = false;
-            bAttachingDog = false;
-            bCanAttachDog = false;
-            ActionHandler->SetRelativeLocation(ReleasedPoint);
-            UIWidget->SetVisibility(true);
-        }
-        {
-            FScopeLock ScopeLock(&Mutex);
-            SwitchReaction(bAttachingDog);
-        }
-    }
-    else if (Cast<AABCatCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0)))
-    {
-        if (bAttachingCat == false && bCanAttachCat)
-        {
-            bAttachingCat = true;
-        }
-        else
-        {
-            bAttachingCat = false;
-            bCanAttachCat = false;
-        }
-    }	
-}
-
-void AFixedPulley::OnStartOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-    if (OtherActor && OtherActor != this && Cast<AABDogCharacter>(OtherActor))
-    {
-        bCanAttachDog = true;
-        DogRef = Cast<AABDogCharacter>(OtherActor);
-    }
-}
-
-void AFixedPulley::OnStartOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-    if (OtherActor && OtherActor != this && Cast<AABDogCharacter>(OtherActor))
-    {
-        //bCanAttachDog = false;
-    }
-}
-
-void AFixedPulley::OnEndOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-    if (OtherActor && OtherActor != this && Cast<AABCatCharacter>(OtherActor))
-    {
-        bCanAttachCat = true;
-        CatRef = Cast<AABCatCharacter>(OtherActor);
-    }
-}
-
-void AFixedPulley::OnEndOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-    if (OtherActor && OtherActor != this && Cast<AABCatCharacter>(OtherActor))
-    {
-        //bCanAttachCat = false;
-    }
 }
 
 // Called every frame
@@ -167,21 +86,16 @@ void AFixedPulley::Tick(float DeltaTime)
 
 void AFixedPulley::UpdateHandlers()
 {
-    if (bAttachingDog && DogRef)
+    if (InteractingComponent)
     {
-        ActionHandler->SetWorldLocation(DogRef->GetActorLocation());
+        ActionHandler->SetWorldLocation(InteractingComponent->GetComponentLocation());
     }
 
-    if (bAttachingCat && CatRef)
-    {
-        CatRef->SetActorLocation(ReactionHandler->GetComponentLocation());
-    }
     float startLength, endLength;
-    if (bAttachingDog)
+    if (InteractingComponent)
     {
         startLength = ActionHandler->GetRelativeLocation().Size();
         endLength = FMath::Clamp(TotalLength - startLength, 10.0f, TotalLength / 2);
         ReactionHandler->SetRelativeLocation(FVector(0, 0, -1) * endLength);
     }
 }
-

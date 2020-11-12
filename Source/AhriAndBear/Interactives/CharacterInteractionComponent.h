@@ -38,5 +38,5 @@ private:
 	bool bOccupying;
 	bool bMouthInteracting;
 	bool bPawInteracting;
-	TArray<AABInteractiveObjectBase*> SortInteractives(const TArray<AABInteractiveObjectBase*>& interactives) const;
+	void SortInteractives(TArray<AABInteractiveObjectBase*>& interactives) const;
 };

@@ -5,15 +5,13 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "CableComponent.h"
-#include "ABInteractiveObjectBase.h"
-#include "Characters/ABCatCharacter.h"
-#include "Characters/ABDogCharacter.h"
+#include "MovableInteractive.h"
 #include "Misc/ScopeLock.h"
 #include "FixedPulley.generated.h"
 
 class UCableComponent;
 UCLASS()
-class AHRIANDBEAR_API AFixedPulley : public AABInteractiveObjectBase
+class AHRIANDBEAR_API AFixedPulley : public AMovableInteractive
 {
     GENERATED_BODY()
     
@@ -25,22 +23,11 @@ protected:
     virtual void Tick(float DeltaTime) override;
     virtual void BeginPlay() override;
     virtual void OnConstruction(const FTransform& Transform) override;
-    virtual void AfterInteraction(bool) override;
     void UpdateHandlers();
     class USceneComponent* Root;
-
-public:
-    UFUNCTION()
-        void OnStartOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-    UFUNCTION()
-        void OnStartOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
-    UFUNCTION()
-        void OnEndOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-    UFUNCTION()
-        void OnEndOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+    FORCEINLINE virtual bool CanInteract(UCharacterInteractionComponent*) const override { return true; }
+    FORCEINLINE virtual void CallSprint() override {};
+    FORCEINLINE virtual void CallStopSprint() override {};
 
 public:	
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
@@ -56,14 +43,7 @@ public:
 
 private:
     void SwitchReaction(bool);
-    AABDogCharacter* DogRef;
-    AABCatCharacter* CatRef;
 
-    bool bCanAttachDog;
-    bool bCanAttachCat;
-
-    bool bAttachingDog;
-    bool bAttachingCat;
     float TotalLength = 200.0f;
     FVector ReleasedPoint;
     FCriticalSection Mutex;

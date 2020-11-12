@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "CharacterInteractionComponent.h"
+#include "Containers/Array.h"
 #include "ABInteractiveObjectBase.h"
 
 // Sets default values for this component's properties
@@ -22,9 +23,9 @@ bool UCharacterInteractionComponent::TryInteracting()
 	for (auto& a : actors)
 	{
 		AABInteractiveObjectBase* interact = Cast<AABInteractiveObjectBase>(a);
-		interactives.Emplace(interact);
+		interactives.Add(interact);
 	}
-	interactives = SortInteractives(interactives);
+	SortInteractives(interactives);
 	for (auto& i : interactives)
 	{
 		if (i->TryInteracting(this))
@@ -53,8 +54,11 @@ void UCharacterInteractionComponent::TickComponent(float DeltaTime, ELevelTick T
 	// ...
 }
 
-TArray<AABInteractiveObjectBase*> UCharacterInteractionComponent::SortInteractives(const TArray<AABInteractiveObjectBase*>& interactives) const
+void UCharacterInteractionComponent::SortInteractives(TArray<AABInteractiveObjectBase*>& interactives) const
 {
-	return TArray<AABInteractiveObjectBase*>();
+	interactives.Sort([](const AABInteractiveObjectBase& lhs, const AABInteractiveObjectBase& rhs)
+					  {
+						  return lhs.InteractionPriority > rhs.InteractionPriority;
+					  });
 }
 

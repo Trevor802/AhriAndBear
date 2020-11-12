@@ -7,8 +7,8 @@
 #include "Components/WidgetComponent.h"
 #include "ABInteractiveObjectBase.generated.h"
 
+#define GET_CONTROLLER(x) Cast<AABPlayerController>(Cast<AABAnimalCharacter>(x->GetOwner())->GetController())
 class UCharacterInteractionComponent;
-
 UCLASS(Abstract)
 class AHRIANDBEAR_API AABInteractiveObjectBase : public AActor
 {

@@ -45,6 +45,6 @@ public:
 	void BindInput() const;
 	void UnbindInput() const;
 protected:
-	TArray<FInputActionBinding*> ActionBindings;
-	TArray<FInputAxisBinding*> AxisBindings;
+	TArray<FInputActionBinding> ActionBindings;
+	TArray<FInputAxisBinding> AxisBindings;
 };
