@@ -28,6 +28,8 @@ protected:
     FORCEINLINE virtual bool CanInteract(UCharacterInteractionComponent*) const override { return true; }
     FORCEINLINE virtual void CallSprint() override {};
     FORCEINLINE virtual void CallStopSprint() override {};
+    virtual void BeginInteraction() override;
+    virtual void EndInteraction(bool) override;
 
 public:	
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")

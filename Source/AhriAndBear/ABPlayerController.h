@@ -28,7 +28,6 @@ public:
 	void CallTurnAtRate(float value);
 	void CallLookUpAtRate(float value);
 	void CallJump();
-	void CallStopJump();
 	void CallSprint();
 	void CallStopSprint();
 	void CallInteract();

@@ -56,8 +56,13 @@ void AABInteractiveObjectFood::Tick(float DeltaTime)
 	}
 }
 
-void AABInteractiveObjectFood::AfterInteraction(bool bResult)
+void AABInteractiveObjectFood::EndInteraction(bool bResult)
 {
+	Super::EndInteraction(bResult);
+	if (!bResult)
+	{
+		return;
+	}
 	InteractingComponent->GetOwner()->FindComponentByClass<UAABSurvivalComponent>()->AddSurvivalData(SurvivalEffect);
 	if (FoodArray.Num() != 0)
 	{
@@ -72,7 +77,6 @@ void AABInteractiveObjectFood::AfterInteraction(bool bResult)
 		FTimerDelegate RespawnTimerDelegate = FTimerDelegate::CreateUObject(this, &AABInteractiveObjectFood::TempGymRespawn); // for planet fitness meat heads only
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle, RespawnTimerDelegate, 0.5f, false);
 	}
-	Super::AfterInteraction(bResult);
 }
 
 void AABInteractiveObjectFood::TempGymRespawn() 

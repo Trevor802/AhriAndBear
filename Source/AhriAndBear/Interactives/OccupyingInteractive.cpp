@@ -2,32 +2,21 @@
 #include "TimerManager.h"
 #include "Interactives/CharacterInteractionComponent.h"
 
-bool AOccupyingInteractive::TryInteracting(UCharacterInteractionComponent* component)
+void AOccupyingInteractive::BeginInteraction()
 {
-    if (component->IsOccupying())
-    {
-        return false;
-    }
-    if (CanInteract(component))
-    {
-        InteractingComponent = component;
-        FTimerDelegate timerDelegate = FTimerDelegate::CreateUObject(this, &AOccupyingInteractive::AfterInteraction, true);
-        GetWorldTimerManager().SetTimer(TimerHandle, timerDelegate, OccupyingDuration, false);
-        InteractingComponent->SetOccupying(true);
-        StopInteractionHandle = component->OnInteractionStopped.AddLambda([this]()
-                                                  {
-                                                      AfterInteraction(false);
-                                                  });
-        return true;
-    }
-    return false;
+    FTimerDelegate timerDelegate = FTimerDelegate::CreateUObject(this, &AMovableInteractive::AfterInteraction, true);
+    GetWorldTimerManager().SetTimer(TimerHandle, timerDelegate, OccupyingDuration, false);
+    InteractingComponent->SetOccupying(true);
 }
 
-void AOccupyingInteractive::AfterInteraction(bool bResult)
+void AOccupyingInteractive::EndInteraction(bool)
 {
     check(InteractingComponent);
     InteractingComponent->SetOccupying(false);
-    InteractingComponent->OnInteractionStopped.Remove(StopInteractionHandle);
     GetWorldTimerManager().ClearTimer(TimerHandle);
-    InteractingComponent = nullptr;
+}
+
+void AOccupyingInteractive::CallStopInteract()
+{
+    AfterInteraction(false);
 }

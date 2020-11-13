@@ -21,7 +21,7 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	FORCEINLINE virtual bool CanInteract(UCharacterInteractionComponent* component) const override { return FoodArray.Num() > 0; }
-	virtual void AfterInteraction(bool) override;
+	virtual void EndInteraction(bool) override;
 
 	void TempGymRespawn();
 	

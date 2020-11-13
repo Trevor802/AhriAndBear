@@ -21,6 +21,9 @@ AMovableInteractive::AMovableInteractive()
     action = FInputActionBinding("Catch", IE_Pressed);
     action.ActionDelegate.BindDelegate(this, &AMovableInteractive::Interact);
     ActionBindings.Add(action);
+    action = FInputActionBinding("Catch", IE_Released);
+    action.ActionDelegate.BindDelegate(this, &AMovableInteractive::StopInteract);
+    ActionBindings.Add(action);
     action = FInputActionBinding("UseSkill", IE_Pressed);
     action.ActionDelegate.BindDelegate(this, &AMovableInteractive::UseAbility);
     ActionBindings.Add(action);
@@ -166,6 +169,7 @@ bool AMovableInteractive::TryInteracting(UCharacterInteractionComponent* compone
             InteractingComponent->SetMouthInteracting(true);
         if (bOccupyPaw)
             InteractingComponent->SetPawInteracting(true);
+        BeginInteraction();
         Controller = Cast<AABPlayerController>(Cast<APawn>(InteractingComponent->GetOwner())->GetController());
         Controller->UnbindInput();
         BindInput(Controller->InputComponent);
@@ -198,7 +202,7 @@ void AMovableInteractive::UnbindInput(UInputComponent* inputComponent) const
 {
     for (auto& a : ActionBindings)
     {
-        inputComponent->RemoveActionBindingForHandle(a.GetHandle());
+        inputComponent->RemoveActionBinding(a.GetActionName(), a.KeyEvent);
     }
     for (auto& a : AxisBindings)
     {
@@ -213,6 +217,7 @@ void AMovableInteractive::UnbindInput(UInputComponent* inputComponent) const
 void AMovableInteractive::AfterInteraction(bool bResult)
 {
     check(InteractingComponent);
+    EndInteraction(bResult);
     if (bOccupyMouth)
         InteractingComponent->SetMouthInteracting(false);
     if (bOccupyPaw)

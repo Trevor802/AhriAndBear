@@ -41,8 +41,16 @@ void AFixedPulley::OnConstruction(const FTransform& Transform)
     Super::OnConstruction(Transform);
     ActionCable->SetAttachEndToComponent(ActionHandler);
     ReactionCable->SetAttachEndToComponent(ReactionHandler);
+}
 
-    SwitchReaction(InteractingComponent != nullptr);
+void AFixedPulley::BeginInteraction()
+{
+    SwitchReaction(true);
+}
+
+void AFixedPulley::EndInteraction(bool)
+{
+    SwitchReaction(false);
 }
 
 void AFixedPulley::SwitchReaction(bool isPulling)
@@ -52,7 +60,7 @@ void AFixedPulley::SwitchReaction(bool isPulling)
     if (isPulling)
     {	
         ReactionHandler->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepWorld, true));
-        UpdateHandlers();
+        //UpdateHandlers();
         ReactionObject->AttachToComponent(ReactionHandler, FAttachmentTransformRules(EAttachmentRule::KeepWorld, true));
         ReactionObject->SetActorLocation(ReactionHandler->GetComponentLocation());
         ReactionObject->SetActorRotation(FQuat::Identity);
@@ -63,6 +71,7 @@ void AFixedPulley::SwitchReaction(bool isPulling)
         ReactionObject->FindComponentByClass<UPrimitiveComponent>()->SetSimulatePhysics(true);
         ReactionHandler->AttachToComponent(ReactionObject->FindComponentByClass<UPrimitiveComponent>(), FAttachmentTransformRules(EAttachmentRule::KeepWorld, true));
         ReactionHandler->SetWorldLocation(ReactionObject->GetActorLocation());
+        ActionHandler->SetWorldLocation(ReleasedPoint);
     }
 }
 
@@ -72,8 +81,7 @@ void AFixedPulley::BeginPlay()
     Super::BeginPlay();
     ActionCable->SetAttachEndToComponent(ActionHandler);
     ReactionCable->SetAttachEndToComponent(ReactionHandler);
-    ReleasedPoint = ActionHandler->GetRelativeLocation();
-    SwitchReaction(InteractingComponent != nullptr);
+    ReleasedPoint = ActionHandler->GetComponentLocation();
     TotalLength = ActionHandler->GetRelativeLocation().Size() + (ReactionHandler->GetComponentLocation() - GetActorLocation()).Size();
 }
 

@@ -16,10 +16,12 @@ class AHRIANDBEAR_API AMovableInteractive : public AABInteractiveObjectBase
 	GENERATED_BODY()
 protected:
 	AMovableInteractive();
-	virtual void AfterInteraction(bool) override;
-	virtual bool TryInteracting(UCharacterInteractionComponent*) override;
+	virtual bool TryInteracting(UCharacterInteractionComponent*) override sealed;
 	virtual void BindInput(UInputComponent*) const;
-	virtual void UnbindInput(UInputComponent*) const;
+	virtual void UnbindInput(UInputComponent*) const;	
+
+	virtual void BeginInteraction() {};
+	virtual void EndInteraction(bool) {};
 
 	FORCEINLINE void MoveForward(float value) { CallMoveForward(value); }
 	FORCEINLINE void MoveRight(float value) { CallMoveRight(value); }
@@ -31,6 +33,7 @@ protected:
 	FORCEINLINE void Sprint() { CallSprint(); }
 	FORCEINLINE void StopSprint() { CallStopSprint(); }
 	FORCEINLINE void Interact() { CallInteract(); }
+	FORCEINLINE void StopInteract() { CallStopInteract(); }
 	FORCEINLINE void UseAbility() { CallUseAbility(); }
 	FORCEINLINE void Following() { CallFollowing(); }
 	FORCEINLINE void SwitchAnimal() { CallSwitchAnimal(); }
@@ -48,6 +51,7 @@ protected:
 	virtual void CallSprint();
 	virtual void CallStopSprint();
 	virtual void CallInteract();
+	virtual void CallStopInteract() {};
 	virtual void CallUseAbility();
 	virtual void CallFollowing();
 	virtual void CallSwitchAnimal();
@@ -59,6 +63,7 @@ public:
 	bool bOccupyMouth;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gameplay")
 	bool bOccupyPaw;
+	virtual void AfterInteraction(bool) override sealed;
 
 private:
 	TArray<FInputActionBinding> ActionBindings;

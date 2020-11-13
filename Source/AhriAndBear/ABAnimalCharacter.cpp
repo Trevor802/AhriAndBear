@@ -25,14 +25,11 @@ AABAnimalCharacter::AABAnimalCharacter()
 	camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera0"));
 	camera->SetupAttachment(springArm);
 
-	InterationTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("InterationTrigger"));
-	InterationTrigger->SetupAttachment(RootComponent);
-
 	ProjectileStart = CreateDefaultSubobject<USphereComponent>(TEXT("ProjectileStart"));
 	ProjectileStart->SetupAttachment(RootComponent);
 
-	auto interactionComponent = CreateDefaultSubobject<UCharacterInteractionComponent>(TEXT("InteractionComp"));
-	interactionComponent->SetupAttachment(RootComponent);
+	InteractionComponent = CreateDefaultSubobject<UCharacterInteractionComponent>(TEXT("InteractionComp"));
+	InteractionComponent->SetupAttachment(RootComponent);
 
 	SurvivalComponent = CreateDefaultSubobject<UAABSurvivalComponent>(TEXT("Survival Component"));
 
@@ -59,9 +56,6 @@ void AABAnimalCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	SetOtherAnimal();
-
-	InterationTrigger->OnComponentBeginOverlap.AddDynamic(this, &AABAnimalCharacter::OnInteractionOverlapBegin);
-	InterationTrigger->OnComponentEndOverlap.AddDynamic(this, &AABAnimalCharacter::OnInteractionOverlapEnd);
 
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 
@@ -140,27 +134,6 @@ void AABAnimalCharacter::EndSprinting()
 {
 	bSprinting = false;
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
-}
-
-void AABAnimalCharacter::StartInteracting()
-{
-	//if (InteractiveObjectRef && InteractiveObjectRef->CanInteract(FindComponentByClass<UCharacterInteractionComponent>()) == true)
-	//{
-	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("interaction succeed"));
-	//	bInteracting = true;
-
-	//	float InteractingCooldown = 0.0f;
-
-
-	//	FTimerDelegate InteractionTimerDelegate = FTimerDelegate::CreateUObject(this, &AABAnimalCharacter::EndInteracting);
-	//	GetWorld()->GetTimerManager().SetTimer(TimerHandle, InteractionTimerDelegate, InteractingCooldown, false);
-	//}
-}
-
-void AABAnimalCharacter::EndInteracting()
-{
-	/*bInteracting = false;
-	InteractiveObjectRef->AfterInteraction(true);*/
 }
 
 void AABAnimalCharacter::StartCrouch()
@@ -286,107 +259,6 @@ void AABAnimalCharacter::ChangeCameraLocation(float DeltaTime)
 void AABAnimalCharacter::UseAbility()
 {
 
-}
-
-bool AABAnimalCharacter::CanMove()
-{
-	if (bInteracting == true)
-	{
-		return false;
-	}
-	else
-	{
-		return true;
-	}
-}
-
-bool AABAnimalCharacter::CanSprint()
-{
-	if (CanMove() && bJumping == false)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-
-
-bool AABAnimalCharacter::CanInteract()
-{
-	if (bInteracting == true || bWithinRange == false)
-	{
-		return false;
-	}
-	else
-	{
-		return true;
-	}
-}
-
-bool AABAnimalCharacter::CanUseAbility()
-{
-	if (bInteracting == true)
-	{
-		return false;
-	}
-	else
-	{
-		return true;
-	}
-}
-
-bool AABAnimalCharacter::CanClimb()
-{
-	if (bInClimbingZone == true && bSprinting == true && AnimalType == EAnimalType::Cat)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-
-bool AABAnimalCharacter::CanCrouch()
-{
-	if (CanMove() == true && bSprinting == false && GetMovementComponent()->IsMovingOnGround() == true)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-
-void AABAnimalCharacter::OnInteractionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (OtherActor && OtherActor != this && Cast<AABInteractiveObjectBase>(OtherActor) && bAttached == false)
-	{
-		InteractiveObjectRef = Cast<AABInteractiveObjectBase>(OtherActor);
-		bWithinRange = true;
-	}
-
-	if (OtherActor && OtherActor != this && Cast<AABClimbZone>(OtherActor))
-	{
-		bInClimbingZone = true;
-	}
-}
-
-void AABAnimalCharacter::OnInteractionOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	if (OtherActor && OtherActor != this && Cast<AABInteractiveObjectBase>(OtherActor) && bAttached == false)
-	{
-		InteractiveObjectRef = nullptr;
-		bWithinRange = false;
-	}
-
-	if (OtherActor && OtherActor != this && Cast<AABClimbZone>(OtherActor))
-	{
-		bInClimbingZone = false;
-	}
 }
 
 void AABAnimalCharacter::SetOtherAnimal()

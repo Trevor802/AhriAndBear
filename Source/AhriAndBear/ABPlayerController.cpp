@@ -46,7 +46,6 @@ void AABPlayerController::SetupInputComponent()
 	ActionBindings.Add(InputComponent->BindAction("Catch", IE_Pressed, this, &AABPlayerController::CallInteract));
 	ActionBindings.Add(InputComponent->BindAction("Catch", IE_Released, this, &AABPlayerController::CallStopInteract));
 	ActionBindings.Add(InputComponent->BindAction("Jump", IE_Pressed, this, &AABPlayerController::CallJump));
-	ActionBindings.Add(InputComponent->BindAction("Jump", IE_Released, this, &AABPlayerController::CallStopJump));
 	ActionBindings.Add(InputComponent->BindAction("Jog", IE_Pressed, this, &AABPlayerController::CallSprint));
 	ActionBindings.Add(InputComponent->BindAction("Jog", IE_Released, this, &AABPlayerController::CallStopSprint));
 	ActionBindings.Add(InputComponent->BindAction("Crouch", IE_Pressed, this, &AABPlayerController::CallCrouch));
@@ -59,53 +58,45 @@ void AABPlayerController::SetupInputComponent()
 
 void AABPlayerController::CallMoveForward(float value)
 {
-	if (AnimalCharacter->CanClimb() == false || AnimalCharacter->bSprinting == false) // not climbing
-	{
-		if (AnimalCharacter && value != 0.f && AnimalCharacter->CanMove())
-		{
-			const FRotator rotation = GetControlRotation();
-			const FRotator YawRotation(0, rotation.Yaw, 0);
+    if (AnimalCharacter && value != 0.f)
+    {
+        const FRotator rotation = GetControlRotation();
+        const FRotator YawRotation(0, rotation.Yaw, 0);
 
-			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-			AnimalCharacter->AddMovementInput(Direction, value);
+        const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+        AnimalCharacter->AddMovementInput(Direction, value);
 
-			AnimalCharacter->bClimbing = false;
-		}
-	}
-	else // climb up
-	{
-		if (AnimalCharacter && value != 0.f && AnimalCharacter->CanMove())
-		{
-			const FRotator rotation = GetControlRotation();
-			const FRotator YawRotation(0, rotation.Yaw, 0);
+        AnimalCharacter->bClimbing = false;
+    }
+	// Don't delete code below, they are for climbing
+		//if (AnimalCharacter && value != 0.f)
+		//{
+		//	const FRotator rotation = GetControlRotation();
+		//	const FRotator YawRotation(0, rotation.Yaw, 0);
 
-			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Z);
+		//	const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Z);
 
-			AnimalCharacter->AddMovementInput(Direction, value);
+		//	AnimalCharacter->AddMovementInput(Direction, value);
 
-			AnimalCharacter->bClimbing = true;
-		}
-	}
+		//	AnimalCharacter->bClimbing = true;
+		//}
 }
 
 void AABPlayerController::CallMoveRight(float value)
 {
-	if (AnimalCharacter->CanClimb() == false || AnimalCharacter->bSprinting == false) // not climbing
-	{
-		if (AnimalCharacter && value != 0.f && AnimalCharacter->CanMove())
-		{
-			const FRotator rotation = GetControlRotation();
-			const FRotator YawRotation(0, rotation.Yaw, 0);
+    if (AnimalCharacter && value != 0.f)
+    {
+        const FRotator rotation = GetControlRotation();
+        const FRotator YawRotation(0, rotation.Yaw, 0);
 
-			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-			AnimalCharacter->AddMovementInput(Direction, value);
-		}
-	}
+        const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+        AnimalCharacter->AddMovementInput(Direction, value);
+    }
 }
 
 void AABPlayerController::CallTurnAtRate(float value)
 {
-	if (AnimalCharacter && AnimalCharacter->CanMove())
+	if (AnimalCharacter)
 	{
 		AnimalCharacter->AddControllerYawInput(value * AnimalCharacter->baseTurnRate * GetWorld()->GetDeltaSeconds());
 	}
@@ -113,7 +104,7 @@ void AABPlayerController::CallTurnAtRate(float value)
 
 void AABPlayerController::CallLookUpAtRate(float value)
 {
-	if (AnimalCharacter && AnimalCharacter->CanMove())
+	if (AnimalCharacter)
 	{
 		AnimalCharacter->AddControllerPitchInput(value * AnimalCharacter->baseLookUpRate * GetWorld()->GetDeltaSeconds());
 	}
@@ -121,7 +112,7 @@ void AABPlayerController::CallLookUpAtRate(float value)
 
 void AABPlayerController::CallTurn(float value)
 {
-	if (AnimalCharacter && AnimalCharacter->CanMove())
+	if (AnimalCharacter)
 	{
 		AnimalCharacter->AddControllerYawInput(value);
 	}
@@ -129,7 +120,7 @@ void AABPlayerController::CallTurn(float value)
 
 void AABPlayerController::CallLookUp(float value)
 {
-	if (AnimalCharacter && AnimalCharacter->CanMove())
+	if (AnimalCharacter)
 	{
 		AnimalCharacter->AddControllerPitchInput(value);
 	}
@@ -137,24 +128,16 @@ void AABPlayerController::CallLookUp(float value)
 
 void AABPlayerController::CallJump()
 {
-	if (AnimalCharacter && AnimalCharacter->CanJump() && AnimalCharacter->CanMove())
+	if (AnimalCharacter && AnimalCharacter->CanJump())
 	{
 		AnimalCharacter->StartJumping();
 		AnimalCharacter->Jump();
 	}
 }
 
-void AABPlayerController::CallStopJump()
-{
-	if (AnimalCharacter)
-	{
-		AnimalCharacter->StopJumping();
-	}
-}
-
 void AABPlayerController::CallSprint()
 {
-	if (AnimalCharacter && AnimalCharacter->CanSprint())
+	if (AnimalCharacter)
 	{
 		AnimalCharacter->StartSprinting();
 	}
@@ -180,7 +163,7 @@ void AABPlayerController::CallInteract()
 
 void AABPlayerController::CallUseAbility()
 {
-	if (AnimalCharacter && AnimalCharacter->CanUseAbility())
+	if (AnimalCharacter)
 	{
 		AnimalCharacter->UseAbility();
 	}
@@ -188,11 +171,7 @@ void AABPlayerController::CallUseAbility()
 
 void AABPlayerController::CallStopInteract()
 {
-	if (AnimalCharacter)
-	{
-		auto interactionComponent = AnimalCharacter->FindComponentByClass<UCharacterInteractionComponent>();
-		interactionComponent->OnInteractionStopped.Broadcast();
-	}
+
 }
 
 void AABPlayerController::CallFollowing()
@@ -248,7 +227,7 @@ void AABPlayerController::UnbindInput() const
 {
 	for (auto& a : ActionBindings)
 	{
-		InputComponent->RemoveActionBindingForHandle(a.GetHandle());
+		InputComponent->RemoveActionBinding(a.GetActionName(), a.KeyEvent);
 	}
 	for (auto& a : AxisBindings)
 	{
