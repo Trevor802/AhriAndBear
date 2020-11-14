@@ -1,156 +1,156 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "MovableInteractive.h"
+#include "Interactive.h"
 #include "ABPlayerController.h"
 #include "Components/InputComponent.h"
 #include "ABPlayerController.h"
 #include "CharacterInteractionComponent.h"
 
-AMovableInteractive::AMovableInteractive()
+AInteractive::AInteractive()
 {
     auto action = FInputActionBinding("Jump", IE_Pressed);
-    action.ActionDelegate.BindDelegate(this, &AMovableInteractive::Jump);
+    action.ActionDelegate.BindDelegate(this, &AInteractive::Jump);
     ActionBindings.Add(action);
     action = FInputActionBinding("Sprint", IE_Pressed);
-    action.ActionDelegate.BindDelegate(this, &AMovableInteractive::Sprint);
+    action.ActionDelegate.BindDelegate(this, &AInteractive::Sprint);
     ActionBindings.Add(action);
     action = FInputActionBinding("Sprint", IE_Released);
-    action.ActionDelegate.BindDelegate(this, &AMovableInteractive::StopSprint);
+    action.ActionDelegate.BindDelegate(this, &AInteractive::StopSprint);
     ActionBindings.Add(action);
     action = FInputActionBinding("Catch", IE_Pressed);
-    action.ActionDelegate.BindDelegate(this, &AMovableInteractive::Interact);
+    action.ActionDelegate.BindDelegate(this, &AInteractive::Interact);
     ActionBindings.Add(action);
     action = FInputActionBinding("Catch", IE_Released);
-    action.ActionDelegate.BindDelegate(this, &AMovableInteractive::StopInteract);
+    action.ActionDelegate.BindDelegate(this, &AInteractive::StopInteract);
     ActionBindings.Add(action);
     action = FInputActionBinding("UseSkill", IE_Pressed);
-    action.ActionDelegate.BindDelegate(this, &AMovableInteractive::UseAbility);
+    action.ActionDelegate.BindDelegate(this, &AInteractive::UseAbility);
     ActionBindings.Add(action);
     action = FInputActionBinding("AnimalTogether", IE_Pressed);
-    action.ActionDelegate.BindDelegate(this, &AMovableInteractive::Following);
+    action.ActionDelegate.BindDelegate(this, &AInteractive::Following);
     ActionBindings.Add(action);
     action = FInputActionBinding("ChangeAnimal", IE_Pressed);
-    action.ActionDelegate.BindDelegate(this, &AMovableInteractive::SwitchAnimal);
+    action.ActionDelegate.BindDelegate(this, &AInteractive::SwitchAnimal);
     ActionBindings.Add(action);
     action = FInputActionBinding("Crouch", IE_Pressed);
-    action.ActionDelegate.BindDelegate(this, &AMovableInteractive::Crouch);
+    action.ActionDelegate.BindDelegate(this, &AInteractive::Crouch);
     ActionBindings.Add(action);
     action = FInputActionBinding("Crouch", IE_Released);
-    action.ActionDelegate.BindDelegate(this, &AMovableInteractive::StopCrouch);
+    action.ActionDelegate.BindDelegate(this, &AInteractive::StopCrouch);
     ActionBindings.Add(action);
     auto axis = FInputAxisBinding("WalkForward");
-    axis.AxisDelegate.BindDelegate(this, &AMovableInteractive::MoveForward);
+    axis.AxisDelegate.BindDelegate(this, &AInteractive::MoveForward);
     AxisBindings.Add(axis);
     axis = FInputAxisBinding("WalkRight");
-    axis.AxisDelegate.BindDelegate(this, &AMovableInteractive::MoveRight);
+    axis.AxisDelegate.BindDelegate(this, &AInteractive::MoveRight);
     AxisBindings.Add(axis);
     axis = FInputAxisBinding("TurnRate");
-    axis.AxisDelegate.BindDelegate(this, &AMovableInteractive::TurnAtRate);
+    axis.AxisDelegate.BindDelegate(this, &AInteractive::TurnAtRate);
     AxisBindings.Add(axis);
     axis = FInputAxisBinding("LookUpRate");
-    axis.AxisDelegate.BindDelegate(this, &AMovableInteractive::LookUpAtRate);
+    axis.AxisDelegate.BindDelegate(this, &AInteractive::LookUpAtRate);
     AxisBindings.Add(axis);
     axis = FInputAxisBinding("Turn");
-    axis.AxisDelegate.BindDelegate(this, &AMovableInteractive::Turn);
+    axis.AxisDelegate.BindDelegate(this, &AInteractive::Turn);
     AxisBindings.Add(axis);
     axis = FInputAxisBinding("LookUp");
-    axis.AxisDelegate.BindDelegate(this, &AMovableInteractive::LookUp);
+    axis.AxisDelegate.BindDelegate(this, &AInteractive::LookUp);
     AxisBindings.Add(axis);
 }
 
-void AMovableInteractive::CallMoveForward(float value)
+void AInteractive::CallMoveForward(float value)
 {
     if (InteractingComponent)
     {
         GET_CONTROLLER(InteractingComponent)->CallMoveForward(value);
     }
 }
-void AMovableInteractive::CallMoveRight(float value)
+void AInteractive::CallMoveRight(float value)
 {
     if (InteractingComponent)
     {
         GET_CONTROLLER(InteractingComponent)->CallMoveRight(value);
     }
 }
-void AMovableInteractive::CallTurn(float value)
+void AInteractive::CallTurn(float value)
 {
     if (InteractingComponent)
     {
         GET_CONTROLLER(InteractingComponent)->CallTurn(value);
     }
 }
-void AMovableInteractive::CallLookUp(float value)
+void AInteractive::CallLookUp(float value)
 {
     if (InteractingComponent)
     {
         GET_CONTROLLER(InteractingComponent)->CallLookUp(value);
     }
 }
-void AMovableInteractive::CallTurnAtRate(float value)
+void AInteractive::CallTurnAtRate(float value)
 {
     if (InteractingComponent)
     {
         GET_CONTROLLER(InteractingComponent)->CallTurnAtRate(value);
     }
 }
-void AMovableInteractive::CallLookUpAtRate(float value)
+void AInteractive::CallLookUpAtRate(float value)
 {
     if (InteractingComponent)
     {
         GET_CONTROLLER(InteractingComponent)->CallLookUpAtRate(value);
     }
 }
-void AMovableInteractive::CallJump()
+void AInteractive::CallJump()
 {
     if (InteractingComponent)
     {
         GET_CONTROLLER(InteractingComponent)->CallJump();
     }
 }
-void AMovableInteractive::CallSprint()
+void AInteractive::CallSprint()
 {
     if (InteractingComponent)
     {
         GET_CONTROLLER(InteractingComponent)->CallSprint();
     }
 }
-void AMovableInteractive::CallStopSprint()
+void AInteractive::CallStopSprint()
 {
     if (InteractingComponent)
     {
         GET_CONTROLLER(InteractingComponent)->CallStopSprint();
     }
 }
-void AMovableInteractive::CallUseAbility()
+void AInteractive::CallUseAbility()
 {
     if (InteractingComponent)
     {
         GET_CONTROLLER(InteractingComponent)->CallUseAbility();
     }
 }
-void AMovableInteractive::CallFollowing()
+void AInteractive::CallFollowing()
 {
     if (InteractingComponent)
     {
         GET_CONTROLLER(InteractingComponent)->CallFollowing();
     }
 }
-void AMovableInteractive::CallSwitchAnimal()
+void AInteractive::CallSwitchAnimal()
 {
     if (InteractingComponent)
     {
         GET_CONTROLLER(InteractingComponent)->CallSwitchAnimal();
     }
 }
-void AMovableInteractive::CallCrouch()
+void AInteractive::CallCrouch()
 {
     if (InteractingComponent)
     {
         GET_CONTROLLER(InteractingComponent)->CallCrouch();
     }
 }
-void AMovableInteractive::CallStopCrouch()
+void AInteractive::CallStopCrouch()
 {
     if (InteractingComponent)
     {
@@ -158,7 +158,7 @@ void AMovableInteractive::CallStopCrouch()
     }
 }
 
-bool AMovableInteractive::TryInteracting(UCharacterInteractionComponent* component)
+bool AInteractive::TryInteracting(UCharacterInteractionComponent* component)
 {
     if (bOccupyMouth && component->IsMouthInteracting()) return false;
     if (bOccupyPaw && component->IsPawInteracting()) return false;
@@ -178,7 +178,7 @@ bool AMovableInteractive::TryInteracting(UCharacterInteractionComponent* compone
     return false;
 }
 
-void AMovableInteractive::CallInteract()
+void AInteractive::CallInteract()
 {
     if (InteractingComponent)
     {
@@ -186,7 +186,7 @@ void AMovableInteractive::CallInteract()
     }
 }
 
-void AMovableInteractive::BindInput(UInputComponent* inputComponent) const
+void AInteractive::BindInput(UInputComponent* inputComponent) const
 {
     for (auto& a : ActionBindings)
     {
@@ -198,7 +198,7 @@ void AMovableInteractive::BindInput(UInputComponent* inputComponent) const
     }
 }
 
-void AMovableInteractive::UnbindInput(UInputComponent* inputComponent) const
+void AInteractive::UnbindInput(UInputComponent* inputComponent) const
 {
     for (auto& a : ActionBindings)
     {
@@ -214,7 +214,7 @@ void AMovableInteractive::UnbindInput(UInputComponent* inputComponent) const
     }
 }
 
-void AMovableInteractive::AfterInteraction(bool bResult)
+void AInteractive::AfterInteraction(bool bResult)
 {
     check(InteractingComponent);
     EndInteraction(bResult);

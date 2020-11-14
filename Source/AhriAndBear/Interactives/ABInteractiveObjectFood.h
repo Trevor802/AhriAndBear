@@ -26,6 +26,8 @@ public:
 	void TempGymRespawn();
 	
 public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
+	class UBoxComponent* CollisionShape;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
 	UStaticMeshComponent* FoodMesh1;

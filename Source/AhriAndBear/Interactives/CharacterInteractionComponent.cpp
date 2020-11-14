@@ -2,7 +2,7 @@
 
 #include "CharacterInteractionComponent.h"
 #include "Containers/Array.h"
-#include "ABInteractiveObjectBase.h"
+#include "Interactive.h"
 
 // Sets default values for this component's properties
 UCharacterInteractionComponent::UCharacterInteractionComponent()
@@ -18,11 +18,11 @@ UCharacterInteractionComponent::UCharacterInteractionComponent()
 bool UCharacterInteractionComponent::TryInteracting()
 {
 	TArray<AActor*> actors;
-	GetOverlappingActors(actors, AABInteractiveObjectBase::StaticClass());
-	TArray<AABInteractiveObjectBase*> interactives;
+	GetOverlappingActors(actors, AInteractive::StaticClass());
+	TArray<AInteractive*> interactives;
 	for (auto& a : actors)
 	{
-		AABInteractiveObjectBase* interact = Cast<AABInteractiveObjectBase>(a);
+		AInteractive* interact = Cast<AInteractive>(a);
 		interactives.Add(interact);
 	}
 	SortInteractives(interactives);
@@ -54,9 +54,9 @@ void UCharacterInteractionComponent::TickComponent(float DeltaTime, ELevelTick T
 	// ...
 }
 
-void UCharacterInteractionComponent::SortInteractives(TArray<AABInteractiveObjectBase*>& interactives) const
+void UCharacterInteractionComponent::SortInteractives(TArray<AInteractive*>& interactives) const
 {
-	interactives.Sort([](const AABInteractiveObjectBase& lhs, const AABInteractiveObjectBase& rhs)
+	interactives.Sort([](const AInteractive& lhs, const AInteractive& rhs)
 					  {
 						  return lhs.InteractionPriority > rhs.InteractionPriority;
 					  });

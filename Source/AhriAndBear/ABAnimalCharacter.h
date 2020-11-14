@@ -7,6 +7,7 @@
 #include "Components/BoxComponent.h"
 #include "GameBase/Define.h"
 #include "BehaviorTree/BehaviorTree.h"
+#include "Kismet/GameplayStatics.h"
 #include "ABAnimalCharacter.generated.h"
 
 class UStaticMeshComponent;
@@ -17,6 +18,7 @@ class UPawnSensingComponent;
 class UPawnNoiseEmitterComponent;
 class UAudioComponent;
 
+#define GET_CHARACTER Cast<AABAnimalCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 UCLASS()
 class AHRIANDBEAR_API AABAnimalCharacter : public ACharacter
 {

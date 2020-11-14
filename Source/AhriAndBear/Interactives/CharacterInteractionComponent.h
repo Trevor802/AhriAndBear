@@ -6,8 +6,7 @@
 #include "Components/BoxComponent.h"
 #include "CharacterInteractionComponent.generated.h"
 
-class AABInteractiveObjectBase;
-DECLARE_MULTICAST_DELEGATE(FInteractionStopped);
+class AInteractive;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class AHRIANDBEAR_API UCharacterInteractionComponent : public UBoxComponent
@@ -24,7 +23,6 @@ public:
 	FORCEINLINE bool IsMouthInteracting() const { return bMouthInteracting; }
 	FORCEINLINE bool IsPawInteracting() const { return bPawInteracting; }
 	bool TryInteracting();
-	FInteractionStopped OnInteractionStopped;
 
 protected:
 	// Called when the game starts
@@ -38,5 +36,5 @@ private:
 	bool bOccupying;
 	bool bMouthInteracting;
 	bool bPawInteracting;
-	void SortInteractives(TArray<AABInteractiveObjectBase*>& interactives) const;
+	void SortInteractives(TArray<AInteractive*>& interactives) const;
 };

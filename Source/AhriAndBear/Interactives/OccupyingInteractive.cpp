@@ -4,7 +4,7 @@
 
 void AOccupyingInteractive::BeginInteraction()
 {
-    FTimerDelegate timerDelegate = FTimerDelegate::CreateUObject(this, &AMovableInteractive::AfterInteraction, true);
+    FTimerDelegate timerDelegate = FTimerDelegate::CreateUObject(this, &AInteractive::AfterInteraction, true);
     GetWorldTimerManager().SetTimer(TimerHandle, timerDelegate, OccupyingDuration, false);
     InteractingComponent->SetOccupying(true);
 }

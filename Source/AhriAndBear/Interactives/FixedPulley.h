@@ -5,13 +5,13 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "CableComponent.h"
-#include "MovableInteractive.h"
+#include "Interactive.h"
 #include "Misc/ScopeLock.h"
 #include "FixedPulley.generated.h"
 
 class UCableComponent;
 UCLASS()
-class AHRIANDBEAR_API AFixedPulley : public AMovableInteractive
+class AHRIANDBEAR_API AFixedPulley : public AInteractive
 {
     GENERATED_BODY()
     

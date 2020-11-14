@@ -3,22 +3,25 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Interactives/ABInteractiveObjectBase.h"
-#include "MovableInteractive.generated.h"
+#include "GameFramework/Actor.h"
+#include "Interactive.generated.h"
 
 /**
  * 
  */
+#define GET_CONTROLLER(x) Cast<AABPlayerController>(Cast<AABAnimalCharacter>(x->GetOwner())->GetController())
 class AABPlayerController;
+class UCharacterInteractionComponent;
 UCLASS()
-class AHRIANDBEAR_API AMovableInteractive : public AABInteractiveObjectBase
+class AHRIANDBEAR_API AInteractive : public AActor
 {
 	GENERATED_BODY()
 protected:
-	AMovableInteractive();
-	virtual bool TryInteracting(UCharacterInteractionComponent*) override sealed;
+	AInteractive();
+	UCharacterInteractionComponent* InteractingComponent;
+	virtual bool CanInteract(UCharacterInteractionComponent*) const PURE_VIRTUAL(AInteractive::CanInteract, return false;);
 	virtual void BindInput(UInputComponent*) const;
-	virtual void UnbindInput(UInputComponent*) const;	
+	virtual void UnbindInput(UInputComponent*) const;
 
 	virtual void BeginInteraction() {};
 	virtual void EndInteraction(bool) {};
@@ -59,11 +62,15 @@ protected:
 	virtual void CallStopCrouch();
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
+	int InteractionPriority;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gameplay")
 	bool bOccupyMouth;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gameplay")
 	bool bOccupyPaw;
-	virtual void AfterInteraction(bool) override sealed;
+	void AfterInteraction(bool);
+	bool TryInteracting(UCharacterInteractionComponent*);
 
 private:
 	TArray<FInputActionBinding> ActionBindings;

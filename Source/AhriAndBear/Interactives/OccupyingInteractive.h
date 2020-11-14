@@ -1,12 +1,12 @@
 #pragma once
 
-#include "MovableInteractive.h"
+#include "Interactive.h"
 #include "OccupyingInteractive.generated.h"
 
 class UCharacterInteractionComponent;
 
 UCLASS()
-class AHRIANDBEAR_API AOccupyingInteractive : public AMovableInteractive
+class AHRIANDBEAR_API AOccupyingInteractive : public AInteractive
 {
 	GENERATED_BODY()
 

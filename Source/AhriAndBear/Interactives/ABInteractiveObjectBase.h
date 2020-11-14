@@ -7,8 +7,6 @@
 #include "Components/WidgetComponent.h"
 #include "ABInteractiveObjectBase.generated.h"
 
-#define GET_CONTROLLER(x) Cast<AABPlayerController>(Cast<AABAnimalCharacter>(x->GetOwner())->GetController())
-class UCharacterInteractionComponent;
 UCLASS(Abstract)
 class AHRIANDBEAR_API AABInteractiveObjectBase : public AActor
 {
@@ -35,20 +33,13 @@ protected:
 	void SetWidgetRotation();
 	void SetWidgetVisiability();
 
-	FDelegateHandle StopInteractionHandle;
-	UCharacterInteractionComponent* InteractingComponent;
-	bool bInteracting;
-	virtual void AfterInteraction(bool) PURE_VIRTUAL (AABInteractiveObjectBase::AfterInteraction,);
-	virtual bool CanInteract(UCharacterInteractionComponent*) const PURE_VIRTUAL(AABInteractiveObjectBase::CanInteract, return false;);
+	virtual void AfterInteraction(bool) {};
 
 public:	
 
 	virtual void Tick(float DeltaTime) override;
-	virtual bool TryInteracting(UCharacterInteractionComponent*) PURE_VIRTUAL(AABInteractiveObjectBase::Interact, return false;);
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
-	int InteractionPriority;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	FLinearColor UIColor;
