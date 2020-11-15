@@ -36,7 +36,6 @@ void UDistanceIndicator::UpdateTransform()
 	SetWorldRotation(Dir.Rotation());
 
 	float dist = FVector::Dist(GetComponentLocation(), character->GetActorLocation()) / 100.f;
-	widget->Distance = dist;
 	if (dist <= 1)
 	{
 		SetVisibility(false);
@@ -45,23 +44,29 @@ void UDistanceIndicator::UpdateTransform()
 	{
 		SetVisibility(true);
 	}
-	widget->bInRange = bInRange;
-	if (dist < RangeDistance && !bInRange)
+	if (widget)
 	{
-		widget->OnEnterRange();
-		bInRange = true;
+        widget->Distance = dist;
+        widget->bInRange = bInRange;
+        if (dist < RangeDistance && !bInRange)
+        {
+            widget->OnEnterRange();
+            bInRange = true;
+        }
+        else if (dist >= RangeDistance && bInRange)
+        {
+            widget->OnExitRange();
+            bInRange = false;
+        }
 	}
-	else if (dist >= RangeDistance && bInRange)
-	{
-		widget->OnExitRange();
-		bInRange = false;
-	}
-
 }
 
 void UDistanceIndicator::InjectData()
 {
 	auto widget = Cast<UDistanceIndicatorWidget>(GetUserWidgetObject());
-	widget->ActorAttaching = GetOwner();
-	widget->TextToDisplay = TextDisplay;
+	if (widget)
+	{
+        widget->ActorAttaching = GetOwner();
+        widget->TextToDisplay = TextDisplay;
+	}
 }
