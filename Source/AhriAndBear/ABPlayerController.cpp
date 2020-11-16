@@ -4,11 +4,20 @@
 #include "Engine/World.h"
 #include "Interactives/CharacterInteractionComponent.h"
 #include "Components/InputComponent.h"
+#include "UI/InteractionDurationWidget.h"
+#include "Blueprint/UserWidget.h"
 
 AABPlayerController::AABPlayerController()
 	: Super()
 {
 
+}
+
+void AABPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+	InteractionWidget = CreateWidget<UInteractionDurationWidget>(this, WidgetClass);
+	InteractionWidget->AddToViewport();
 }
 
 void AABPlayerController::OnPossess(APawn* Pawn)

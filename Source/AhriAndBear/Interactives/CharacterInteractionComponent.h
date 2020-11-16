@@ -7,6 +7,7 @@
 #include "CharacterInteractionComponent.generated.h"
 
 class AInteractive;
+class UInteractionDurationWidget;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class AHRIANDBEAR_API UCharacterInteractionComponent : public UBoxComponent
@@ -31,10 +32,13 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	void BeginInteraction(float);
+	void EndInteraction(bool);
 
 private:
 	bool bOccupying;
 	bool bMouthInteracting;
 	bool bPawInteracting;
 	void SortInteractives(TArray<AInteractive*>& interactives) const;
+	UInteractionDurationWidget* Widget;
 };

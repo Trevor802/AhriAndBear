@@ -2,7 +2,10 @@
 
 #include "CharacterInteractionComponent.h"
 #include "Containers/Array.h"
+#include "UI/InteractionDurationWidget.h"
 #include "Interactive.h"
+#include "Blueprint/UserWidget.h"
+#include "ABPlayerController.h"
 
 // Sets default values for this component's properties
 UCharacterInteractionComponent::UCharacterInteractionComponent()
@@ -40,11 +43,19 @@ bool UCharacterInteractionComponent::TryInteracting()
 void UCharacterInteractionComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
 	// ...
 	
 }
 
+void UCharacterInteractionComponent::BeginInteraction(float duration)
+{
+	GET_CONTROLLER(this)->GetInteractionWidget()->OnBeginInteraction(duration);
+}
+
+void UCharacterInteractionComponent::EndInteraction(bool bResult)
+{
+	GET_CONTROLLER(this)->GetInteractionWidget()->OnEndInteraction(bResult);
+}
 
 // Called every frame
 void UCharacterInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
