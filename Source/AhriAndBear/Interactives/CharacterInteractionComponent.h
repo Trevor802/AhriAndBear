@@ -34,6 +34,9 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	void BeginInteraction(float);
 	void EndInteraction(bool);
+	FORCEINLINE void ClearInteractingActor() { InteractingActor = nullptr; }
+	FORCEINLINE bool IsInteracting() const { return InteractingActor != nullptr; }
+	FORCEINLINE AInteractive* GetInteractingActor() const { return InteractingActor; }
 
 private:
 	bool bOccupying;
@@ -41,4 +44,5 @@ private:
 	bool bPawInteracting;
 	void SortInteractives(TArray<AInteractive*>& interactives) const;
 	UInteractionDurationWidget* Widget;
+	AInteractive* InteractingActor;
 };

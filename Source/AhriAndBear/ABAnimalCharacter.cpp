@@ -1,7 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "ABAnimalCharacter.h"
-#include "Interactives/ABInteractiveObjectBase.h"
+#include "ABPlayerController.h"
+#include "Interactives/Interactive.h"
 #include "AABSurvivalComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/GameplayStaticsTypes.h"
@@ -189,6 +190,16 @@ void AABAnimalCharacter::SwitchAnimal()
 
 			tempPlayerController->Possess(OtherAnimal);
 			tempAIController->Possess(this);
+			
+			if (OtherAnimal->InteractionComponent->IsInteracting())
+			{
+				Cast<AABPlayerController>(tempPlayerController)->UnbindInput();
+				OtherAnimal->InteractionComponent->GetInteractingActor()->BindInput(tempPlayerController->InputComponent);
+			}
+			else
+			{
+				Cast<AABPlayerController>(tempPlayerController)->BindInput();
+			}
 		}
 	}
 

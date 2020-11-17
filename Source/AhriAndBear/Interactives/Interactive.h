@@ -10,6 +10,7 @@
  * 
  */
 #define GET_CONTROLLER(x) Cast<AABPlayerController>(Cast<AABAnimalCharacter>(x->GetOwner())->GetController())
+#define GET_CHARACTER(x) Cast<AABAnimalCharacter>(x->GetOwner())
 class AABPlayerController;
 class UCharacterInteractionComponent;
 UCLASS()
@@ -20,8 +21,6 @@ protected:
 	AInteractive();
 	UCharacterInteractionComponent* InteractingComponent;
 	virtual bool CanInteract(UCharacterInteractionComponent*) const PURE_VIRTUAL(AInteractive::CanInteract, return false;);
-	virtual void BindInput(UInputComponent*) const;
-	virtual void UnbindInput(UInputComponent*) const;
 
 	virtual void BeginInteraction() {};
 	virtual void EndInteraction(bool) {};
@@ -39,7 +38,6 @@ protected:
 	FORCEINLINE void StopInteract() { CallStopInteract(); }
 	FORCEINLINE void UseAbility() { CallUseAbility(); }
 	FORCEINLINE void Following() { CallFollowing(); }
-	FORCEINLINE void SwitchAnimal() { CallSwitchAnimal(); }
 	FORCEINLINE void Crouch() { CallCrouch(); }
 	FORCEINLINE void StopCrouch() { CallStopCrouch(); }
 
@@ -57,7 +55,6 @@ protected:
 	virtual void CallStopInteract() {};
 	virtual void CallUseAbility();
 	virtual void CallFollowing();
-	virtual void CallSwitchAnimal();
 	virtual void CallCrouch();
 	virtual void CallStopCrouch();
 
@@ -71,6 +68,9 @@ public:
 	bool bOccupyPaw;
 	void AfterInteraction(bool);
 	bool TryInteracting(UCharacterInteractionComponent*);
+
+	virtual void BindInput(UInputComponent*) const;
+	virtual void UnbindInput(UInputComponent*) const;
 
 private:
 	TArray<FInputActionBinding> ActionBindings;

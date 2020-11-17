@@ -110,38 +110,44 @@ void AFixedPulley::UpdateHandlers()
 
 void AFixedPulley::CallMoveForward(float value)
 {
+    RETURN_IF_NULL(InteractingComponent);
     auto v = GetActorLocation();
-    auto character = GET_CHARACTER;
+    auto controller = GET_CONTROLLER(InteractingComponent);
+    RETURN_IF_NULL(controller);
+    auto character = GET_CHARACTER(InteractingComponent);
     FVector actorBaseLoc = FVector(v.X, v.Y, character->GetActorLocation().Z);
     float distance = FVector::Distance(actorBaseLoc, character->GetActorLocation());
     FVector characterToBase = actorBaseLoc - character->GetActorLocation();
     FVector movingDir = FRotationMatrix(character->GetActorRotation()).GetUnitAxis(EAxis::X) * value;
     float dotProduct = FVector::DotProduct(characterToBase, movingDir);
-    if (distance > TotalLength && dotProduct < 0)
+    if (distance > TotalLength && dotProduct < 0 || !controller)
     {
         return;
     }
     else
     {
-        Cast<AABPlayerController>(character->GetController())->CallMoveForward(value);
+        controller->CallMoveForward(value);
     }
 }
 
 void AFixedPulley::CallMoveRight(float value)
 {
+    RETURN_IF_NULL(InteractingComponent);
     auto v = GetActorLocation();
-    auto character = GET_CHARACTER;
+    auto controller = GET_CONTROLLER(InteractingComponent);
+    RETURN_IF_NULL(controller);
+    auto character = GET_CHARACTER(InteractingComponent);
     FVector actorBaseLoc = FVector(v.X, v.Y, character->GetActorLocation().Z);
     float distance = FVector::Distance(actorBaseLoc, character->GetActorLocation());
     FVector characterToBase = actorBaseLoc - character->GetActorLocation();
     FVector movingDir = FRotationMatrix(character->GetActorRotation()).GetUnitAxis(EAxis::Y) * value;
     float dotProduct = FVector::DotProduct(characterToBase, movingDir);
-    if (distance > TotalLength && dotProduct < 0)
+    if (distance > TotalLength && dotProduct < 0 || !controller)
     {
         return;
     }
     else
     {
-        Cast<AABPlayerController>(character->GetController())->CallMoveRight(value);
+        controller->CallMoveRight(value);
     }
 }

@@ -33,6 +33,7 @@ bool UCharacterInteractionComponent::TryInteracting()
 	{
 		if (i->TryInteracting(this))
 		{
+			InteractingActor = i;
 			return true;
 		}
 	}

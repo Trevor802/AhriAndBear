@@ -9,6 +9,7 @@
 #include "Misc/ScopeLock.h"
 #include "FixedPulley.generated.h"
 
+#define RETURN_IF_NULL(x) if(!x) return;
 class UCableComponent;
 UCLASS()
 class AHRIANDBEAR_API AFixedPulley : public AInteractive

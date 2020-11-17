@@ -21,7 +21,7 @@ void UDistanceIndicator::BeginPlay()
 void UDistanceIndicator::UpdateTransform()
 {
 	auto widget = Cast<UDistanceIndicatorWidget>(GetUserWidgetObject());
-	auto character = GET_CHARACTER;
+	auto character = GET_MAIN_CHARACTER;
 	if (character == nullptr)
 	{
 		return;

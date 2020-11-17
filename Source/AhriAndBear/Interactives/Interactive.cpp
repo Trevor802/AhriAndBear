@@ -30,9 +30,6 @@ AInteractive::AInteractive()
     action = FInputActionBinding("AnimalTogether", IE_Pressed);
     action.ActionDelegate.BindDelegate(this, &AInteractive::Following);
     ActionBindings.Add(action);
-    action = FInputActionBinding("ChangeAnimal", IE_Pressed);
-    action.ActionDelegate.BindDelegate(this, &AInteractive::SwitchAnimal);
-    ActionBindings.Add(action);
     action = FInputActionBinding("Crouch", IE_Pressed);
     action.ActionDelegate.BindDelegate(this, &AInteractive::Crouch);
     ActionBindings.Add(action);
@@ -63,98 +60,143 @@ void AInteractive::CallMoveForward(float value)
 {
     if (InteractingComponent)
     {
-        GET_CONTROLLER(InteractingComponent)->CallMoveForward(value);
+        auto controller = GET_CONTROLLER(InteractingComponent);
+        if (controller)
+        {
+            controller->CallMoveForward(value);
+        }
     }
 }
 void AInteractive::CallMoveRight(float value)
 {
     if (InteractingComponent)
     {
-        GET_CONTROLLER(InteractingComponent)->CallMoveRight(value);
+        auto controller = GET_CONTROLLER(InteractingComponent);
+        if (controller)
+        {
+            controller->CallMoveRight(value);
+        }
     }
 }
 void AInteractive::CallTurn(float value)
 {
     if (InteractingComponent)
     {
-        GET_CONTROLLER(InteractingComponent)->CallTurn(value);
+        auto controller = GET_CONTROLLER(InteractingComponent);
+        if (controller)
+        {
+            controller->CallTurn(value);
+        }
     }
 }
 void AInteractive::CallLookUp(float value)
 {
     if (InteractingComponent)
     {
-        GET_CONTROLLER(InteractingComponent)->CallLookUp(value);
+        auto controller = GET_CONTROLLER(InteractingComponent);
+        if (controller)
+        {
+            controller->CallLookUp(value);
+        }
     }
 }
 void AInteractive::CallTurnAtRate(float value)
 {
     if (InteractingComponent)
     {
-        GET_CONTROLLER(InteractingComponent)->CallTurnAtRate(value);
+        auto controller = GET_CONTROLLER(InteractingComponent);
+        if (controller)
+        {
+            controller->CallTurnAtRate(value);
+        }
     }
 }
 void AInteractive::CallLookUpAtRate(float value)
 {
     if (InteractingComponent)
     {
-        GET_CONTROLLER(InteractingComponent)->CallLookUpAtRate(value);
+        auto controller = GET_CONTROLLER(InteractingComponent);
+        if (controller)
+        {
+            controller->CallLookUpAtRate(value);
+        }
     }
 }
 void AInteractive::CallJump()
 {
     if (InteractingComponent)
     {
-        GET_CONTROLLER(InteractingComponent)->CallJump();
+        auto controller = GET_CONTROLLER(InteractingComponent);
+        if (controller)
+        {
+            controller->CallJump();
+        }
     }
 }
 void AInteractive::CallSprint()
 {
     if (InteractingComponent)
     {
-        GET_CONTROLLER(InteractingComponent)->CallSprint();
+        auto controller = GET_CONTROLLER(InteractingComponent);
+        if (controller)
+        {
+            controller->CallSprint();
+        }
     }
 }
 void AInteractive::CallStopSprint()
 {
     if (InteractingComponent)
     {
-        GET_CONTROLLER(InteractingComponent)->CallStopSprint();
+        auto controller = GET_CONTROLLER(InteractingComponent);
+        if (controller)
+        {
+            controller->CallStopSprint();
+        }
     }
 }
 void AInteractive::CallUseAbility()
 {
     if (InteractingComponent)
     {
-        GET_CONTROLLER(InteractingComponent)->CallUseAbility();
+        auto controller = GET_CONTROLLER(InteractingComponent);
+        if (controller)
+        {
+            controller->CallUseAbility();
+        }
     }
 }
 void AInteractive::CallFollowing()
 {
     if (InteractingComponent)
     {
-        GET_CONTROLLER(InteractingComponent)->CallFollowing();
-    }
-}
-void AInteractive::CallSwitchAnimal()
-{
-    if (InteractingComponent)
-    {
-        GET_CONTROLLER(InteractingComponent)->CallSwitchAnimal();
+        auto controller = GET_CONTROLLER(InteractingComponent);
+        if (controller)
+        {
+            controller->CallFollowing();
+        }
     }
 }
 void AInteractive::CallCrouch()
 {
     if (InteractingComponent)
     {
-        GET_CONTROLLER(InteractingComponent)->CallCrouch();
+        auto controller = GET_CONTROLLER(InteractingComponent);
+        if (controller)
+        {
+            controller->CallCrouch();
+        }
     }
 }
 void AInteractive::CallStopCrouch()
 {
     if (InteractingComponent)
     {
-        GET_CONTROLLER(InteractingComponent)->CallStopCrouch();
+        auto controller = GET_CONTROLLER(InteractingComponent);
+        if(controller)
+        {
+            controller->CallStopCrouch();
+        }
     }
 }
 
@@ -224,5 +266,6 @@ void AInteractive::AfterInteraction(bool bResult)
         InteractingComponent->SetPawInteracting(false);
     UnbindInput(Controller->InputComponent);
     Controller->BindInput();
+    InteractingComponent->ClearInteractingActor();
     InteractingComponent = nullptr;
 }

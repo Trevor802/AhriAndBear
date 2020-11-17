@@ -47,7 +47,9 @@ public:
 
 	FORCEINLINE class UInteractionDurationWidget* GetInteractionWidget() const{ return InteractionWidget; }
 protected:
+	// TODO: Improve this
 	TArray<FInputActionBinding> ActionBindings;
+	TArray<FInputActionBinding> ConstantActionBindings;
 	TArray<FInputAxisBinding> AxisBindings;
 
 	// Naive implementation, TODO: Move all UIs to a UI Manager class

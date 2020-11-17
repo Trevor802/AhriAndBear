@@ -61,8 +61,9 @@ void AABPlayerController::SetupInputComponent()
 	ActionBindings.Add(InputComponent->BindAction("Crouch", IE_Released, this, &AABPlayerController::CallStopCrouch));
 	ActionBindings.Add(InputComponent->BindAction("UseSkill", IE_Pressed, this, &AABPlayerController::CallUseAbility));
 	ActionBindings.Add(InputComponent->BindAction("AnimalTogether", IE_Pressed, this, &AABPlayerController::CallFollowing));
-	ActionBindings.Add(InputComponent->BindAction("ChangeAnimal", IE_Pressed, this, &AABPlayerController::CallSwitchAnimal));
-	InputComponent->BindAction("ESC", IE_Pressed, this, &AABPlayerController::QuitGame);
+
+	ConstantActionBindings.Add(InputComponent->BindAction("ChangeAnimal", IE_Pressed, this, &AABPlayerController::CallSwitchAnimal));
+	ConstantActionBindings.Add(InputComponent->BindAction("ESC", IE_Pressed, this, &AABPlayerController::QuitGame));
 }
 
 void AABPlayerController::CallMoveForward(float value)
@@ -222,7 +223,13 @@ void AABPlayerController::QuitGame()
 
 void AABPlayerController::BindInput() const
 {
+	InputComponent->ClearActionBindings();
+	InputComponent->AxisBindings.Empty();
 	for (auto& a : ActionBindings)
+	{
+		InputComponent->AddActionBinding(a);
+	}
+	for (auto& a : ConstantActionBindings)
 	{
 		InputComponent->AddActionBinding(a);
 	}

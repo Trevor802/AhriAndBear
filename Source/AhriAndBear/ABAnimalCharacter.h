@@ -18,7 +18,7 @@ class UPawnSensingComponent;
 class UPawnNoiseEmitterComponent;
 class UAudioComponent;
 
-#define GET_CHARACTER Cast<AABAnimalCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+#define GET_MAIN_CHARACTER Cast<AABAnimalCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 UCLASS()
 class AHRIANDBEAR_API AABAnimalCharacter : public ACharacter
 {
