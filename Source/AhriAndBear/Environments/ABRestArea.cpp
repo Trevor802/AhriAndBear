@@ -18,6 +18,9 @@ AABRestArea::AABRestArea()
 	OnActorEndOverlap.AddDynamic(this, &AABRestArea::EndOverlap);
 	Collider->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	Collider->SetGenerateOverlapEvents(true);
+
+	ChangeRates.Hunger = 1;
+	ChangeRates.Thirst = 1;
 }
 
 // Called when the game starts or when spawned
@@ -34,14 +37,17 @@ void AABRestArea::BeginOverlap(AActor* self, AActor* OtherActor)
 	auto animal = Cast<AABAnimalCharacter>(OtherActor);
 	if (animal == nullptr) return;
 
-	UABSurvivalStatFunctions::SetRateOfChange(animal->SurvivalComponent->Hunger, 1.f);
-	UABSurvivalStatFunctions::SetRateOfChange(animal->SurvivalComponent->Thirst, 1.f);
+	OriginalChangeRates.Hunger = animal->SurvivalComponent->Hunger.RateOfChange;
+	OriginalChangeRates.Thirst = animal->SurvivalComponent->Thirst.RateOfChange;
+
+	UABSurvivalStatFunctions::SetRateOfChange(animal->SurvivalComponent->Hunger, ChangeRates.Hunger);
+	UABSurvivalStatFunctions::SetRateOfChange(animal->SurvivalComponent->Thirst, ChangeRates.Thirst);
 }
 
 void AABRestArea::EndOverlap(AActor* self, AActor* otherActor) {
 	auto animal = Cast<AABAnimalCharacter>(otherActor);
 	if (animal == nullptr) return;
 
-	UABSurvivalStatFunctions::SetRateOfChange(animal->SurvivalComponent->Hunger, -1.f);
-	UABSurvivalStatFunctions::SetRateOfChange(animal->SurvivalComponent->Thirst, -1.f);
+	UABSurvivalStatFunctions::SetRateOfChange(animal->SurvivalComponent->Hunger, OriginalChangeRates.Hunger);
+	UABSurvivalStatFunctions::SetRateOfChange(animal->SurvivalComponent->Thirst, OriginalChangeRates.Thirst);
 }

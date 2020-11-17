@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "GameBase/Define.h"
 #include "ABRestArea.generated.h"
 
 // Forward declares
@@ -17,6 +18,12 @@ class AHRIANDBEAR_API AABRestArea : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AABRestArea();
+
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "Rest Area")
+	FSurvivalData ChangeRates;
+
+	UPROPERTY(VisibleAnywhere, Category = "Rest Area")
+	FSurvivalData OriginalChangeRates;
 
 	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "Rest Area")
 	UBoxComponent* Collider;
