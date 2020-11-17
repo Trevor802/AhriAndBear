@@ -17,10 +17,10 @@ public:
 	// Sets default values for this component's properties
 	UAABSurvivalComponent();
 
-	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "Character | Survival")
+	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = "Character | Survival | Deprecated")
 	FABSurvivalStat Health;
 
-	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "Character | Survival")
+	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = "Character | Survival | Deprecated")
 	FABSurvivalStat Warmth;
 
 	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "Character | Survival")
@@ -32,7 +32,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "Character | Survival")
 	FABSurvivalStat Stamina;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character | Survival")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character | Survival | Deprecated")
 	float UpdateInterval = 2.0f;
 
 	void UpdateStats(float deltaTime);

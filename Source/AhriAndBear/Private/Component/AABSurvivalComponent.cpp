@@ -16,10 +16,10 @@ UAABSurvivalComponent::UAABSurvivalComponent()
 
 void UAABSurvivalComponent::UpdateStats(float deltaTime)
 {
-	UABSurvivalStatFunctions::TickStat(Health, deltaTime);
+	//UABSurvivalStatFunctions::TickStat(Health, deltaTime);
 	UABSurvivalStatFunctions::TickStat(Thirst, deltaTime);
 	UABSurvivalStatFunctions::TickStat(Hunger, deltaTime);
-	UABSurvivalStatFunctions::TickStat(Warmth, deltaTime);
+	//UABSurvivalStatFunctions::TickStat(Warmth, deltaTime);
 	UABSurvivalStatFunctions::TickStat(Stamina, deltaTime);
 }
 
@@ -28,10 +28,10 @@ void UAABSurvivalComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	UABSurvivalStatFunctions::StartStat(Health);
+	//UABSurvivalStatFunctions::StartStat(Health);
 	UABSurvivalStatFunctions::StartStat(Thirst);
 	UABSurvivalStatFunctions::StartStat(Hunger);
-	UABSurvivalStatFunctions::StartStat(Warmth);
+	//UABSurvivalStatFunctions::StartStat(Warmth);
 	UABSurvivalStatFunctions::StartStat(Stamina);
 }
 
