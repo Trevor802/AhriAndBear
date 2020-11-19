@@ -20,5 +20,4 @@ class AHRIANDBEAR_API UBtTaskChaseActor : public UBTTaskNode
 	float _lastPlaySec;
 
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override; // Receive Execute AI
-	virtual void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override; // Receive Tick AI
 };
