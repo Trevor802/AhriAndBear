@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Interactives/ABInteractiveObjectBase.h"
+#include "Interactives/OccupyingInteractive.h"
 #include "PhysicsEngine/PhysicsConstraintComponent.h"
 #include "ABInteractiveObjectGate.generated.h"
 
@@ -11,7 +12,7 @@
  * 
  */
 UCLASS()
-class AHRIANDBEAR_API AABInteractiveObjectGate : public AABInteractiveObjectBase
+class AHRIANDBEAR_API AABInteractiveObjectGate : public AOccupyingInteractive
 {
 	GENERATED_BODY()
 	
@@ -21,11 +22,13 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	virtual void BeginPlay() override;
+	FORCEINLINE virtual bool CanInteract(UCharacterInteractionComponent* component) const override { return !bOpened; }
+	virtual void EndInteraction(bool) override;
 	//FORCEINLINE virtual bool CanInteract() override { return true; }
 
-	virtual void AfterInteraction(bool) override;
-
 public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
+		class UBoxComponent* CollisionShape;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
 	UStaticMeshComponent* GateMesh;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
@@ -34,4 +37,7 @@ public:
 	UStaticMeshComponent* FrameMesh;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Constraint")
 	UPhysicsConstraintComponent* DoorJoint;
+
+private:
+	bool bOpened;
 };
