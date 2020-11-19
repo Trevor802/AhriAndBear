@@ -32,6 +32,8 @@ AABAnimalCharacter::AABAnimalCharacter()
 	InteractionComponent = CreateDefaultSubobject<UCharacterInteractionComponent>(TEXT("InteractionComp"));
 	InteractionComponent->SetupAttachment(RootComponent);
 
+	MouthLocation = CreateDefaultSubobject<USphereComponent>(TEXT("MouthLocation"));
+
 	SurvivalComponent = CreateDefaultSubobject<UAABSurvivalComponent>(TEXT("Survival Component"));
 
 	baseTurnRate = 45.f;
@@ -287,7 +289,7 @@ void AABAnimalCharacter::SetOtherAnimal()
 bool AABAnimalCharacter::CheckJumping(FVector& OutVelocity)
 {
 	FVector launchVel = (GetActorRotation().RotateVector(FVector::UpVector) + GetActorRotation().RotateVector(FVector::ForwardVector)) * 0.707f * JumpingSpeed;
-	FPredictProjectilePathParams inParams = FPredictProjectilePathParams(3.0f, ProjectileStart->GetComponentLocation(), launchVel, 2.0f, ECollisionChannel::ECC_WorldStatic, this);
+	FPredictProjectilePathParams inParams = FPredictProjectilePathParams(3.0f, ProjectileStart->GetComponentLocation(), launchVel, 2.0f, ECollisionChannel::ECC_Visibility, this);
 	if (bDebugJumping)
 	{
 		inParams.DrawDebugType = EDrawDebugTrace::ForOneFrame;

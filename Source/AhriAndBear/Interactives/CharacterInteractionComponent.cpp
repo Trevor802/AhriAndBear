@@ -50,12 +50,17 @@ void UCharacterInteractionComponent::BeginPlay()
 
 void UCharacterInteractionComponent::BeginInteraction(float duration)
 {
-	GET_CONTROLLER(this)->GetInteractionWidget()->OnBeginInteraction(duration);
+	// Store the widget, in case the character gets switched off
+	Widget = GET_CONTROLLER(this)->GetInteractionWidget();
+	Widget->OnBeginInteraction(duration); 
 }
 
 void UCharacterInteractionComponent::EndInteraction(bool bResult)
 {
-	GET_CONTROLLER(this)->GetInteractionWidget()->OnEndInteraction(bResult);
+	if (Widget)
+	{
+		Widget->OnEndInteraction(bResult);
+	}
 }
 
 // Called every frame

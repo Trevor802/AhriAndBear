@@ -55,8 +55,8 @@ void AABPlayerController::SetupInputComponent()
 	ActionBindings.Add(InputComponent->BindAction("Catch", IE_Pressed, this, &AABPlayerController::CallInteract));
 	ActionBindings.Add(InputComponent->BindAction("Catch", IE_Released, this, &AABPlayerController::CallStopInteract));
 	ActionBindings.Add(InputComponent->BindAction("Jump", IE_Pressed, this, &AABPlayerController::CallJump));
-	ActionBindings.Add(InputComponent->BindAction("Jog", IE_Pressed, this, &AABPlayerController::CallSprint));
-	ActionBindings.Add(InputComponent->BindAction("Jog", IE_Released, this, &AABPlayerController::CallStopSprint));
+	ActionBindings.Add(InputComponent->BindAction("Sprint", IE_Pressed, this, &AABPlayerController::CallSprint));
+	ActionBindings.Add(InputComponent->BindAction("Sprint", IE_Released, this, &AABPlayerController::CallStopSprint));
 	ActionBindings.Add(InputComponent->BindAction("Crouch", IE_Pressed, this, &AABPlayerController::CallCrouch));
 	ActionBindings.Add(InputComponent->BindAction("Crouch", IE_Released, this, &AABPlayerController::CallStopCrouch));
 	ActionBindings.Add(InputComponent->BindAction("UseSkill", IE_Pressed, this, &AABPlayerController::CallUseAbility));
