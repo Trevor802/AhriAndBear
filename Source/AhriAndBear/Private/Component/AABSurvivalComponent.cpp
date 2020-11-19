@@ -4,6 +4,7 @@
 #include "AABSurvivalComponent.h"
 #include "Engine/World.h"
 #include "Engine/Engine.h"
+#include "ABStatModifierInterface.h"
 
 // Sets default values for this component's properties
 UAABSurvivalComponent::UAABSurvivalComponent()
@@ -28,11 +29,12 @@ void UAABSurvivalComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	//UABSurvivalStatFunctions::StartStat(Health);
 	UABSurvivalStatFunctions::StartStat(Thirst);
 	UABSurvivalStatFunctions::StartStat(Hunger);
-	//UABSurvivalStatFunctions::StartStat(Warmth);
 	UABSurvivalStatFunctions::StartStat(Stamina);
+
+	defaultHungerRateOfChange = Hunger.RateOfChange;
+	defaultThirstRateOfChange = Thirst.RateOfChange;
 }
 
 
@@ -40,11 +42,55 @@ void UAABSurvivalComponent::BeginPlay()
 void UAABSurvivalComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("HM?"));
 	UpdateStats(DeltaTime);
 }
 
 void UAABSurvivalComponent::AddSurvivalData(const FSurvivalData& value)
 {
-		
+	
+}
+
+void UAABSurvivalComponent::AddModifier(IABStatModifierInterface* modifier)
+{
+	StatModifiers.Add(modifier);
+	StatModifiers.Sort();
+
+	// Only update the corresponding stats if they modify that stat. Otherwise, we waste time.
+	if (modifier->DoesModifyHungerRate()) {
+		//UABSurvivalStatFunctions::SetRateOfChange(Hunger, modifier->GetHungerRateModifier(this, defaultHungerRateOfChange, Hunger.RateOfChange));
+		UpdateRateOfChange(Hunger, defaultHungerRateOfChange, &IABStatModifierInterface::GetHungerRateModifier, &IABStatModifierInterface::DoesModifyHungerRate);
+	}
+	if (modifier->DoesModifyThirstRate()) {
+		UpdateRateOfChange(Thirst, defaultThirstRateOfChange, &IABStatModifierInterface::GetThirstRateModifier, &IABStatModifierInterface::DoesModifyThirstRate);
+	}
+}
+
+void UAABSurvivalComponent::RemoveModifier(IABStatModifierInterface* modifier)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("There are %d mods (pre-removal)"), StatModifiers.Num()));
+	StatModifiers.Remove(modifier);
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("There are %d mods (post-removal)"), StatModifiers.Num()));
+	StatModifiers.Sort();
+
+	// Only update the corresponding stats if they modify that stat. Otherwise, we waste time.
+	if (modifier->DoesModifyHungerRate()) {
+		UpdateRateOfChange(Hunger, defaultHungerRateOfChange, &IABStatModifierInterface::GetHungerRateModifier, &IABStatModifierInterface::DoesModifyHungerRate);
+	}
+	if (modifier->DoesModifyThirstRate()) {
+		UpdateRateOfChange(Thirst, defaultThirstRateOfChange, &IABStatModifierInterface::GetThirstRateModifier, &IABStatModifierInterface::DoesModifyThirstRate);
+	}
+}
+
+void UAABSurvivalComponent::UpdateRateOfChange(FABSurvivalStat& stat, const float defaultRoC, float(IABStatModifierInterface::*statModMethod)(UAABSurvivalComponent*, float, float), bool (IABStatModifierInterface::*doesModMethod)(void) const)
+{
+	float rateOfChange = defaultRoC;
+	
+	for (auto mod : StatModifiers) {
+		if (mod == nullptr) continue;
+		if ((mod->*doesModMethod)()) {
+			rateOfChange = (mod->*statModMethod)(this, defaultRoC, rateOfChange);
+		}
+	}
+	UABSurvivalStatFunctions::SetRateOfChange(stat, rateOfChange);
 }

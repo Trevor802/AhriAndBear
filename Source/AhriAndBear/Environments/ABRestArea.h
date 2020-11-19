@@ -5,13 +5,14 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "GameBase/Define.h"
+#include "ABStatModifierInterface.h"
 #include "ABRestArea.generated.h"
 
 // Forward declares
 class UBoxComponent;
 
 UCLASS()
-class AHRIANDBEAR_API AABRestArea : public AActor
+class AHRIANDBEAR_API AABRestArea : public AActor, public IABStatModifierInterface
 {
 	GENERATED_BODY()
 	
@@ -21,9 +22,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "Rest Area")
 	FSurvivalData ChangeRates;
-
-	UPROPERTY(VisibleAnywhere, Category = "Rest Area")
-	FSurvivalData OriginalChangeRates;
 
 	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "Rest Area")
 	UBoxComponent* Collider;
@@ -38,4 +36,12 @@ public:
 
 	UFUNCTION()
 	void EndOverlap(AActor* self, AActor* OtherActor);
+
+	bool DoesModifyHungerRate() const override { return ChangeRates.Hunger != 0; }
+	
+	float GetHungerRateModifier(UAABSurvivalComponent* mainComp, float defaultHungerDelta, float currentDelta) override;
+
+	bool DoesModifyThirstRate() const override { return ChangeRates.Thirst != 0; }
+	
+	float GetThirstRateModifier(UAABSurvivalComponent* mainComp, float defaultThirstDelta, float currentDelta) override;
 };
