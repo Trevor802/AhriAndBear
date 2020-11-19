@@ -7,6 +7,7 @@
 #include "Interactives/CharacterInteractionComponent.h"
 #include "ABAnimalCharacter.h"
 #include "ABPlayerController.h"
+#include "Components/PrimitiveComponent.h"
 
 APushingBox::APushingBox()
 {
@@ -30,12 +31,19 @@ void APushingBox::BeginPlay()
 void APushingBox::BeginInteraction()
 {
 	UE_LOG(LogTemp, Warning, TEXT("!?"));
+	auto character = GET_CHARACTER(InteractingComponent);
+	if (character)
+	{
+		boxMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
+		AttachToComponent(character->GetMesh(), FAttachmentTransformRules(EAttachmentRule::KeepWorld, true));
+	}
 
 }
 
 void APushingBox::EndInteraction(bool)
 {
-
+	DetachFromActor(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
+	boxMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
 }
 
 void APushingBox::Tick(float DeltaTime)
@@ -54,11 +62,12 @@ void APushingBox::UpdateBox()
 
 void APushingBox::CallMoveForward(float value)
 {
-	RETURN_IF_NULL(InteractingComponent);
+	/*RETURN_IF_NULL(InteractingComponent);
 	auto controller = GET_CONTROLLER(InteractingComponent);
 	RETURN_IF_NULL(controller);
 	auto character = GET_CHARACTER(InteractingComponent);
-	controller->CallMoveForward(value);
+	controller->CallMoveForward(value);*/
+	Super::CallMoveForward(value);
 }
 
 void APushingBox::TogglePushing(bool bStartPushing)

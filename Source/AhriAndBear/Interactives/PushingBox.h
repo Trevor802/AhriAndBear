@@ -24,10 +24,12 @@ protected:
 	FORCEINLINE virtual bool CanInteract(UCharacterInteractionComponent*) const override { return true; }
 	FORCEINLINE virtual void CallSprint() override {};
 	FORCEINLINE virtual void CallStopSprint() override {};
+	
 	class USceneComponent* Root;
 
 	virtual void CallMoveForward(float) override;
 	virtual void CallMoveRight(float value) override {};
+	virtual void CallTurn(float value)override {};
 	virtual void BeginInteraction() override;
 	virtual void EndInteraction(bool) override;
 
