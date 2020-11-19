@@ -6,6 +6,8 @@
 #include "Interactives/Interactive.h"
 #include "PushingBox.generated.h"
 
+#define RETURN_IF_NULL(x) if(!x) return;
+
 class UBoxComponent;
 class UStaticMeshComponent;
 UCLASS()
@@ -22,11 +24,15 @@ protected:
 	FORCEINLINE virtual bool CanInteract(UCharacterInteractionComponent*) const override { return true; }
 	FORCEINLINE virtual void CallSprint() override {};
 	FORCEINLINE virtual void CallStopSprint() override {};
+	class USceneComponent* Root;
 
 	virtual void CallMoveForward(float) override;
 	virtual void CallMoveRight(float value) override {};
 	virtual void BeginInteraction() override;
 	virtual void EndInteraction(bool) override;
+
+	void TogglePushing(bool);
+	void UpdateBox();
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
