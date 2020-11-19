@@ -10,6 +10,7 @@
 #include "AABSurvivalComponent.h"
 #include "ABSurvivalStats.h"
 #include "EventTrigger.h"
+#include "CharacterInteractionComponent.h"
 
 AABInteractiveObjectWater::AABInteractiveObjectWater()
 	: Super()
@@ -31,9 +32,16 @@ void AABInteractiveObjectWater::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AABInteractiveObjectWater::AfterInteraction(bool bResult)
+void AABInteractiveObjectWater::EndInteraction(bool bResult)
 {
-	//TODO: add to survival data
+	Super::EndInteraction(bResult);
+
+	if (!bResult)
+	{
+		return;
+	}
+
+	InteractingComponent->GetOwner()->FindComponentByClass<UAABSurvivalComponent>()->AddSurvivalData(SurvivalEffect);
 
 	//TODO: play drinking sound
 }
