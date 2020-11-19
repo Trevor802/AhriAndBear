@@ -73,10 +73,18 @@ void AABPlayerController::CallMoveForward(float value)
         const FRotator rotation = GetControlRotation();
         const FRotator YawRotation(0, rotation.Yaw, 0);
 
-        const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-        AnimalCharacter->AddMovementInput(Direction, value);
-
-        AnimalCharacter->bClimbing = false;
+		FVector Direction;
+		if (AnimalCharacter->bInClimbingZone && AnimalCharacter->bSprinting)
+		{
+			Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Z);
+			AnimalCharacter->bClimbing = true;
+		}
+		else
+		{
+			Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+			AnimalCharacter->bClimbing = false;
+		}
+		AnimalCharacter->AddMovementInput(Direction, value);
     }
 	// Don't delete code below, they are for climbing
 		//if (AnimalCharacter && value != 0.f)
