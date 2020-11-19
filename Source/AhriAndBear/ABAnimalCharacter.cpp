@@ -32,8 +32,6 @@ AABAnimalCharacter::AABAnimalCharacter()
 	InteractionComponent = CreateDefaultSubobject<UCharacterInteractionComponent>(TEXT("InteractionComp"));
 	InteractionComponent->SetupAttachment(RootComponent);
 
-	MouthLocation = CreateDefaultSubobject<USphereComponent>(TEXT("MouthLocation"));
-
 	SurvivalComponent = CreateDefaultSubobject<UAABSurvivalComponent>(TEXT("Survival Component"));
 
 	baseTurnRate = 45.f;

@@ -108,9 +108,6 @@ public:
 	UPROPERTY(Category = Camera, EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 		float FPSpringArmTargetLength;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay", meta = (EditFixedOrder = "false"))
-		class USphereComponent* MouthLocation;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float WalkSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

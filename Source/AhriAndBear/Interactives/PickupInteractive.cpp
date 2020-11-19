@@ -3,6 +3,7 @@
 
 #include "PickupInteractive.h"
 #include "Components/BoxComponent.h"
+#include "ABAnimalCharacter.h"
 #include "Interactives/CharacterInteractionComponent.h"
 APickupInteractive::APickupInteractive()
 {
@@ -30,10 +31,13 @@ void APickupInteractive::CallMoveRight(float value)
 void APickupInteractive::BeginInteraction()
 {
     PhysicsComponent->SetSimulatePhysics(false);
-    AttachToComponent(InteractingComponent, FAttachmentTransformRules(
-        EAttachmentRule::SnapToTarget, 
-        true));
-    SetActorRelativeLocation(OffsetAgainstComponent);
+    auto character = GET_CHARACTER(InteractingComponent);
+    if (character)
+    {
+        AttachToComponent(character->GetMesh(), FAttachmentTransformRules(
+            EAttachmentRule::SnapToTarget, 
+            true), SocketName);
+    }
 }
 
 void APickupInteractive::EndInteraction(bool)

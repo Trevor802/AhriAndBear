@@ -27,5 +27,5 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay")
 	class UBoxComponent* PhysicsComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
-	FVector OffsetAgainstComponent;
+		FName SocketName;
 };
