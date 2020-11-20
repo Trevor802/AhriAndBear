@@ -81,6 +81,11 @@ void AABAnimalCharacter::Tick(float DeltaTime)
 	SprintStaminaUpdate(DeltaTime);
 }
 
+void AABAnimalCharacter::GetCaught(AActor* byWhom)
+{
+	// TODO: Complete this function...	
+}
+
 void AABAnimalCharacter::Jump()
 {
 	LaunchCharacter(JumpingVelocity, true, true);

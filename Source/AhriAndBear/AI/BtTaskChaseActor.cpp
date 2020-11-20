@@ -23,16 +23,14 @@ EBTNodeResult::Type UBtTaskChaseActor::ExecuteTask(UBehaviorTreeComponent& Owner
 		_lastPlaySec = UKismetSystemLibrary::GetGameTimeInSeconds(GetWorld());
 	}
 
-	return EBTNodeResult::Type::Succeeded;
-}
-
-void UBtTaskChaseActor::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) {
 	UBlackboardComponent* blackBoardComponent = OwnerComp.GetBlackboardComponent();
 	AActor* actor = Cast<AActor>(blackBoardComponent->GetValueAsObject(KeyTarget));
-	
+
 	AShopKeeperController* shopKeeperController = Cast<AShopKeeperController>(OwnerComp.GetAIOwner());
 
 	if (actor != nullptr) {
 		shopKeeperController->MoveToActor(actor);
 	}
+	
+	return EBTNodeResult::Succeeded;
 }

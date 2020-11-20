@@ -5,10 +5,10 @@
 #include "ShopKeeperController.h"
 #include "ABAnimalCharacter.h"
 
+#include "DrawDebugHelpers.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
-
-#include "BehaviorTree/BlackboardComponent.h"
 
 void UBtServiceUpdateTarget::OnBecomeRelevant(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
@@ -17,15 +17,16 @@ void UBtServiceUpdateTarget::OnBecomeRelevant(UBehaviorTreeComponent& OwnerComp,
 
 		UBlackboardComponent* blackboardComponent = OwnerComp.GetBlackboardComponent();
 
-		FVector actorLocaion = shopKeeperController->GetPawn()->GetActorLocation();
-		blackboardComponent->SetValueAsVector(KeyDefaultPosition, actorLocaion);
+		FVector actorLocation = shopKeeperController->GetPawn()->GetActorLocation();
+		blackboardComponent->SetValueAsVector(KeyDefaultPosition, actorLocation);
 
 		TArray<AActor*> animals = TArray<AActor*>();
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AABAnimalCharacter::StaticClass(), animals);
 
 		for (int i = 0; i < animals.Num(); i++) {
 			if (IsValid(animals[i])) {
-				// TODO: Bind Event To OnBark
+				AABAnimalCharacter* animalCharacter = Cast<AABAnimalCharacter>(animals[i]);
+				animalCharacter->OnAnimalBark.AddDynamic(this, &UBtServiceUpdateTarget::HandleAnimalBarked);
 			}
 		}
 	}
@@ -54,9 +55,20 @@ void UBtServiceUpdateTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 				blackboardComponent->SetValueAsObject(KeyTarget, playerCharacter);
 				blackboardComponent->SetValueAsVector(KeyLastPosition, playerLocation);
 			}
-			else {
+			else
+			{
 				blackboardComponent->ClearValue(KeyTarget);
 			}
 		}
+
+		_blackboardComponent = blackboardComponent;
+	}
+}
+
+void UBtServiceUpdateTarget::HandleAnimalBarked(FVector Position)
+{
+	if (_blackboardComponent != nullptr) {
+		_blackboardComponent->SetValueAsVector(KeyBarkPosition, Position);
+		_blackboardComponent->SetValueAsVector(KeyLastPosition, FVector::ZeroVector);
 	}
 }
