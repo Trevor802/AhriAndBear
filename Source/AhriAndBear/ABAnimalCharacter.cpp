@@ -81,6 +81,11 @@ void AABAnimalCharacter::Tick(float DeltaTime)
 	SprintStaminaUpdate(DeltaTime);
 }
 
+void AABAnimalCharacter::GetCaught(AActor* byWhom)
+{
+	// TODO: Complete this function...	
+}
+
 void AABAnimalCharacter::Jump()
 {
 	LaunchCharacter(JumpingVelocity, true, true);
@@ -126,7 +131,6 @@ void AABAnimalCharacter::SprintStaminaUpdate(float DeltaTime)
 	UABSurvivalStatFunctions::AddToCurrentValue(SurvivalComponent->Stamina, -SprintStaminaRateOfChange * DeltaTime);
 	if (SurvivalComponent->Stamina.CurrentValue <= 0)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("end sprinting"));
 		EndSprinting();
 	}
 }

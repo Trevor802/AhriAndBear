@@ -19,6 +19,8 @@ class UPawnNoiseEmitterComponent;
 class UAudioComponent;
 
 #define GET_MAIN_CHARACTER Cast<AABAnimalCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FBark, FVector, Position);
+
 UCLASS()
 class AHRIANDBEAR_API AABAnimalCharacter : public ACharacter
 {
@@ -57,6 +59,9 @@ public:
 		bool bDebugJumping = false;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Sprint")
 		float SprintStaminaRateOfChange = 1;
+
+	UPROPERTY(BlueprintAssignable, Category = "Delegates")
+		FBark OnAnimalBark;
 
 protected:
 	// Called when the game starts or when spawned
@@ -137,6 +142,8 @@ public:
 
 	bool bInClimbingZone;
 	bool bClimbing;
+
+	void GetCaught(AActor* byWhom);
 
 private:
 	bool bWithinRange;

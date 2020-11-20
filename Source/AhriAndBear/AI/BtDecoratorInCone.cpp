@@ -20,6 +20,6 @@ bool UBtDecoratorInCone::PerformConditionCheckAI(AAIController* ownerController,
 
 	float cosAngle = UKismetMathLibrary::Vector_CosineAngle2D(forwardVector, direction);
 	float halfCosAngle = FMath::Cos(FMath::DegreesToRadians(HalfAngle));
-
+	
 	return halfCosAngle < cosAngle;
 }
