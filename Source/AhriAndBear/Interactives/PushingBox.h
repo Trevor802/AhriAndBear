@@ -28,12 +28,11 @@ protected:
 	class USceneComponent* Root;
 
 	virtual void CallMoveForward(float) override;
-	virtual void CallMoveRight(float value) override {};
+	virtual void CallMoveRight(float value) override ;
 	virtual void CallTurn(float value)override {};
 	virtual void BeginInteraction() override;
 	virtual void EndInteraction(bool) override;
 
-	void TogglePushing(bool);
 	void UpdateBox();
 
 public:
@@ -43,4 +42,19 @@ public:
 	UBoxComponent* trigger_h;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
 	UBoxComponent* trigger_v;
+
+private:
+	UFUNCTION()
+	void h_OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+	void h_OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UFUNCTION()
+	void v_OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+	void v_OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	void LockMeshLocation();
+
+	bool horizontal;
+	bool verticle;
 };
