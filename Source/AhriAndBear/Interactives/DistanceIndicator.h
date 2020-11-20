@@ -22,7 +22,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	FString TextDisplay;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
-	float RangeDistance = 500.f;
+	float RangeDistance = 5.f;
 
 private:
 	bool bInRange = false;
