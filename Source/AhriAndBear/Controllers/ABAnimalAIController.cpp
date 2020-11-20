@@ -59,7 +59,7 @@ void AABAnimalAIController::SetBlackBoardTarget()
 	{
 		BlackBoardComp->SetValue<UBlackboardKeyType_Object>(PlayerCharacterKey, AICharacter->OtherAnimal);
 		AICharacter->bBlackBoardSet = true;
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("BB set"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("BB set"));
 	}
 }
 
