@@ -226,7 +226,7 @@ void AABPlayerController::CallStopCrouch()
 
 void AABPlayerController::QuitGame() 
 {
-	FGenericPlatformMisc::RequestExit(true);
+	UGameplayStatics::OpenLevel(GetWorld(), FName(TEXT("MenuLevel")));
 }
 
 void AABPlayerController::BindInput() const
