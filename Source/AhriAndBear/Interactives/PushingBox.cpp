@@ -12,14 +12,11 @@
 
 APushingBox::APushingBox()
 {
-	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
-	RootComponent = Root;
-
 	collider = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Collider"));
-	collider->SetupAttachment(RootComponent);
+	RootComponent = collider;
 
 	boxMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Box Mesh"));
-	boxMesh->SetupAttachment(collider);
+	boxMesh->SetupAttachment(RootComponent);
 	
 	
 	/*trigger_h = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger Horizontal"));
@@ -91,9 +88,12 @@ void APushingBox::UpdateBox()
 
 void APushingBox::CallMoveForward(float value)
 {
-	/*if (value >= 0)
-		return;*/
-	Super::CallMoveForward(value);
+	if (InteractingComponent)
+	{
+		if (value >= 0)
+			return;
+		Super::CallMoveForward(value);
+	}
 }
 
 void APushingBox::CallMoveRight(float value)
