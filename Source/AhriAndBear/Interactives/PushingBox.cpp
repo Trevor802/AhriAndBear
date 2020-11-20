@@ -15,11 +15,14 @@ APushingBox::APushingBox()
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = Root;
 
-	boxMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Box Mesh"));
-	boxMesh->SetupAttachment(RootComponent);
-	
+	collider = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Collider"));
+	collider->SetupAttachment(RootComponent);
 
-	trigger_h = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger Horizontal"));
+	boxMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Box Mesh"));
+	boxMesh->SetupAttachment(collider);
+	
+	
+	/*trigger_h = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger Horizontal"));
 	trigger_h->SetBoxExtent(FVector(60, 2, 20));
 	trigger_h->SetupAttachment(boxMesh);
 	trigger_h->OnComponentBeginOverlap.AddDynamic(this, &APushingBox::h_OnOverlapBegin);
@@ -29,18 +32,19 @@ APushingBox::APushingBox()
 	trigger_v->SetBoxExtent(FVector(2, 60, 20));
 	trigger_v->SetupAttachment(boxMesh);
 	trigger_v->OnComponentBeginOverlap.AddDynamic(this, &APushingBox::v_OnOverlapBegin);
-	trigger_v->OnComponentEndOverlap.AddDynamic(this, &APushingBox::v_OnOverlapEnd);
+	trigger_v->OnComponentEndOverlap.AddDynamic(this, &APushingBox::v_OnOverlapEnd);*/
 }
 
 void APushingBox::BeginPlay()
 {
 	horizontal = false;
 	verticle = false;
-	boxMesh->GetBodyInstance()->bLockXRotation = true;
-	boxMesh->GetBodyInstance()->bLockYRotation = true;
-	boxMesh->GetBodyInstance()->bLockZRotation = true;
-
-	LockMeshLocation();
+	collider->SetSimulatePhysics(true);
+	collider->GetBodyInstance()->bLockXRotation = true;
+	collider->GetBodyInstance()->bLockYRotation = true;
+	collider->GetBodyInstance()->bLockZRotation = true;
+	//collider->GetBodyInstance()->bLockZTranslation = true;
+	//LockMeshLocation();
 }
 
 void APushingBox::BeginInteraction()
@@ -50,16 +54,17 @@ void APushingBox::BeginInteraction()
 	AABDogCharacter* dogCharacter = Cast<AABDogCharacter>(character);
 	if (dogCharacter)
 	{
-		//SetBoxOverlap(true);
-		//boxMesh->SetSimulatePhysics(true);
-		if (horizontal)
+		collider->SetSimulatePhysics(false);
+		collider->SetEnableGravity(false);
+		// Not used for now
+		/*if (horizontal)
 		{
 			boxMesh->GetBodyInstance()->bLockYTranslation = false;
 		}
 		else if (verticle)
 		{
 			boxMesh->GetBodyInstance()->bLockXTranslation = false;
-		}
+		}*/
 
 		AttachToComponent(character->GetMesh(), FAttachmentTransformRules(EAttachmentRule::KeepWorld, true));
 	}
@@ -69,10 +74,8 @@ void APushingBox::BeginInteraction()
 void APushingBox::EndInteraction(bool)
 {
 	DetachFromActor(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
-	
-	LockMeshLocation();
-	//boxMesh->IgnoreActorWhenMoving(character, false);
-	//SetBoxOverlap(false);
+	collider->SetSimulatePhysics(true);
+	collider->SetEnableGravity(true);
 }
 
 void APushingBox::Tick(float DeltaTime)
@@ -88,6 +91,8 @@ void APushingBox::UpdateBox()
 
 void APushingBox::CallMoveForward(float value)
 {
+	/*if (value >= 0)
+		return;*/
 	Super::CallMoveForward(value);
 }
 
@@ -104,42 +109,45 @@ void APushingBox::CallMoveRight(float value)
 	}
 }
 
-void APushingBox::h_OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{	
-	if (OtherActor && (OtherActor != this) && OtherComp)
-	{
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("H True"));
-		horizontal = true;
-	}
-}
+// ==============The below functions are not used for now===============
+// Designed for box that only moves along specific axis
 
-void APushingBox::v_OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Overlap Begin"));
-	if (OtherActor && (OtherActor != this) && OtherComp)
-	{
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("V True"));
-		verticle = true;
-	}
-}
-
-void APushingBox::h_OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	if (OtherActor && (OtherActor != this) && OtherComp)
-	{
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("H false"));
-		horizontal = false;
-	}
-}
-
-void APushingBox::v_OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	if (OtherActor && (OtherActor != this) && OtherComp)
-	{
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("V false"));
-		verticle = false;
-	}
-}
+//void APushingBox::h_OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+//{	
+//	if (OtherActor && (OtherActor != this) && OtherComp)
+//	{
+//		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("H True"));
+//		horizontal = true;
+//	}
+//}
+//
+//void APushingBox::v_OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+//{
+//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Overlap Begin"));
+//	if (OtherActor && (OtherActor != this) && OtherComp)
+//	{
+//		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("V True"));
+//		verticle = true;
+//	}
+//}
+//
+//void APushingBox::h_OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+//{
+//	if (OtherActor && (OtherActor != this) && OtherComp)
+//	{
+//		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("H false"));
+//		horizontal = false;
+//	}
+//}
+//
+//void APushingBox::v_OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+//{
+//	if (OtherActor && (OtherActor != this) && OtherComp)
+//	{
+//		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("V false"));
+//		verticle = false;
+//	}
+//}
 
 void APushingBox::LockMeshLocation()
 {

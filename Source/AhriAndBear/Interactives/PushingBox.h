@@ -38,13 +38,15 @@ protected:
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
 	UStaticMeshComponent* boxMesh;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Collision")
+	UBoxComponent* collider;
+	/*UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
 	UBoxComponent* trigger_h;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
-	UBoxComponent* trigger_v;
+	UBoxComponent* trigger_v;*/
 
 private:
-	UFUNCTION()
+	/*UFUNCTION()
 	void h_OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION()
 	void h_OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
@@ -52,7 +54,7 @@ private:
 	UFUNCTION()
 	void v_OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION()
-	void v_OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	void v_OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);*/
 	void LockMeshLocation();
 
 	bool horizontal;
