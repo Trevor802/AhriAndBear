@@ -20,6 +20,7 @@ public:
 	virtual void SetupInputComponent() override;
 	virtual void OnPossess(APawn* Pawn) override;
 	virtual void Tick(float DeltaTime) override;
+	virtual void BeginPlay() override;
 
 	void CallMoveForward(float value);
 	void CallMoveRight(float value);
@@ -28,10 +29,10 @@ public:
 	void CallTurnAtRate(float value);
 	void CallLookUpAtRate(float value);
 	void CallJump();
-	void CallStopJump();
 	void CallSprint();
 	void CallStopSprint();
 	void CallInteract();
+	void CallStopInteract();
 	void CallUseAbility();
 	void CallFollowing();
 	void CallSwitchAnimal();
@@ -41,4 +42,19 @@ public:
 	void QuitGame();
 
 	AABAnimalCharacter* AnimalCharacter;
+	void BindInput() const;
+	void UnbindInput() const;
+
+	FORCEINLINE class UInteractionDurationWidget* GetInteractionWidget() const{ return InteractionWidget; }
+protected:
+	// TODO: Improve this
+	TArray<FInputActionBinding> ActionBindings;
+	TArray<FInputActionBinding> ConstantActionBindings;
+	TArray<FInputAxisBinding> AxisBindings;
+
+	// Naive implementation, TODO: Move all UIs to a UI Manager class
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<class UInteractionDurationWidget> WidgetClass;
+	class UInteractionDurationWidget* InteractionWidget;
+
 };
