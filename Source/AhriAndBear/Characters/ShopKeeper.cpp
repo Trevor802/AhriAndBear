@@ -59,3 +59,7 @@ void AShopKeeper::OnBox1BeginOverlap(UPrimitiveComponent* OverlappedComp, AActor
 		animal->GetCaught(this);
 	}
 }
+TArray<AActor*> AShopKeeper::GetPatrolPositions()
+{
+	return PatrolPositions;
+}

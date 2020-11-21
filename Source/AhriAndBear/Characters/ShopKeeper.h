@@ -11,7 +11,7 @@ class AHRIANDBEAR_API AShopKeeper : public ACharacter
 {
 	GENERATED_BODY()
 
-		UPROPERTY(Category = "Shopkeeper", VisibleDefaultsOnly)
+	UPROPERTY(Category = "Shopkeeper", VisibleDefaultsOnly)
 		class UBoxComponent* Box;
 
 	UPROPERTY(Category = "Shopkeeper", VisibleDefaultsOnly)
@@ -19,6 +19,9 @@ class AHRIANDBEAR_API AShopKeeper : public ACharacter
 
 	UPROPERTY(Category = "Shopkeeper", VisibleDefaultsOnly)
 		class USkeletalMeshComponent* SkeletalMesh;
+
+	UPROPERTY(Category = "Positions", EditAnywhere)
+		TArray<AActor*> PatrolPositions;
 
 public:
 	// Sets default values for this character's properties
@@ -29,6 +32,8 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	TArray<AActor*> GetPatrolPositions();
 
 protected:
 	// Called when the game starts or when spawned
