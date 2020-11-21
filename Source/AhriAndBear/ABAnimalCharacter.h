@@ -7,6 +7,7 @@
 #include "Components/BoxComponent.h"
 #include "GameBase/Define.h"
 #include "BehaviorTree/BehaviorTree.h"
+#include "Kismet/GameplayStatics.h"
 #include "ABAnimalCharacter.generated.h"
 
 class UStaticMeshComponent;
@@ -17,6 +18,7 @@ class UPawnSensingComponent;
 class UPawnNoiseEmitterComponent;
 class UAudioComponent;
 
+#define GET_MAIN_CHARACTER Cast<AABAnimalCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FBark, FVector, Position);
 
 UCLASS()
@@ -27,13 +29,12 @@ class AHRIANDBEAR_API AABAnimalCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AABAnimalCharacter();
-
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Gameplay|Interaction")
+		class UCharacterInteractionComponent* InteractionComponent;
 	UPROPERTY(Category = Camera, VisibleDefaultsOnly, BlueprintReadWrite)
 		class USpringArmComponent* springArm;
 	UPROPERTY(Category = Camera, VisibleDefaultsOnly, BlueprintReadWrite)
 		class UCameraComponent* camera;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-		UBoxComponent* InterationTrigger;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
 		class USphereComponent* ProjectileStart;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Survival")
@@ -80,9 +81,6 @@ public:
 	void EndSprinting();
 	void SprintStaminaUpdate(float DeltaTime);
 
-	void StartInteracting();
-	void EndInteracting();
-
 	void StartCrouch();
 	void EndCrouch();
 
@@ -98,18 +96,6 @@ public:
 	void ChangeCameraLocation(float DeltaTime);
 
 	virtual void UseAbility();
-	bool CanMove();
-	bool CanSprint();
-	bool CanInteract();
-	bool CanUseAbility();
-	bool CanClimb();
-	bool CanCrouch();
-
-	UFUNCTION()
-		void OnInteractionOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	UFUNCTION()
-		void OnInteractionOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 protected:
 	FTimerHandle TimerHandle;

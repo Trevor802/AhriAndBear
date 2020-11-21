@@ -2,7 +2,6 @@
 
 
 #include "ABInteractiveObjectBase.h"
-#include "Interactive.h"
 #include "ABAnimalCharacter.h"
 #include "ABPlayerController.h"
 #include "EventTrigger.h"
@@ -13,7 +12,6 @@ AABInteractiveObjectBase::AABInteractiveObjectBase()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	EventTrigger = CreateDefaultSubobject<UEventTrigger>(TEXT("EventTrigger"));
 
 	UIWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("UIWidget1"));
 }
@@ -46,22 +44,12 @@ void AABInteractiveObjectBase::OnEnterCollision(UPrimitiveComponent* OverlappedC
 {
 	OnActorEnter(OtherActor);
 	AABAnimalCharacter* character = Cast<AABAnimalCharacter>(OtherActor);
-	OverlappingAnimal = character;
-	if (EventTrigger)
-	{
-		EventTrigger->OnEnterCollision(character);
-	}
 }
 
 void AABInteractiveObjectBase::OnExitCollision(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	OnActorExit(OtherActor);
 	AABAnimalCharacter* character = Cast<AABAnimalCharacter>(OtherActor);
-	OverlappingAnimal = nullptr;
-	if (EventTrigger)
-	{
-		EventTrigger->OnExitCollision(character);
-	}
 }
 
 void AABInteractiveObjectBase::SetWidgetDistance()
@@ -95,9 +83,3 @@ void AABInteractiveObjectBase::SetWidgetVisiability()
 		UIWidget->SetVisibility(true);
 	}
 }
-
-bool AABInteractiveObjectBase::CanInteract()
-{
-	return bCanBeInteracted;
-}
-

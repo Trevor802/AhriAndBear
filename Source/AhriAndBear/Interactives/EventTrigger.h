@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Components/SphereComponent.h"
-#include "Interactive.h"
 #include "GameBase/Define.h"
 #include "ABAnimalCharacter.h"
 #include "EventTrigger.generated.h"

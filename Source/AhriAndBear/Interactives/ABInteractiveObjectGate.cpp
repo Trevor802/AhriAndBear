@@ -35,13 +35,13 @@ AABInteractiveObjectGate::AABInteractiveObjectGate()
 	DoorJoint->SetupAttachment(RootComponent);
 	DoorJoint->SetDisableCollision(true);
 
-	bCanBeInteracted = true;
+	bOpened = false;
+
 }
 
 void AABInteractiveObjectGate::BeginPlay()
 {
 	Super::BeginPlay();
-	EventTrigger->EventData.TriggerEvent = EEventType::Nothing;
 	GateMesh->SetSimulatePhysics(false);
 }
 
@@ -50,11 +50,17 @@ void AABInteractiveObjectGate::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AABInteractiveObjectGate::AfterInteraction()
+void AABInteractiveObjectGate::EndInteraction(bool bResult)
 {
+	Super::EndInteraction(bResult);
+
+	if (!bResult)
+	{
+		return;
+	}
+
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Door Unlocked"));
 	DoorJoint->SetDisableCollision(false);
 	GateMesh->SetSimulatePhysics(true);
-
-	bCanBeInteracted = false;
+	bOpened = true;
 }
