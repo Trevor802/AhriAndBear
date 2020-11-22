@@ -35,4 +35,10 @@ protected:
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	float OccupyingDuration = 1.f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
+		class USoundBase* InteractingSound;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
+		class USoundBase* SuccessSound;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
+		class USoundBase* FailSound;
 };
