@@ -43,22 +43,30 @@ void UBtServiceUpdateTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 		FVector actorLocation = shopKeeperController->GetPawn()->GetActorLocation();
 		FVector playerLocation = playerCharacter->GetActorLocation();
 
-		FCollisionShape sphereShape = FCollisionShape::MakeSphere(10); // Probably can be cached
-		FHitResult hitResult;
+		float distance = FVector::Dist(actorLocation, playerLocation);
+		if (distance <= MaxSenseDistance)
+		{
+			FCollisionShape sphereShape = FCollisionShape::MakeSphere(10); // Probably can be cached
+			FHitResult hitResult;
 
-		bool didCollide = GetWorld()->SweepSingleByChannel(hitResult, actorLocation, playerLocation, FQuat::Identity, ECollisionChannel::ECC_Visibility, sphereShape);
-		if (didCollide) {
-			AActor* hitActor = hitResult.GetActor();
-			AABAnimalCharacter* animalCharacter = Cast<AABAnimalCharacter>(hitActor);
+			bool didCollide = GetWorld()->SweepSingleByChannel(hitResult, actorLocation, playerLocation, FQuat::Identity, ECollisionChannel::ECC_Visibility, sphereShape);
+			if (didCollide) {
+				AActor* hitActor = hitResult.GetActor();
+				AABAnimalCharacter* animalCharacter = Cast<AABAnimalCharacter>(hitActor);
 
-			if (animalCharacter != nullptr) {
-				blackboardComponent->SetValueAsObject(KeyTarget, playerCharacter);
-				blackboardComponent->SetValueAsVector(KeyLastPosition, playerLocation);
+				if (animalCharacter != nullptr) {
+					blackboardComponent->SetValueAsObject(KeyTarget, playerCharacter);
+					blackboardComponent->SetValueAsVector(KeyLastPosition, playerLocation);
+				}
+				else
+				{
+					blackboardComponent->ClearValue(KeyTarget);
+				}
 			}
-			else
-			{
-				blackboardComponent->ClearValue(KeyTarget);
-			}
+		}
+		else
+		{
+			blackboardComponent->ClearValue(KeyTarget);
 		}
 
 		_blackboardComponent = blackboardComponent;

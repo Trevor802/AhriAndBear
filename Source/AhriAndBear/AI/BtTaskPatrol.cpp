@@ -27,8 +27,14 @@ EBTNodeResult::Type UBtTaskPatrol::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 			blackboardComponent->ClearValue(KeyLastPosition);
 		}
 		else {
-			int randomIndex = FMath::RandRange(0, patrolPositions.Num() - 1);
-			blackboardComponent->SetValueAsVector(KeyPatrolPosition, patrolPositions[randomIndex]->GetActorLocation());
+			int currentIndex = _currentIndex;
+			blackboardComponent->SetValueAsVector(KeyPatrolPosition, patrolPositions[currentIndex]->GetActorLocation());
+
+			_currentIndex += 1;
+			if(_currentIndex >= patrolPositions.Num())
+			{
+				_currentIndex = 0;
+			}
 		}
 	}
 

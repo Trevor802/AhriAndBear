@@ -20,5 +20,7 @@ class AHRIANDBEAR_API UBtTaskPatrol : public UBTTaskNode
 	UPROPERTY(Category = "AI", EditAnywhere)
 		FName KeyLastPosition;
 
+	int _currentIndex = 0;
+
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override; // Receive Execute AI
 };

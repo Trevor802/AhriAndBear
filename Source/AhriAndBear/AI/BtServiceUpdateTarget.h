@@ -22,9 +22,12 @@ class AHRIANDBEAR_API UBtServiceUpdateTarget : public UBTService
 
 	UPROPERTY(Category = "BlackboardKeys", EditAnywhere)
 		FName KeyDefaultPosition;
-
+	 
 	UPROPERTY(Category = "BlackboardKeys", EditAnywhere)
 		FName KeyBarkPosition;
+
+	UPROPERTY(Category = "Distance", EditAnywhere)
+		float MaxSenseDistance;
 
 	UBlackboardComponent* _blackboardComponent;
 
