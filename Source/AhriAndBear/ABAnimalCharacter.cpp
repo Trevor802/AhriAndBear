@@ -68,7 +68,7 @@ void AABAnimalCharacter::BeginPlay()
 
 bool AABAnimalCharacter::CanJumpInternal_Implementation() const
 {
-	return Super::CanJumpInternal_Implementation() && bCanJump;
+	return Super::CanJumpInternal_Implementation();
 }
 
 // Called every frame
@@ -89,7 +89,8 @@ void AABAnimalCharacter::GetCaught(AActor* byWhom)
 
 void AABAnimalCharacter::Jump()
 {
-	LaunchCharacter(JumpingVelocity, true, true);
+	//LaunchCharacter(JumpingVelocity, true, true);
+	ACharacter::Jump();
 }
 
 void AABAnimalCharacter::UpdateChecking()
@@ -100,7 +101,8 @@ void AABAnimalCharacter::UpdateChecking()
 		return;
 	}
 
-	bCanJump = CheckJumping(JumpingVelocity);
+	//bCanJump = CheckJumping(JumpingVelocity);
+	bCanJump = CanJump();
 }
 
 void AABAnimalCharacter::StartJumping()
