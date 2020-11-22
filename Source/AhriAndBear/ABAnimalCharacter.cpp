@@ -14,6 +14,7 @@
 #include "Interactives/CharacterInteractionComponent.h"
 #include "Components/PawnNoiseEmitterComponent.h"
 #include "Perception/PawnSensingComponent.h"
+#include "Components/AudioComponent.h"
 
 // Sets default values
 AABAnimalCharacter::AABAnimalCharacter()
@@ -28,6 +29,9 @@ AABAnimalCharacter::AABAnimalCharacter()
 
 	ProjectileStart = CreateDefaultSubobject<USphereComponent>(TEXT("ProjectileStart"));
 	ProjectileStart->SetupAttachment(RootComponent);
+
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+	AudioComponent->SetupAttachment(RootComponent);
 
 	InteractionComponent = CreateDefaultSubobject<UCharacterInteractionComponent>(TEXT("InteractionComp"));
 	InteractionComponent->SetupAttachment(RootComponent);
@@ -91,6 +95,13 @@ void AABAnimalCharacter::Jump()
 {
 	//LaunchCharacter(JumpingVelocity, true, true);
 	ACharacter::Jump();
+}
+
+void AABAnimalCharacter::Bark()
+{
+	OnAnimalBark.Broadcast(GetActorLocation());
+	AudioComponent->SetSound(BarkingSound);
+	AudioComponent->Play();
 }
 
 void AABAnimalCharacter::UpdateChecking()

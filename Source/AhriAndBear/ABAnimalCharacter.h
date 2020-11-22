@@ -41,6 +41,8 @@ public:
 		UAABSurvivalComponent* SurvivalComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
 		UBehaviorTree* BehaviorTree;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound")
+		class UAudioComponent* AudioComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Jumping")
 		float JumpingSpeed = 700.f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Jumping")
@@ -87,7 +89,7 @@ public:
 	void ChangeOtherFollowingStatus();
 
 	void SwitchAnimal();
-
+	void Bark();
 	void ChangeMovementSetting();
 	void ChangeMovementMode();
 
@@ -135,6 +137,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 		bool bIsFollowing;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
+		class USoundBase* BarkingSound;
 
 	AABAnimalCharacter* OtherAnimal;
 	bool bBlackBoardSet;

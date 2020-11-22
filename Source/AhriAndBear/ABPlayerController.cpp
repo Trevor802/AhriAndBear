@@ -63,6 +63,7 @@ void AABPlayerController::SetupInputComponent()
 	ActionBindings.Add(InputComponent->BindAction("AnimalTogether", IE_Pressed, this, &AABPlayerController::CallFollowing));
 
 	ConstantActionBindings.Add(InputComponent->BindAction("ChangeAnimal", IE_Pressed, this, &AABPlayerController::CallSwitchAnimal));
+	ConstantActionBindings.Add(InputComponent->BindAction("Bark", IE_Pressed, this, &AABPlayerController::Bark));
 	ConstantActionBindings.Add(InputComponent->BindAction("ESC", IE_Pressed, this, &AABPlayerController::QuitGame));
 }
 
@@ -221,6 +222,14 @@ void AABPlayerController::CallStopCrouch()
 	if (AnimalCharacter)
 	{
 		AnimalCharacter->EndCrouch();
+	}
+}
+
+void AABPlayerController::Bark()
+{
+	if (AnimalCharacter)
+	{
+		AnimalCharacter->Bark();
 	}
 }
 
