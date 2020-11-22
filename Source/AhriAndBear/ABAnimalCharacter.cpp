@@ -83,7 +83,8 @@ void AABAnimalCharacter::Tick(float DeltaTime)
 
 void AABAnimalCharacter::GetCaught(AActor* byWhom)
 {
-	// TODO: Complete this function...	
+	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, "Animal Caught By: " + byWhom->GetName());
+	UGameplayStatics::OpenLevel(GetWorld(), "level1_Shelter");
 }
 
 void AABAnimalCharacter::Jump()
