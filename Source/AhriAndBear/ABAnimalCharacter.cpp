@@ -129,10 +129,13 @@ void AABAnimalCharacter::StartSprinting()
 
 void AABAnimalCharacter::SprintStaminaUpdate(float DeltaTime)
 {
-	UABSurvivalStatFunctions::AddToCurrentValue(SurvivalComponent->Stamina, -SprintStaminaRateOfChange * DeltaTime);
-	if (SurvivalComponent->Stamina.CurrentValue <= 0)
+	if (bSprinting)
 	{
-		EndSprinting();
+		UABSurvivalStatFunctions::AddToCurrentValue(SurvivalComponent->Stamina, -SprintStaminaRateOfChange * DeltaTime);
+		if (SurvivalComponent->Stamina.CurrentValue <= 0)
+		{
+			EndSprinting();
+		}
 	}
 }
 
