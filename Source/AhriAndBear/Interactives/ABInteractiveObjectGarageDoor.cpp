@@ -20,10 +20,10 @@ AABInteractiveObjectGarageDoor::AABInteractiveObjectGarageDoor()
 	ButtonMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ButtonMesh"));
 	Spline = CreateDefaultSubobject<USplineComponent>(TEXT("SplineComponent"));
 	
-	//RootComponent = Spline;
-	//CollisionShape->SetupAttachment(RootComponent);
-	//DoorMesh->SetupAttachment(RootComponent);
-	//ButtonMesh->SetupAttachment(RootComponent);
+	RootComponent = CollisionShape;
+	Spline->SetupAttachment(RootComponent);
+	DoorMesh->SetupAttachment(RootComponent);
+	ButtonMesh->SetupAttachment(RootComponent);
 
 	bOpened = false;
 }
