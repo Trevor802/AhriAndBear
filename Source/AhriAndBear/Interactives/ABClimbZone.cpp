@@ -2,6 +2,8 @@
 
 
 #include "ABClimbZone.h"
+#include "Characters/ABCatCharacter.h"
+#include "CharacterInteractionComponent.h"
 
 // Sets default values
 AABClimbZone::AABClimbZone()
@@ -17,7 +19,27 @@ AABClimbZone::AABClimbZone()
 void AABClimbZone::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	ClimbTrigger->OnComponentBeginOverlap.AddDynamic(this, &AABClimbZone::OnEnterCollision);
+	ClimbTrigger->OnComponentEndOverlap.AddDynamic(this, &AABClimbZone::OnExitCollision);
+}
+
+void AABClimbZone::OnEnterCollision(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor && OtherComp && Cast<AABCatCharacter>(OtherActor) && Cast<UCharacterInteractionComponent>(OtherComp))
+	{
+		AABCatCharacter* tempChara = Cast<AABCatCharacter>(OtherActor);
+		tempChara->bInClimbingZone = true;
+	}
+}
+
+void AABClimbZone::OnExitCollision(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (OtherActor && OtherComp && Cast<AABCatCharacter>(OtherActor) && Cast<UCharacterInteractionComponent>(OtherComp))
+	{
+		AABCatCharacter* tempChara = Cast<AABCatCharacter>(OtherActor);
+		tempChara->bInClimbingZone = false;
+	}
 }
 
 // Called every frame

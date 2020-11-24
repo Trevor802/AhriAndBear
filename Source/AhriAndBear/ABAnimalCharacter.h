@@ -7,6 +7,7 @@
 #include "Components/BoxComponent.h"
 #include "GameBase/Define.h"
 #include "BehaviorTree/BehaviorTree.h"
+#include "Kismet/GameplayStatics.h"
 #include "ABAnimalCharacter.generated.h"
 
 class UStaticMeshComponent;
@@ -17,6 +18,9 @@ class UPawnSensingComponent;
 class UPawnNoiseEmitterComponent;
 class UAudioComponent;
 
+#define GET_MAIN_CHARACTER Cast<AABAnimalCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FBark, FVector, Position);
+
 UCLASS()
 class AHRIANDBEAR_API AABAnimalCharacter : public ACharacter
 {
@@ -25,19 +29,20 @@ class AHRIANDBEAR_API AABAnimalCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AABAnimalCharacter();
-
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Gameplay|Interaction")
+		class UCharacterInteractionComponent* InteractionComponent;
 	UPROPERTY(Category = Camera, VisibleDefaultsOnly, BlueprintReadWrite)
 		class USpringArmComponent* springArm;
 	UPROPERTY(Category = Camera, VisibleDefaultsOnly, BlueprintReadWrite)
 		class UCameraComponent* camera;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-		UBoxComponent* InterationTrigger;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
 		class USphereComponent* ProjectileStart;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Survival")
 		UAABSurvivalComponent* SurvivalComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
 		UBehaviorTree* BehaviorTree;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound")
+		class UAudioComponent* AudioComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Jumping")
 		float JumpingSpeed = 700.f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Jumping")
@@ -57,6 +62,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Sprint")
 		float SprintStaminaRateOfChange = 1;
 
+	UPROPERTY(BlueprintAssignable, Category = "Delegates")
+		FBark OnAnimalBark;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -75,16 +83,13 @@ public:
 	void EndSprinting();
 	void SprintStaminaUpdate(float DeltaTime);
 
-	void StartInteracting();
-	void EndInteracting();
-
 	void StartCrouch();
 	void EndCrouch();
 
 	void ChangeOtherFollowingStatus();
 
 	void SwitchAnimal();
-
+	void Bark();
 	void ChangeMovementSetting();
 	void ChangeMovementMode();
 
@@ -93,18 +98,6 @@ public:
 	void ChangeCameraLocation(float DeltaTime);
 
 	virtual void UseAbility();
-	bool CanMove();
-	bool CanSprint();
-	bool CanInteract();
-	bool CanUseAbility();
-	bool CanClimb();
-	bool CanCrouch();
-
-	UFUNCTION()
-		void OnInteractionOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	UFUNCTION()
-		void OnInteractionOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 protected:
 	FTimerHandle TimerHandle;
@@ -145,12 +138,17 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 		bool bIsFollowing;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
+		class USoundBase* BarkingSound;
+
 	AABAnimalCharacter* OtherAnimal;
 	bool bBlackBoardSet;
 	bool bOrientRotationToMovementSetting;
 
 	bool bInClimbingZone;
 	bool bClimbing;
+
+	void GetCaught(AActor* byWhom);
 
 private:
 	bool bWithinRange;

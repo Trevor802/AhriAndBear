@@ -46,5 +46,9 @@ void UAABSurvivalComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 
 void UAABSurvivalComponent::AddSurvivalData(const FSurvivalData& value)
 {
-		
+	UABSurvivalStatFunctions::AddToCurrentValue(Health, value.Health);
+	UABSurvivalStatFunctions::AddToCurrentValue(Warmth, value.Warmth);
+	UABSurvivalStatFunctions::AddToCurrentValue(Thirst, value.Thirst);
+	UABSurvivalStatFunctions::AddToCurrentValue(Hunger, value.Hunger);
+	UABSurvivalStatFunctions::AddToCurrentValue(Stamina, value.Stamina);
 }

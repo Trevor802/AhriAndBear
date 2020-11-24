@@ -1,7 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "ABAnimalCharacter.h"
-#include "Interactives/ABInteractiveObjectBase.h"
+#include "ABPlayerController.h"
+#include "Interactives/Interactive.h"
 #include "AABSurvivalComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/GameplayStaticsTypes.h"
@@ -10,8 +11,10 @@
 #include "Engine.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Components/InputComponent.h"
+#include "Interactives/CharacterInteractionComponent.h"
 #include "Components/PawnNoiseEmitterComponent.h"
 #include "Perception/PawnSensingComponent.h"
+#include "Components/AudioComponent.h"
 
 // Sets default values
 AABAnimalCharacter::AABAnimalCharacter()
@@ -24,11 +27,14 @@ AABAnimalCharacter::AABAnimalCharacter()
 	camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera0"));
 	camera->SetupAttachment(springArm);
 
-	InterationTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("InterationTrigger"));
-	InterationTrigger->SetupAttachment(RootComponent);
-
 	ProjectileStart = CreateDefaultSubobject<USphereComponent>(TEXT("ProjectileStart"));
 	ProjectileStart->SetupAttachment(RootComponent);
+
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+	AudioComponent->SetupAttachment(RootComponent);
+
+	InteractionComponent = CreateDefaultSubobject<UCharacterInteractionComponent>(TEXT("InteractionComp"));
+	InteractionComponent->SetupAttachment(RootComponent);
 
 	SurvivalComponent = CreateDefaultSubobject<UAABSurvivalComponent>(TEXT("Survival Component"));
 
@@ -56,9 +62,6 @@ void AABAnimalCharacter::BeginPlay()
 
 	SetOtherAnimal();
 
-	InterationTrigger->OnComponentBeginOverlap.AddDynamic(this, &AABAnimalCharacter::OnInteractionOverlapBegin);
-	InterationTrigger->OnComponentEndOverlap.AddDynamic(this, &AABAnimalCharacter::OnInteractionOverlapEnd);
-
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 
 	FPCameraTargetLocation.X = camera->GetRelativeLocation().X;
@@ -69,7 +72,7 @@ void AABAnimalCharacter::BeginPlay()
 
 bool AABAnimalCharacter::CanJumpInternal_Implementation() const
 {
-	return Super::CanJumpInternal_Implementation() && bCanJump;
+	return Super::CanJumpInternal_Implementation();
 }
 
 // Called every frame
@@ -82,9 +85,23 @@ void AABAnimalCharacter::Tick(float DeltaTime)
 	SprintStaminaUpdate(DeltaTime);
 }
 
+void AABAnimalCharacter::GetCaught(AActor* byWhom)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, "Animal Caught By: " + byWhom->GetName());
+	UGameplayStatics::OpenLevel(GetWorld(), "level1_Shelter");
+}
+
 void AABAnimalCharacter::Jump()
 {
-	LaunchCharacter(JumpingVelocity, true, true);
+	//LaunchCharacter(JumpingVelocity, true, true);
+	ACharacter::Jump();
+}
+
+void AABAnimalCharacter::Bark()
+{
+	OnAnimalBark.Broadcast(GetActorLocation());
+	AudioComponent->SetSound(BarkingSound);
+	AudioComponent->Play();
 }
 
 void AABAnimalCharacter::UpdateChecking()
@@ -95,7 +112,8 @@ void AABAnimalCharacter::UpdateChecking()
 		return;
 	}
 
-	bCanJump = CheckJumping(JumpingVelocity);
+	//bCanJump = CheckJumping(JumpingVelocity);
+	bCanJump = CanJump();
 }
 
 void AABAnimalCharacter::StartJumping()
@@ -124,11 +142,13 @@ void AABAnimalCharacter::StartSprinting()
 
 void AABAnimalCharacter::SprintStaminaUpdate(float DeltaTime)
 {
-	UABSurvivalStatFunctions::AddToCurrentValue(SurvivalComponent->Stamina, -SprintStaminaRateOfChange * DeltaTime);
-	if (SurvivalComponent->Stamina.CurrentValue <= 0)
+	if (bSprinting)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("end sprinting"));
-		EndSprinting();
+		UABSurvivalStatFunctions::AddToCurrentValue(SurvivalComponent->Stamina, -SprintStaminaRateOfChange * DeltaTime);
+		if (SurvivalComponent->Stamina.CurrentValue <= 0)
+		{
+			EndSprinting();
+		}
 	}
 }
 
@@ -136,28 +156,6 @@ void AABAnimalCharacter::EndSprinting()
 {
 	bSprinting = false;
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
-}
-
-void AABAnimalCharacter::StartInteracting()
-{
-	if (InteractiveObjectRef && InteractiveObjectRef->CanInteract() == true)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("interaction succeed"));
-		bInteracting = true;
-
-		float InteractingCooldown = 0.0f;
-
-		InteractingCooldown = InteractiveObjectRef->InteractionDelay;
-
-		FTimerDelegate InteractionTimerDelegate = FTimerDelegate::CreateUObject(this, &AABAnimalCharacter::EndInteracting);
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle, InteractionTimerDelegate, InteractingCooldown, false);
-	}
-}
-
-void AABAnimalCharacter::EndInteracting()
-{
-	bInteracting = false;
-	InteractiveObjectRef->AfterInteraction();
 }
 
 void AABAnimalCharacter::StartCrouch()
@@ -213,6 +211,16 @@ void AABAnimalCharacter::SwitchAnimal()
 
 			tempPlayerController->Possess(OtherAnimal);
 			tempAIController->Possess(this);
+			
+			if (OtherAnimal->InteractionComponent->IsInteracting())
+			{
+				Cast<AABPlayerController>(tempPlayerController)->UnbindInput();
+				OtherAnimal->InteractionComponent->GetInteractingActor()->BindInput(tempPlayerController->InputComponent);
+			}
+			else
+			{
+				Cast<AABPlayerController>(tempPlayerController)->BindInput();
+			}
 		}
 	}
 
@@ -285,107 +293,6 @@ void AABAnimalCharacter::UseAbility()
 
 }
 
-bool AABAnimalCharacter::CanMove()
-{
-	if (bInteracting == true)
-	{
-		return false;
-	}
-	else
-	{
-		return true;
-	}
-}
-
-bool AABAnimalCharacter::CanSprint()
-{
-	if (CanMove() && bJumping == false)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-
-
-bool AABAnimalCharacter::CanInteract()
-{
-	if (bInteracting == true || bWithinRange == false)
-	{
-		return false;
-	}
-	else
-	{
-		return true;
-	}
-}
-
-bool AABAnimalCharacter::CanUseAbility()
-{
-	if (bInteracting == true)
-	{
-		return false;
-	}
-	else
-	{
-		return true;
-	}
-}
-
-bool AABAnimalCharacter::CanClimb()
-{
-	if (bInClimbingZone == true && bSprinting == true && AnimalType == EAnimalType::Cat)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-
-bool AABAnimalCharacter::CanCrouch()
-{
-	if (CanMove() == true && bSprinting == false && GetMovementComponent()->IsMovingOnGround() == true)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-
-void AABAnimalCharacter::OnInteractionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (OtherActor && OtherActor != this && Cast<AABInteractiveObjectBase>(OtherActor) && bAttached == false)
-	{
-		InteractiveObjectRef = Cast<AABInteractiveObjectBase>(OtherActor);
-		bWithinRange = true;
-	}
-
-	if (OtherActor && OtherActor != this && Cast<AABClimbZone>(OtherActor))
-	{
-		bInClimbingZone = true;
-	}
-}
-
-void AABAnimalCharacter::OnInteractionOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	if (OtherActor && OtherActor != this && Cast<AABInteractiveObjectBase>(OtherActor) && bAttached == false)
-	{
-		InteractiveObjectRef = nullptr;
-		bWithinRange = false;
-	}
-
-	if (OtherActor && OtherActor != this && Cast<AABClimbZone>(OtherActor))
-	{
-		bInClimbingZone = false;
-	}
-}
-
 void AABAnimalCharacter::SetOtherAnimal()
 {
 	TArray<AActor*> FoundActors;
@@ -401,7 +308,7 @@ void AABAnimalCharacter::SetOtherAnimal()
 bool AABAnimalCharacter::CheckJumping(FVector& OutVelocity)
 {
 	FVector launchVel = (GetActorRotation().RotateVector(FVector::UpVector) + GetActorRotation().RotateVector(FVector::ForwardVector)) * 0.707f * JumpingSpeed;
-	FPredictProjectilePathParams inParams = FPredictProjectilePathParams(3.0f, ProjectileStart->GetComponentLocation(), launchVel, 2.0f, ECollisionChannel::ECC_WorldStatic, this);
+	FPredictProjectilePathParams inParams = FPredictProjectilePathParams(3.0f, ProjectileStart->GetComponentLocation(), launchVel, 2.0f, ECollisionChannel::ECC_Visibility, this);
 	if (bDebugJumping)
 	{
 		inParams.DrawDebugType = EDrawDebugTrace::ForOneFrame;

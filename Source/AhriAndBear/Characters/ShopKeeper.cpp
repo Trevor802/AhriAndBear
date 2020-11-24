@@ -48,7 +48,7 @@ void AShopKeeper::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 {
 	AABAnimalCharacter* animal = Cast<AABAnimalCharacter>(OtherActor);
 	if (animal != nullptr) {
-		// TODO: Call GetCaught Function
+		animal->GetCaught(this);
 	}
 }
 
@@ -56,6 +56,10 @@ void AShopKeeper::OnBox1BeginOverlap(UPrimitiveComponent* OverlappedComp, AActor
 {
 	AABAnimalCharacter* animal = Cast<AABAnimalCharacter>(OtherActor);
 	if (animal != nullptr) {
-		// TODO: Call GetCaught Function
+		animal->GetCaught(this);
 	}
+}
+TArray<AActor*> AShopKeeper::GetPatrolPositions()
+{
+	return PatrolPositions;
 }

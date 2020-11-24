@@ -22,12 +22,20 @@ class AHRIANDBEAR_API UBtServiceUpdateTarget : public UBTService
 
 	UPROPERTY(Category = "BlackboardKeys", EditAnywhere)
 		FName KeyDefaultPosition;
-
+	 
 	UPROPERTY(Category = "BlackboardKeys", EditAnywhere)
 		FName KeyBarkPosition;
+
+	UPROPERTY(Category = "Distance", EditAnywhere)
+		float MaxSenseDistance;
+
+	UBlackboardComponent* _blackboardComponent;
 
 protected:
 
 	virtual void OnBecomeRelevant(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
+
+	UFUNCTION()
+		void HandleAnimalBarked(FVector Position);
 };
