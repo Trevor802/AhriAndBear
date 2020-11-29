@@ -26,8 +26,17 @@ class AHRIANDBEAR_API UBtServiceUpdateTarget : public UBTService
 	UPROPERTY(Category = "BlackboardKeys", EditAnywhere)
 		FName KeyBarkPosition;
 
+	UPROPERTY(Category = "BlackboardKeys", EditAnywhere)
+		FName KeyPlayerAngle;
+
 	UPROPERTY(Category = "Distance", EditAnywhere)
-		float MaxSenseDistance;
+		float MaxDirectSenseDistance;
+
+	UPROPERTY(Category = "Distance", EditAnywhere)
+		float MaxInDirectSenseDistance;
+
+	UPROPERTY(Category = "Distance", EditAnywhere)
+		float FOVHalfAngle;
 
 	UBlackboardComponent* _blackboardComponent;
 
