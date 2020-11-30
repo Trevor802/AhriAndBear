@@ -66,6 +66,10 @@ public:
 	bool bOccupyMouth;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gameplay")
 	bool bOccupyPaw;
+
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Task")
+	bool bCanTriggerTask;
+
 	void AfterInteraction(bool);
 	bool TryInteracting(UCharacterInteractionComponent*);
 
