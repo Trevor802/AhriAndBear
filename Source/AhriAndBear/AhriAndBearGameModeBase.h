@@ -14,4 +14,16 @@ class AHRIANDBEAR_API AAhriAndBearGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tasks")
+		TArray<FString> LevelTasks;
+	UPROPERTY(BlueprintReadOnly, Category = "Tasks")
+		FString CurTaskText;
+
+protected:
+	int CurTaskIndex;
+
+public:
+	AAhriAndBearGameModeBase();
+	void ToNextTask();
 };

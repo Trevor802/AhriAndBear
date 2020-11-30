@@ -3,3 +3,21 @@
 
 #include "AhriAndBearGameModeBase.h"
 
+AAhriAndBearGameModeBase::AAhriAndBearGameModeBase()
+{
+	CurTaskIndex = 0;
+
+	if (LevelTasks.Num() != 0)
+	{
+		CurTaskText = LevelTasks[CurTaskIndex];
+	}
+}
+
+void AAhriAndBearGameModeBase::ToNextTask()
+{
+	if (CurTaskIndex < LevelTasks.Num())
+	{
+		CurTaskIndex++;
+		CurTaskText = LevelTasks[CurTaskIndex];
+	}
+}
