@@ -14,6 +14,7 @@
 #include "Interactives/CharacterInteractionComponent.h"
 #include "Components/PawnNoiseEmitterComponent.h"
 #include "Perception/PawnSensingComponent.h"
+#include "Components/AudioComponent.h"
 
 // Sets default values
 AABAnimalCharacter::AABAnimalCharacter()
@@ -28,6 +29,9 @@ AABAnimalCharacter::AABAnimalCharacter()
 
 	ProjectileStart = CreateDefaultSubobject<USphereComponent>(TEXT("ProjectileStart"));
 	ProjectileStart->SetupAttachment(RootComponent);
+
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+	AudioComponent->SetupAttachment(RootComponent);
 
 	InteractionComponent = CreateDefaultSubobject<UCharacterInteractionComponent>(TEXT("InteractionComp"));
 	InteractionComponent->SetupAttachment(RootComponent);
@@ -68,7 +72,7 @@ void AABAnimalCharacter::BeginPlay()
 
 bool AABAnimalCharacter::CanJumpInternal_Implementation() const
 {
-	return Super::CanJumpInternal_Implementation() && bCanJump;
+	return Super::CanJumpInternal_Implementation();
 }
 
 // Called every frame
@@ -83,12 +87,21 @@ void AABAnimalCharacter::Tick(float DeltaTime)
 
 void AABAnimalCharacter::GetCaught(AActor* byWhom)
 {
-	// TODO: Complete this function...	
+	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, "Animal Caught By: " + byWhom->GetName());
+	UGameplayStatics::OpenLevel(GetWorld(), "level1_Shelter");
 }
 
 void AABAnimalCharacter::Jump()
 {
-	LaunchCharacter(JumpingVelocity, true, true);
+	//LaunchCharacter(JumpingVelocity, true, true);
+	ACharacter::Jump();
+}
+
+void AABAnimalCharacter::Bark()
+{
+	OnAnimalBark.Broadcast(GetActorLocation());
+	AudioComponent->SetSound(BarkingSound);
+	AudioComponent->Play();
 }
 
 void AABAnimalCharacter::UpdateChecking()
@@ -99,7 +112,8 @@ void AABAnimalCharacter::UpdateChecking()
 		return;
 	}
 
-	bCanJump = CheckJumping(JumpingVelocity);
+	//bCanJump = CheckJumping(JumpingVelocity);
+	bCanJump = CanJump();
 }
 
 void AABAnimalCharacter::StartJumping()
@@ -128,10 +142,13 @@ void AABAnimalCharacter::StartSprinting()
 
 void AABAnimalCharacter::SprintStaminaUpdate(float DeltaTime)
 {
-	UABSurvivalStatFunctions::AddToCurrentValue(SurvivalComponent->Stamina, -SprintStaminaRateOfChange * DeltaTime);
-	if (SurvivalComponent->Stamina.CurrentValue <= 0)
+	if (bSprinting)
 	{
-		EndSprinting();
+		UABSurvivalStatFunctions::AddToCurrentValue(SurvivalComponent->Stamina, -SprintStaminaRateOfChange * DeltaTime);
+		if (SurvivalComponent->Stamina.CurrentValue <= 0)
+		{
+			EndSprinting();
+		}
 	}
 }
 

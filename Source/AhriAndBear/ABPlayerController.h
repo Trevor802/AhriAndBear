@@ -40,6 +40,7 @@ public:
 	void CallStopCrouch();
 	
 	void QuitGame();
+	void Bark();
 
 	AABAnimalCharacter* AnimalCharacter;
 	void BindInput() const;

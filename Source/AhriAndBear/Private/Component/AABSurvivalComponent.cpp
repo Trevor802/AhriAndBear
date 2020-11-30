@@ -42,13 +42,16 @@ void UAABSurvivalComponent::BeginPlay()
 void UAABSurvivalComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("HM?"));
 	UpdateStats(DeltaTime);
 }
 
 void UAABSurvivalComponent::AddSurvivalData(const FSurvivalData& value)
 {
-	
+	UABSurvivalStatFunctions::AddToCurrentValue(Health, value.Health);
+	UABSurvivalStatFunctions::AddToCurrentValue(Warmth, value.Warmth);
+	UABSurvivalStatFunctions::AddToCurrentValue(Thirst, value.Thirst);
+	UABSurvivalStatFunctions::AddToCurrentValue(Hunger, value.Hunger);
+	UABSurvivalStatFunctions::AddToCurrentValue(Stamina, value.Stamina);
 }
 
 void UAABSurvivalComponent::AddModifier(IABStatModifierInterface* modifier)
@@ -68,9 +71,7 @@ void UAABSurvivalComponent::AddModifier(IABStatModifierInterface* modifier)
 
 void UAABSurvivalComponent::RemoveModifier(IABStatModifierInterface* modifier)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("There are %d mods (pre-removal)"), StatModifiers.Num()));
-	StatModifiers.Remove(modifier);
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("There are %d mods (post-removal)"), StatModifiers.Num()));
+	StatModifiers.Remove(modifier);	
 	StatModifiers.Sort();
 
 	// Only update the corresponding stats if they modify that stat. Otherwise, we waste time.

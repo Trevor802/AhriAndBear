@@ -13,5 +13,6 @@ UCLASS()
 class AHRIANDBEAR_API AShopKeeperController : public AAIController
 {
 	GENERATED_BODY()
-	
+
+public:
 };
