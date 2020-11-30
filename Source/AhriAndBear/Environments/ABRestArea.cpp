@@ -33,7 +33,6 @@ void AABRestArea::BeginPlay()
 
 void AABRestArea::BeginOverlap(AActor* self, AActor* OtherActor)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Entered rest area"));
 
 	auto animal = Cast<AABAnimalCharacter>(OtherActor);
 	if (animal == nullptr) return;
@@ -42,10 +41,8 @@ void AABRestArea::BeginOverlap(AActor* self, AActor* OtherActor)
 }
 
 void AABRestArea::EndOverlap(AActor* self, AActor* otherActor) {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Overlap over"));
 	auto animal = Cast<AABAnimalCharacter>(otherActor);
 	if (animal == nullptr) return;
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Removing"));
 	animal->SurvivalComponent->RemoveModifier(this);
 }
 
