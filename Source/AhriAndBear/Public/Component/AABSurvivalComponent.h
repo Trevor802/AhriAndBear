@@ -8,6 +8,8 @@
 #include "GameBase/Define.h"
 #include "AABSurvivalComponent.generated.h"
 
+class IABStatModifierInterface;
+
 UCLASS( Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class AHRIANDBEAR_API UAABSurvivalComponent : public UActorComponent
 {
@@ -17,10 +19,10 @@ public:
 	// Sets default values for this component's properties
 	UAABSurvivalComponent();
 
-	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "Character | Survival")
+	UPROPERTY(VisibleAnywhere, Category = "Character | Survival | Deprecated")
 	FABSurvivalStat Health;
 
-	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "Character | Survival")
+	UPROPERTY(VisibleAnywhere, Category = "Character | Survival | Deprecated")
 	FABSurvivalStat Warmth;
 
 	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "Character | Survival")
@@ -32,7 +34,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "Character | Survival")
 	FABSurvivalStat Stamina;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character | Survival")
+	UPROPERTY(VisibleAnywhere, Category = "Character | Survival | Deprecated")
 	float UpdateInterval = 2.0f;
 
 	void UpdateStats(float deltaTime);
@@ -47,4 +49,19 @@ public:
 
 	FORCEINLINE FSurvivalData GetSurvivalData() const { return FSurvivalData{ Health.CurrentValue, Hunger.CurrentValue, Thirst.CurrentValue, Warmth.CurrentValue, Stamina.CurrentValue }; }
 	void AddSurvivalData(const FSurvivalData& value);
+
+	void AddModifier(IABStatModifierInterface* modifier);
+
+	void RemoveModifier(IABStatModifierInterface* modifier);
+
+private:
+
+	void UpdateRateOfChange(FABSurvivalStat& stat, const float defaultRoC, float(IABStatModifierInterface::*statModMethod)(UAABSurvivalComponent*, float, float), bool (IABStatModifierInterface::*doesModMethod)(void) const);
+
+	//UPROPERTY(VisibleAnywhere, Category = "Character | Survival | Modifiers")
+	TArray<IABStatModifierInterface*> StatModifiers;
+	UPROPERTY(VisibleAnywhere, Category = "Character | Survival")
+	float defaultHungerRateOfChange;
+	UPROPERTY(VisibleAnywhere, Category = "Character | Survival")
+	float defaultThirstRateOfChange;
 };
