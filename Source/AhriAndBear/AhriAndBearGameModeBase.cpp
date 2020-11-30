@@ -6,6 +6,11 @@
 AAhriAndBearGameModeBase::AAhriAndBearGameModeBase()
 {
 	CurTaskIndex = 0;
+}
+
+void AAhriAndBearGameModeBase::BeginPlay()
+{
+	Super::BeginPlay();
 
 	if (LevelTasks.Num() != 0)
 	{

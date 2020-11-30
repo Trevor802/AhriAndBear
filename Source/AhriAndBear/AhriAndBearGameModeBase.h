@@ -20,10 +20,10 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Tasks")
 		FString CurTaskText;
 
-protected:
 	int CurTaskIndex;
 
 public:
 	AAhriAndBearGameModeBase();
+	virtual void BeginPlay() override;
 	void ToNextTask();
 };
