@@ -35,8 +35,11 @@ float UABSurvivalStatFunctions::SetRateOfChange(FABSurvivalStat& stat, float new
 
 void UABSurvivalStatFunctions::TickStat(FABSurvivalStat& stat, float deltaTime) {
 	stat.CurrentValue = FMath::Clamp(stat.CurrentValue + stat.RateOfChange * deltaTime, 0.f, stat.MaxValue);
+	if (stat.CurrentValue == 0.f) {
+		stat.OnStatZeroed.ExecuteIfBound(stat);
+	}
 }
 
 void UABSurvivalStatFunctions::StartStat(FABSurvivalStat& stat) {
-	stat.CurrentValue = stat.StartingValue;
+	stat.CurrentValue = stat.StartingValue <= 0.0f ? stat.MaxValue : stat.StartingValue;
 }
