@@ -67,6 +67,8 @@ void UAABSurvivalComponent::AddModifier(IABStatModifierInterface* modifier)
 	if (modifier->DoesModifyThirstRate()) {
 		UpdateRateOfChange(Thirst, defaultThirstRateOfChange, &IABStatModifierInterface::GetThirstRateModifier, &IABStatModifierInterface::DoesModifyThirstRate);
 	}
+
+	StatModifierAdded.ExecuteIfBound(this, modifier);
 }
 
 void UAABSurvivalComponent::RemoveModifier(IABStatModifierInterface* modifier)
@@ -81,6 +83,8 @@ void UAABSurvivalComponent::RemoveModifier(IABStatModifierInterface* modifier)
 	if (modifier->DoesModifyThirstRate()) {
 		UpdateRateOfChange(Thirst, defaultThirstRateOfChange, &IABStatModifierInterface::GetThirstRateModifier, &IABStatModifierInterface::DoesModifyThirstRate);
 	}
+
+	StatModifierRemoved.ExecuteIfBound(this, modifier);
 }
 
 void UAABSurvivalComponent::UpdateRateOfChange(FABSurvivalStat& stat, const float defaultRoC, float(IABStatModifierInterface::*statModMethod)(UAABSurvivalComponent*, float, float), bool (IABStatModifierInterface::*doesModMethod)(void) const)

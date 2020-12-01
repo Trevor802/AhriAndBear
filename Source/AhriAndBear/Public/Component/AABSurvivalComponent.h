@@ -9,6 +9,9 @@
 #include "AABSurvivalComponent.generated.h"
 
 class IABStatModifierInterface;
+class UAABSurvivalComponent;
+
+DECLARE_DELEGATE_TwoParams(FStatModifiersChanged, UAABSurvivalComponent*, IABStatModifierInterface*);
 
 UCLASS( Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class AHRIANDBEAR_API UAABSurvivalComponent : public UActorComponent
@@ -38,6 +41,10 @@ public:
 	float UpdateInterval = 2.0f;
 
 	void UpdateStats(float deltaTime);
+
+	FStatModifiersChanged StatModifierAdded;
+
+	FStatModifiersChanged StatModifierRemoved;
 
 protected:
 	// Called when the game starts
