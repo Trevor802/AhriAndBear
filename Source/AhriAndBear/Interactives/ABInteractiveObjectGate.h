@@ -22,7 +22,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	virtual void BeginPlay() override;
-	FORCEINLINE virtual bool CanInteract(UCharacterInteractionComponent* component) const override { return !bOpened; }
+	virtual bool CanInteract(UCharacterInteractionComponent* component) const override;
+	//FORCEINLINE virtual bool CanInteract(UCharacterInteractionComponent* component) const override { return !bOpened; }
+	//virtual void BeginInteraction() override;
 	virtual void EndInteraction(bool) override;
 	//FORCEINLINE virtual bool CanInteract() override { return true; }
 
