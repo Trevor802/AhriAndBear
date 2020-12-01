@@ -7,6 +7,8 @@
 #include "Interactives/EventTrigger.h"
 #include "AhriAndBearGameModeBase.h"
 #include "Components/StaticMeshComponent.h"
+#include "Interactives/Interactive.h"
+#include "Characters/ABCatCharacter.h"
 
 AABInteractiveObjectGate::AABInteractiveObjectGate()
 	: Super()
@@ -50,6 +52,17 @@ void AABInteractiveObjectGate::BeginPlay()
 void AABInteractiveObjectGate::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+bool AABInteractiveObjectGate::CanInteract(UCharacterInteractionComponent* component) const
+{
+	auto boxComponent = Cast<UBoxComponent>(component);
+	auto character = Cast<AABAnimalCharacter>(boxComponent->GetOwner());
+	AABCatCharacter* catCharacter = Cast<AABCatCharacter>(character);
+	if (catCharacter)
+		return !bOpened;
+	else
+		return false;
 }
 
 void AABInteractiveObjectGate::EndInteraction(bool bResult)
