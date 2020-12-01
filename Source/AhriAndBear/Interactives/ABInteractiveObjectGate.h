@@ -39,7 +39,8 @@ public:
 	UStaticMeshComponent* FrameMesh;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Constraint")
 	UPhysicsConstraintComponent* DoorJoint;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+	bool bDogCanOpen;
 private:
 	bool bOpened;
 };

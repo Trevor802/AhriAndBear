@@ -40,7 +40,7 @@ AABInteractiveObjectGate::AABInteractiveObjectGate()
 
 	bCanTriggerTask = false;
 	bOpened = false;
-
+	bDogCanOpen = true;
 }
 
 void AABInteractiveObjectGate::BeginPlay()
@@ -62,7 +62,7 @@ bool AABInteractiveObjectGate::CanInteract(UCharacterInteractionComponent* compo
 	if (catCharacter)
 		return !bOpened;
 	else
-		return false;
+		return !bOpened && bDogCanOpen;
 }
 
 void AABInteractiveObjectGate::EndInteraction(bool bResult)
