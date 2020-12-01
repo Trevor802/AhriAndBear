@@ -53,6 +53,21 @@ void AABScentTrail::ShowTrail()
 {
 	for (int i = 0; i < systemArray.Num(); i++)
 	{
+		systemArray[i]->SetVisibility(true);
 		systemArray[i]->Activate(true);
+	}
+
+	for (int i = 0; i < systemArray.Num(); i++)
+	{
+		systemArray[i]->Activate(false);
+	}
+}
+
+void AABScentTrail::HideTrail()
+{
+	for (int i = 0; i < systemArray.Num(); i++)
+	{
+		systemArray[i]->SetVisibility(false);
+		systemArray[i]->Activate(false);
 	}
 }

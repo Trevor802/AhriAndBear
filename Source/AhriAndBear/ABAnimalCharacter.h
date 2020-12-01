@@ -159,4 +159,5 @@ private:
 
 	FVector OriginalCameraPosition;
 	float OriginalSpringArmLength;
+	void HideScentFromCat();
 };

@@ -15,6 +15,9 @@
 #include "Components/PawnNoiseEmitterComponent.h"
 #include "Perception/PawnSensingComponent.h"
 #include "Components/AudioComponent.h"
+#include "Environments/ABScentTrail.h"
+#include "Characters/ABCatCharacter.h"
+#include "Characters/ABDogCharacter.h"
 
 // Sets default values
 AABAnimalCharacter::AABAnimalCharacter()
@@ -206,6 +209,15 @@ void AABAnimalCharacter::SwitchAnimal()
 		AController* tempAIController = OtherAnimal->GetController();
 		if (tempPlayerController && tempAIController)
 		{
+			// Toggle scent trail's visibility
+			AABDogCharacter* dog = Cast<AABDogCharacter>(this);
+			
+			if (dog)
+			{
+				HideScentFromCat();
+				UE_LOG(LogTemp, Warning, TEXT("Dog"));
+			}	
+
 			tempPlayerController->UnPossess();
 			tempAIController->UnPossess();
 
@@ -225,6 +237,18 @@ void AABAnimalCharacter::SwitchAnimal()
 	}
 
 	OtherAnimal->bBlackBoardSet = false;
+}
+
+void AABAnimalCharacter::HideScentFromCat()
+{
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AABScentTrail::StaticClass(), FoundActors);
+	for (int i = 0; i < FoundActors.Num(); i++)
+	{
+		AABScentTrail* scent = Cast<AABScentTrail>(FoundActors[i]);
+
+		scent->HideTrail();
+	}
 }
 
 void AABAnimalCharacter::ChangeMovementSetting()

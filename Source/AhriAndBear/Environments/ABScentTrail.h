@@ -25,7 +25,7 @@ public:
 	AABScentTrail();
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+	void HideTrail();
 	void ShowTrail();
 protected:
 	// Called when the game starts or when spawned
@@ -38,6 +38,4 @@ private:
 	TArray<UNiagaraComponent*> systemArray;
 
 	void InitTrail();
-	
-	//void HideTrail();
 };
