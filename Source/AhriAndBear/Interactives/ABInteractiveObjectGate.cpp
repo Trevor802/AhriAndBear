@@ -5,6 +5,7 @@
 #include "Components/BoxComponent.h"
 #include "Engine/StaticMesh.h"
 #include "Interactives/EventTrigger.h"
+#include "AhriAndBearGameModeBase.h"
 #include "Components/StaticMeshComponent.h"
 
 AABInteractiveObjectGate::AABInteractiveObjectGate()
@@ -35,6 +36,7 @@ AABInteractiveObjectGate::AABInteractiveObjectGate()
 	DoorJoint->SetupAttachment(RootComponent);
 	DoorJoint->SetDisableCollision(true);
 
+	bCanTriggerTask = false;
 	bOpened = false;
 
 }
@@ -63,4 +65,10 @@ void AABInteractiveObjectGate::EndInteraction(bool bResult)
 	DoorJoint->SetDisableCollision(false);
 	GateMesh->SetSimulatePhysics(true);
 	bOpened = true;
+
+	if (bCanTriggerTask)
+	{
+		AAhriAndBearGameModeBase* GameMode = (AAhriAndBearGameModeBase*)GetWorld()->GetAuthGameMode();
+		GameMode->ToNextTask();
+	}
 }
