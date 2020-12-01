@@ -8,6 +8,9 @@
 
 struct FABSurvivalStat;
 
+/**
+* This delegate is used when stats drop below zero.
+*/
 DECLARE_DELEGATE_OneParam(FStatValueZeroed, FABSurvivalStat&);
 
 USTRUCT(BlueprintType)
