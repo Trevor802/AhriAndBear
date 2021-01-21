@@ -6,12 +6,31 @@
 #include "Components/ActorComponent.h"
 #include "ABSurvivalStats.h"
 #include "GameBase/Define.h"
+#include "ABStatModifierInterface.h"
 #include "AABSurvivalComponent.generated.h"
 
-class IABStatModifierInterface;
 class UAABSurvivalComponent;
 
-DECLARE_DELEGATE_TwoParams(FStatModifiersChanged, UAABSurvivalComponent*, IABStatModifierInterface*);
+USTRUCT(Blueprintable, Category = "Character | Survival | Events")
+struct FStatModifierChangedInfo {
+	GENERATED_BODY()
+public:
+	FStatModifierChangedInfo() {}
+	FStatModifierChangedInfo(UAABSurvivalComponent* sender, IABStatModifierInterface* modifier) : SurvivalComponent(sender) {
+		StatModifier.SetInterface(modifier);
+		// Something tells me that this isn't good, but...
+		//StatModifier.SetObject(modifier->_getUObject());
+	}
+
+	UPROPERTY(BlueprintReadonly, Category = "Character | Survival | Events")
+	UAABSurvivalComponent* SurvivalComponent;
+	UPROPERTY(BlueprintReadonly, Category = "Character | Survival | Events")
+	TScriptInterface<IABStatModifierInterface> StatModifier;
+};
+
+// Alright, I've discovered that for some reason, I can't send the added Stat Modifier through the pipeline. That doesn't make me too happy. There's
+// bound to be a way around it, though
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FStatModifiersChanged, const FStatModifierChangedInfo&, info);
 
 UCLASS( Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class AHRIANDBEAR_API UAABSurvivalComponent : public UActorComponent
@@ -42,8 +61,10 @@ public:
 
 	void UpdateStats(float deltaTime);
 
+	UPROPERTY(BlueprintAssignable, Category = "Character | Survival | Events")
 	FStatModifiersChanged StatModifierAdded;
 
+	UPROPERTY(BlueprintAssignable, Category = "Character | Survival | Events")
 	FStatModifiersChanged StatModifierRemoved;
 
 protected:
