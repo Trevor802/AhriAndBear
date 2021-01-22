@@ -11,6 +11,10 @@ float UABSurvivalStatFunctions::GetStatPercentage(const FABSurvivalStat& stat) {
 	return stat.CurrentValue / stat.MaxValue;
 }
 
+bool UABSurvivalStatFunctions::IsStatZeroed(const FABSurvivalStat& stat) {
+	return stat.CurrentValue <= 0;
+}
+
 // For blueprint side
 float UABSurvivalStatFunctions::GetCurrentValue(const FABSurvivalStat& stat) {
 	return stat.CurrentValue;
@@ -34,12 +38,20 @@ float UABSurvivalStatFunctions::SetRateOfChange(FABSurvivalStat& stat, float new
 }
 
 void UABSurvivalStatFunctions::TickStat(FABSurvivalStat& stat, float deltaTime) {
+	auto oldValue = stat.CurrentValue;
 	stat.CurrentValue = FMath::Clamp(stat.CurrentValue + stat.RateOfChange * deltaTime, 0.f, stat.MaxValue);
-	if (stat.CurrentValue == 0.f) {
-		stat.OnStatZeroed.ExecuteIfBound(stat);
+
+	// Was okay, but now zero
+	if (stat.CurrentValue == 0.f && oldValue > 0.f) {
+		stat.OnStatZeroStateChanged.Broadcast(FStatZeroedStateChangedInfo(stat.StatName, oldValue, stat.CurrentValue));
+	}
+	// Was zero, but replenished
+	else if (stat.CurrentValue > 0.f && oldValue <= 0.f) {
+		stat.OnStatZeroStateChanged.Broadcast(FStatZeroedStateChangedInfo(stat.StatName, oldValue, stat.CurrentValue));
 	}
 }
 
-void UABSurvivalStatFunctions::StartStat(FABSurvivalStat& stat) {
+void UABSurvivalStatFunctions::StartStat(FABSurvivalStat& stat, FString statName) {
 	stat.CurrentValue = stat.StartingValue <= 0.0f ? stat.MaxValue : stat.StartingValue;
+	stat.StatName = statName;
 }

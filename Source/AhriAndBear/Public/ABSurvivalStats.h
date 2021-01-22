@@ -6,18 +6,41 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "ABSurvivalStats.generated.h"
 
-struct FABSurvivalStat;
+USTRUCT(Blueprintable, Category = "Character | Survival | Events")
+struct FStatZeroedStateChangedInfo {
+	GENERATED_BODY()
+public:
+	FStatZeroedStateChangedInfo() {}
+	FStatZeroedStateChangedInfo(const FString& statName, int oldValue, int newValue) :
+		StatName(statName),
+		OldValue(oldValue),
+		NewValue(newValue),
+		IsNowZero(newValue <= 0)
+	{}
+
+	UPROPERTY(BlueprintReadOnly, Category = "Character | Survival | Events")
+	FString StatName;
+	UPROPERTY(BlueprintReadOnly, Category = "Character | Survival | Events")
+	int OldValue;
+	UPROPERTY(BlueprintReadOnly, Category = "Character | Survival | Events")
+	int NewValue;
+	UPROPERTY(BlueprintReadOnly, Category = "Character | Survival | Events")
+	bool IsNowZero;
+};
 
 /**
 * This delegate is used when stats drop below zero.
 */
-DECLARE_DELEGATE_OneParam(FStatValueZeroed, FABSurvivalStat&);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FStatZeroStateChanged, const FStatZeroedStateChangedInfo&, Info);
 
 USTRUCT(BlueprintType)
 struct FABSurvivalStat {
 	GENERATED_BODY()
 
 	FABSurvivalStat();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character | Survival")
+	FString StatName;
 
 	/**
 	* The maximum value of a stat. This value should not be directly edited.
@@ -54,7 +77,8 @@ struct FABSurvivalStat {
 	/**
 	* This delegate is triggered when CurrentValue equals zero.
 	*/
-	FStatValueZeroed OnStatZeroed;
+	UPROPERTY(BlueprintAssignable, Category = "Character | Survival | Events")
+	FStatZeroStateChanged OnStatZeroStateChanged;
 };
 
 
@@ -78,6 +102,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Character | Survival")
 	static float GetStatPercentage(const FABSurvivalStat& stat);
 
+	UFUNCTION(BlueprintPure, Category = "Character | Survival")
+	static bool IsStatZeroed(const FABSurvivalStat& stat);
+
 	/**
 	* Gets the current value of the given stat.
 	*
@@ -89,6 +116,14 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Character | Survival")
 		static float GetCurrentValue(const FABSurvivalStat& stat);
 
+	/**
+	* Is the current value of the given stat zero or less?
+	*
+	* @param stat
+	*   The stat to check.
+	* @return
+	*   TRUE if GetCurrentValue() returns zero or less.
+	*/
 	UFUNCTION(BlueprintCallable, Category = "Character | Survival")
 		static void AddToCurrentValue(FABSurvivalStat& stat, float value);
 
@@ -133,6 +168,8 @@ public:
 	*
 	* @param stat
 	*   The stat to initialize.
+	* @param statName
+	*   The name of the stat.
 	*/
-	static void StartStat(FABSurvivalStat& stat);
+	static void StartStat(FABSurvivalStat& stat, FString statName);
 };

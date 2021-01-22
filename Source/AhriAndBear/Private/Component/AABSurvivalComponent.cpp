@@ -17,10 +17,8 @@ UAABSurvivalComponent::UAABSurvivalComponent()
 
 void UAABSurvivalComponent::UpdateStats(float deltaTime)
 {
-	//UABSurvivalStatFunctions::TickStat(Health, deltaTime);
 	UABSurvivalStatFunctions::TickStat(Thirst, deltaTime);
 	UABSurvivalStatFunctions::TickStat(Hunger, deltaTime);
-	//UABSurvivalStatFunctions::TickStat(Warmth, deltaTime);
 	UABSurvivalStatFunctions::TickStat(Stamina, deltaTime);
 }
 
@@ -29,9 +27,16 @@ void UAABSurvivalComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	UABSurvivalStatFunctions::StartStat(Thirst);
-	UABSurvivalStatFunctions::StartStat(Hunger);
-	UABSurvivalStatFunctions::StartStat(Stamina);
+	UABSurvivalStatFunctions::StartStat(Thirst, "Thirst");
+	UABSurvivalStatFunctions::StartStat(Hunger, "Hunger");
+	UABSurvivalStatFunctions::StartStat(Stamina, "Stamina");
+
+	// TODO: Do we want a separate one for each stat? We can have flags for if the
+	// stat is zeroed or not and when both are set to true, it becomes true.
+	// It's an interesting problem - we're not really keeping track of two animals,
+	// but four statistics. If we added a third, that'd jump up to six and so forth.
+	Thirst.OnStatZeroStateChanged.AddDynamic(this, &UAABSurvivalComponent::RespondToStatZeroedStateChange);
+	Hunger.OnStatZeroStateChanged.AddDynamic(this, &UAABSurvivalComponent::RespondToStatZeroedStateChange);
 
 	defaultHungerRateOfChange = Hunger.RateOfChange;
 	defaultThirstRateOfChange = Thirst.RateOfChange;
@@ -61,7 +66,6 @@ void UAABSurvivalComponent::AddModifier(IABStatModifierInterface* modifier)
 
 	// Only update the corresponding stats if they modify that stat. Otherwise, we waste time.
 	if (modifier->DoesModifyHungerRate()) {
-		//UABSurvivalStatFunctions::SetRateOfChange(Hunger, modifier->GetHungerRateModifier(this, defaultHungerRateOfChange, Hunger.RateOfChange));
 		UpdateRateOfChange(Hunger, defaultHungerRateOfChange, &IABStatModifierInterface::GetHungerRateModifier, &IABStatModifierInterface::DoesModifyHungerRate);
 	}
 	if (modifier->DoesModifyThirstRate()) {
@@ -98,4 +102,8 @@ void UAABSurvivalComponent::UpdateRateOfChange(FABSurvivalStat& stat, const floa
 		}
 	}
 	UABSurvivalStatFunctions::SetRateOfChange(stat, rateOfChange);
+}
+
+void UAABSurvivalComponent::RespondToStatZeroedStateChange(const FStatZeroedStateChangedInfo& stateChangeInfo) {
+	// We need an event for when both stats have dropped below zero.
 }

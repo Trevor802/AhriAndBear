@@ -18,8 +18,6 @@ public:
 	FStatModifierChangedInfo() {}
 	FStatModifierChangedInfo(UAABSurvivalComponent* sender, IABStatModifierInterface* modifier) : SurvivalComponent(sender) {
 		StatModifier.SetInterface(modifier);
-		// Something tells me that this isn't good, but...
-		//StatModifier.SetObject(modifier->_getUObject());
 	}
 
 	UPROPERTY(BlueprintReadonly, Category = "Character | Survival | Events")
@@ -67,6 +65,9 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Character | Survival | Events")
 	FStatModifiersChanged StatModifierRemoved;
 
+	/*UPROPERTY(BlueprintAssignable, Category = "Character | Survival | Events")
+	FStatValueZeroed OnStatValueZeroed;*/
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -86,7 +87,12 @@ private:
 
 	void UpdateRateOfChange(FABSurvivalStat& stat, const float defaultRoC, float(IABStatModifierInterface::*statModMethod)(UAABSurvivalComponent*, float, float), bool (IABStatModifierInterface::*doesModMethod)(void) const);
 
-	//UPROPERTY(VisibleAnywhere, Category = "Character | Survival | Modifiers")
+	/**
+	* Responds to the OnStatZeroStateChanged events on Hunger and Thirst.
+	*/
+	UFUNCTION()
+	void RespondToStatZeroedStateChange(const FStatZeroedStateChangedInfo& stateChangeInfo);
+	
 	TArray<IABStatModifierInterface*> StatModifiers;
 	UPROPERTY(VisibleAnywhere, Category = "Character | Survival")
 	float defaultHungerRateOfChange;
