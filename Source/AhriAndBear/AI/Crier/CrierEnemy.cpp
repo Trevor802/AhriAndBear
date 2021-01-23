@@ -22,7 +22,6 @@ void ACrierEnemy::BeginPlay()
 void ACrierEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	UpdateAlertCounter(DeltaTime);
 }
 
 void ACrierEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -53,8 +52,6 @@ void ACrierEnemy::UpdateAlertCounter(float deltaTime)
 			FVector soundLocation = GetActorLocation();
 			UGameplayStatics::PlaySoundAtLocation(GetWorld(), EnemySound, soundLocation, FRotator::ZeroRotator);
 			MakeNoise();
-
-			GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, "Playing Noise At Location: " + FString::SanitizeFloat(_currentAlertCount));
 		}
 	}
 }
@@ -77,7 +74,5 @@ void ACrierEnemy::HandlePerceptionUpdated(const TArray<AActor*>& Actors)
 	{
 		_currentAlertCount = AlertTimesCount;
 		_alertDelayTimer = 0;
-
-		GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, "Audio State Updated");
 	}
 }

@@ -38,5 +38,5 @@ void ABobbyEnemy::AlertEnemy(AActor* playerActor)
 
 void ABobbyEnemy::HandlePerceptionUpdated(const TArray<AActor*>& Actors)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, "Perception Updated");
+
 }
