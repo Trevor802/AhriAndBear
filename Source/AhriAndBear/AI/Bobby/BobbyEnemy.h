@@ -9,6 +9,8 @@
 
 #include "BobbyEnemy.generated.h"
 
+class UAISenseConfig_Sight;
+
 UCLASS()
 class AHRIANDBEAR_API ABobbyEnemy : public AEnemyBase
 {
@@ -22,10 +24,32 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
+#pragma region Properties
+
+	UPROPERTY(Category = "Enemy|AI", EditAnywhere)
+		float SearchLookAngle;
+
+	UPROPERTY(Category = "Enemy|AI", EditAnywhere)
+		float DefaultLookAngle;
+
+	UPROPERTY(Category = "Enemy|AI", EditAnywhere)
+		float AttackLookAngle;
+
+#pragma endregion
+
 	ABobbyEnemy();
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	void AttackPlayer(AActor* playerActor) override;
 	void AlertEnemy(AActor* playerActor) override;
+
+	UFUNCTION(Category = "Sense", BlueprintCallable)
+		void SetAttackLookAngle();
+
+	UFUNCTION(Category = "Sense", BlueprintCallable)
+		void SetSearchLookAngle();
+
+	UFUNCTION(Category = "Sense", BlueprintCallable)
+		void SetDefaultLookAngle();
 };
