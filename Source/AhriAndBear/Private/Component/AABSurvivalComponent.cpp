@@ -5,6 +5,7 @@
 #include "Engine/World.h"
 #include "Engine/Engine.h"
 #include "ABStatModifierInterface.h"
+#include "ABAnimalCharacter.h"
 
 // Sets default values for this component's properties
 UAABSurvivalComponent::UAABSurvivalComponent()
@@ -105,5 +106,34 @@ void UAABSurvivalComponent::UpdateRateOfChange(FABSurvivalStat& stat, const floa
 }
 
 void UAABSurvivalComponent::RespondToStatZeroedStateChange(const FStatZeroedStateChangedInfo& stateChangeInfo) {
+	int previouslyZeroed = zeroedStats;
 	// We need an event for when both stats have dropped below zero.
+	if (stateChangeInfo.IsNowZero) {
+		// Increment zeroed stat count
+		zeroedStats++;
+		if (zeroedStats == RequiredSurvivalStats) {
+			// Animal is in critical condition
+			OnCriticalConditionChanged.Broadcast(
+				this,
+				FAnimalCriticalConditionChangedInfo(
+					Cast<AABAnimalCharacter, AActor>(GetOwner()),
+					IsInCriticalCondition() // Should be true
+				)
+			);
+		}
+	}
+	else {
+		// Decrement zeroed stat count
+		zeroedStats--;
+		if (previouslyZeroed == RequiredSurvivalStats) {
+			// Animal is no longer in critical condition
+			OnCriticalConditionChanged.Broadcast(
+				this,
+				FAnimalCriticalConditionChangedInfo(
+					Cast<AABAnimalCharacter, AActor>(GetOwner()),
+					IsInCriticalCondition() // Should be false
+				)
+			);
+		}
+	}
 }

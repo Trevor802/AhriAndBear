@@ -10,7 +10,11 @@
 #include "AABSurvivalComponent.generated.h"
 
 class UAABSurvivalComponent;
+class AABAnimalCharacter;
 
+/**
+* Struct for the FStatModifiersChanged event.
+*/
 USTRUCT(Blueprintable, Category = "Character | Survival | Events")
 struct FStatModifierChangedInfo {
 	GENERATED_BODY()
@@ -26,9 +30,35 @@ public:
 	TScriptInterface<IABStatModifierInterface> StatModifier;
 };
 
-// Alright, I've discovered that for some reason, I can't send the added Stat Modifier through the pipeline. That doesn't make me too happy. There's
-// bound to be a way around it, though
+/**
+* Delegate for when a stat modifier is added or removed.
+*/
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FStatModifiersChanged, const FStatModifierChangedInfo&, info);
+
+/**
+* Struct for the FAnimalCriticalConditionChanged event.
+*/
+USTRUCT(Blueprintable, Category = "Character | Survival | Events")
+struct FAnimalCriticalConditionChangedInfo {
+	GENERATED_BODY()
+public:
+	FAnimalCriticalConditionChangedInfo() {}
+	FAnimalCriticalConditionChangedInfo(AABAnimalCharacter* animal, bool inCriticalCondition) :
+		Owner(animal),
+		IsNowInCriticalCondition(inCriticalCondition)
+	{}
+
+	UPROPERTY(BlueprintReadonly, Category = "Character | Survival | Events")
+	AABAnimalCharacter* Owner;
+
+	UPROPERTY(BlueprintReadonly, Category = "Character | Survival | Events")
+		bool IsNowInCriticalCondition;
+};
+
+/**
+* Delegate for when an animal enters or leaves critical condition.
+*/
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FAnimalCriticalConditionChanged, UAABSurvivalComponent*, sender, const FAnimalCriticalConditionChangedInfo&, info);
 
 UCLASS( Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class AHRIANDBEAR_API UAABSurvivalComponent : public UActorComponent
@@ -65,8 +95,17 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Character | Survival | Events")
 	FStatModifiersChanged StatModifierRemoved;
 
-	/*UPROPERTY(BlueprintAssignable, Category = "Character | Survival | Events")
-	FStatValueZeroed OnStatValueZeroed;*/
+	UPROPERTY(BlueprintAssignable, Category = "Character | Survival | Events")
+	FAnimalCriticalConditionChanged OnCriticalConditionChanged;
+
+	/**
+	* Is the animal in critical condition?
+	*
+	* @return
+	*   TRUE if both thirst and hunger are at zero or lower.
+	*/
+	UFUNCTION(BlueprintPure, Category = "Character | Survival")
+	bool IsInCriticalCondition() const { return zeroedStats >= RequiredSurvivalStats; }
 
 protected:
 	// Called when the game starts
@@ -98,4 +137,8 @@ private:
 	float defaultHungerRateOfChange;
 	UPROPERTY(VisibleAnywhere, Category = "Character | Survival")
 	float defaultThirstRateOfChange;
+
+	const int RequiredSurvivalStats = 2;
+
+	int zeroedStats = 0;
 };
