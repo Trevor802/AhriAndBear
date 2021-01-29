@@ -3,6 +3,9 @@
 
 #include "AhriAndBearGameModeBase.h"
 
+#include "Characters/ABDogCharacter.h"
+#include "Characters/ABCatCharacter.h"
+
 AAhriAndBearGameModeBase::AAhriAndBearGameModeBase()
 {
 	CurTaskIndex = 0;
@@ -16,6 +19,34 @@ void AAhriAndBearGameModeBase::BeginPlay()
 	{
 		CurTaskText = LevelTasks[CurTaskIndex];
 	}
+
+	AActor* dogActor = UGameplayStatics::GetActorOfClass(GetWorld(), AABDogCharacter::StaticClass());
+	dog = Cast<AABDogCharacter>(dogActor);
+	if (dog != nullptr) {
+		GEngine->AddOnScreenDebugMessage(-1, 1000.f, FColor::Green, TEXT("Found dog. attaching event"));
+		dog->SurvivalComponent->OnCriticalConditionChanged.AddDynamic(this, &AAhriAndBearGameModeBase::OnAnimalCriticalConditionChanged);
+		dog->OnAnimalCaught.AddDynamic(this, &AAhriAndBearGameModeBase::OnAnimalCaught);
+	}
+#if WITH_EDITOR
+	else {
+		GEngine->AddOnScreenDebugMessage(-1, 1000.f, FColor::Red, TEXT("Couldn't find dog"));
+		UE_LOG(LogTemp, Error, TEXT("Dog could not be found"));
+	}
+#endif
+
+	AActor* catActor = UGameplayStatics::GetActorOfClass(GetWorld(), AABCatCharacter::StaticClass());
+	cat = Cast<AABCatCharacter>(catActor);
+	if (cat != nullptr) {
+		GEngine->AddOnScreenDebugMessage(-1, 1000.f, FColor::Green, TEXT("Found cat. attaching event"));
+		cat->SurvivalComponent->OnCriticalConditionChanged.AddDynamic(this, &AAhriAndBearGameModeBase::OnAnimalCriticalConditionChanged);
+		cat->OnAnimalCaught.AddDynamic(this, &AAhriAndBearGameModeBase::OnAnimalCaught);
+	}
+#if WITH_EDITOR
+	else {
+		GEngine->AddOnScreenDebugMessage(-1, 1000.f, FColor::Red, TEXT("Couldn't find cat"));
+		UE_LOG(LogTemp, Error, TEXT("Cat could not be found"));
+	}
+#endif
 }
 
 void AAhriAndBearGameModeBase::ToNextTask()
@@ -25,4 +56,41 @@ void AAhriAndBearGameModeBase::ToNextTask()
 		CurTaskIndex++;
 		CurTaskText = LevelTasks[CurTaskIndex];
 	}
+}
+
+void AAhriAndBearGameModeBase::OnAnimalCriticalConditionChanged(UAABSurvivalComponent* sender, const FAnimalCriticalConditionChangedInfo& info)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Orange, TEXT("An animal's critical condition changed! (Game Mode)"));
+	// We've got to figure out what to do in this case.
+	if (dog == nullptr || cat == nullptr) {
+		return;
+	}
+	// We check both animals conditions. It's only game over if this is the case.
+	if (dog->IsInCriticalCondition() && cat->IsInCriticalCondition()) {
+#if UE_BUILD_DEVELOPMENT
+		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, TEXT("Game Over!"));
+#endif
+		EndGame(EGameOverReason::GO_AnimalsDead);
+	}
+}
+
+void AAhriAndBearGameModeBase::OnAnimalCaught(AActor* captor) {
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("Animal caught (game mode)"));
+	EndGame(EGameOverReason::GO_AnimalCaught);
+}
+
+void AAhriAndBearGameModeBase::EndGame(EGameOverReason reason)
+{
+	// If we need more information, the game mode can probably work it out.
+	OnGameOver.Broadcast(FGameOverInfo(reason));
+
+	TArray<AActor*> allActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), allActors);
+	for (AActor* actor : allActors) {
+		actor->SetActorTickEnabled(false);
+	}
+
+	auto playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	playerController->SetInputMode(FInputModeUIOnly());
+	playerController->bShowMouseCursor = true;
 }
