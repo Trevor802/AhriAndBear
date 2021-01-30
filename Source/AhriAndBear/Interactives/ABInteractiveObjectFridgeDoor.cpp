@@ -15,7 +15,7 @@ AABInteractiveObjectFridgeDoor::AABInteractiveObjectFridgeDoor()
 	PrimaryActorTick.bCanEverTick = true;
 
 	CollisionShape = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionBox"));
-	DoorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CurtainMesh"));
+	DoorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorMesh"));
 
 	RootComponent = CollisionShape;
 	DoorMesh->SetupAttachment(RootComponent);
