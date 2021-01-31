@@ -25,16 +25,30 @@ void AABScentIndicator::BeginPlay()
 void AABScentIndicator::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (lifeSpan <= 0)
+		Destroy();
+
 	MoveToTarget(DeltaTime);
 
 	for (int i = 0; i < helper.G_S_directions.Num(); i++)
 	{
 		DrawDebugLine(GetWorld(),
 			GetActorLocation(),
-			GetActorLocation() + helper.G_S_directions[i] * 10,
+			GetActorLocation() + helper.G_S_directions[i] * 30,
 			FColor::Red);
 	}
 	
+	lifeSpan -= DeltaTime;
+}
+
+void AABScentIndicator::SetTargetPosition(FVector target)
+{
+	targetPosition = target;
+}
+
+void AABScentIndicator::SetIndicatorLifeSpan(float time)
+{
+	lifeSpan = time;
 }
 
 void AABScentIndicator::MoveToTarget(float DeltaTime)
@@ -46,11 +60,12 @@ void AABScentIndicator::MoveToTarget(float DeltaTime)
 	for (int i = 0; i < helper.G_S_directions.Num(); i++)
 	{
 		FHitResult onHit;
-		if (ActorLineTraceSingle(onHit,
+		FCollisionQueryParams CollisionParams;
+		if (GetWorld()->LineTraceSingleByChannel(onHit,
 			GetActorLocation(),
-			GetActorLocation() + helper.G_S_directions[i] * 10,
-			ECollisionChannel::ECC_PhysicsBody,
-			FCollisionQueryParams::DefaultQueryParam))
+			GetActorLocation() + helper.G_S_directions[i] * 30,
+			ECollisionChannel::ECC_Visibility,
+			CollisionParams))
 		{
 			avoid += -helper.G_S_directions[i].GetSafeNormal();
 		}

@@ -5,6 +5,7 @@
 #include "ABCatCharacter.h"
 #include "ABPlayerController.h"
 #include "Environments/ABScentTrail.h"
+#include "Environments/ABScentSource.h"
 
 #include "Components/PawnNoiseEmitterComponent.h"
 #include "Perception/PawnSensingComponent.h"
@@ -28,11 +29,11 @@ void AABDogCharacter::UseAbility()
 	//Xiubo, Add Scent Here ~ ~    xb: OK
 	//UE_LOG(LogTemp, Warning, TEXT("???"));
 	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AABScentTrail::StaticClass(), FoundActors);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AABScentSource::StaticClass(), FoundActors);
 	for (int i = 0; i < FoundActors.Num(); i++)
 	{
-		AABScentTrail* scent = Cast<AABScentTrail>(FoundActors[i]);
+		AABScentSource* scent = Cast<AABScentSource>(FoundActors[i]);
 
-		scent->ShowTrail();
+		scent->SpawnScentIndicator();
 	}
 }

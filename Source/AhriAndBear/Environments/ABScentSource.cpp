@@ -2,6 +2,7 @@
 #include "ABScentSource.h"
 #include "Components/SphereComponent.h"
 #include "Characters/ABDogCharacter.h"
+#include "Environments/ABScentIndicator.h"
 
 // Sets default values
 AABScentSource::AABScentSource()
@@ -55,5 +56,16 @@ void AABScentSource::PlayerCharacterOutRange(AActor* self, AActor* OtherActor)
 		dogInRange = nullptr;
 	}
 		
+}
+
+void AABScentSource::SpawnScentIndicator()
+{
+	if (!dogInRange)
+		return;
+
+	AABScentIndicator* indicator =
+		GetWorld()->SpawnActor<AABScentIndicator>(dogInRange->GetActorLocation() + FVector(0, 30, 0), dogInRange->GetActorRotation());
+	indicator->SetTargetPosition(GetActorLocation());
+	indicator->SetIndicatorLifeSpan(5);
 }
 

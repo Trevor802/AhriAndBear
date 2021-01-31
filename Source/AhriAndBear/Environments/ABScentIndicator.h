@@ -41,6 +41,8 @@ class AHRIANDBEAR_API AABScentIndicator : public AActor
 public:	
 	AABScentIndicator();
 	virtual void Tick(float DeltaTime) override;
+	void SetTargetPosition(FVector target);
+	void SetIndicatorLifeSpan(float time);
 	void MoveToTarget(float DeltaTime);
 
 protected:
@@ -51,6 +53,7 @@ public:
 
 private:
 	USphereComponent* sensor;
+	float lifeSpan;
 	FVector targetPosition;
 	FVector myVelocity;
 	FVector mySteeringForce;

@@ -7,7 +7,6 @@
 #include "GameFramework/Actor.h"
 #include "ABScentSource.generated.h"
 
-class ABScentIndicator;
 class AABDogCharacter;
 class USphereComponent;
 
@@ -25,6 +24,7 @@ public:
 	void PlayerCharacterInRange(AActor* self, AActor* OtherActor);
 	UFUNCTION()
 	void PlayerCharacterOutRange(AActor* self, AActor* OtherActor);
+	void SpawnScentIndicator();
 
 protected:
 	// Called when the game starts or when spawned
@@ -37,4 +37,5 @@ public:
 private:
 	AABDogCharacter* dogInRange;
 	bool isDogInRange;
+	
 };
