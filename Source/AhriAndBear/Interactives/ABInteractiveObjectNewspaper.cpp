@@ -8,6 +8,7 @@
 #include "TimerManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/Widget.h"
+#include "Blueprint/UserWidget.h"
 
 AABInteractiveObjectNewspaper::AABInteractiveObjectNewspaper()
 	: Super()

@@ -13,7 +13,6 @@ UCLASS()
 class AHRIANDBEAR_API UNewspaperWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
 public:
 	UFUNCTION(BlueprintImplementableEvent)
 		void Open();

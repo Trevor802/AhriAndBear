@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Interactives/OccupyingInteractive.h"
+#include "UI/NewspaperWidget.h"
 #include "ABInteractiveObjectNewspaper.generated.h"
 
 /**
@@ -36,13 +37,12 @@ public:
 		class UBoxComponent* CollisionShape;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
 		UStaticMeshComponent* NewspaperMesh;
-	/*
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widget")
-		class UWidget* NewspaperWidget;
-		*/
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+		TSubclassOf<class UNewspaperWidget> WidgetClass;
 private:
 	bool bOpened;
 
-
+	class UNewspaperWidget* NewspaperWidget;
 
 };

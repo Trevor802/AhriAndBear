@@ -57,5 +57,4 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<class UInteractionDurationWidget> WidgetClass;
 	class UInteractionDurationWidget* InteractionWidget;
-
 };

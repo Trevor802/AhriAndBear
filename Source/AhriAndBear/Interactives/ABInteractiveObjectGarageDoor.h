@@ -28,6 +28,8 @@ public:
 
 private:
 	void OpenDoor();
+	void RotateDoor();
+	void StopRotation();
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
@@ -40,6 +42,13 @@ public:
 		class USplineComponent* Spline;
 	UPROPERTY(EditAnywhere, Category = "Controller")
 		float TotalPathTime = 4.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rotation")
+		bool CanRotate;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rotation")
+		float RotationTimeLength;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rotation")
+		float RotationRate;
 
 private:
 	bool bOpened;
