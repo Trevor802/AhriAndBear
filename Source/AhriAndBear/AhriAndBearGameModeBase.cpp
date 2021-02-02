@@ -23,30 +23,16 @@ void AAhriAndBearGameModeBase::BeginPlay()
 	AActor* dogActor = UGameplayStatics::GetActorOfClass(GetWorld(), AABDogCharacter::StaticClass());
 	dog = Cast<AABDogCharacter>(dogActor);
 	if (dog != nullptr) {
-		GEngine->AddOnScreenDebugMessage(-1, 1000.f, FColor::Green, TEXT("Found dog. attaching event"));
 		dog->SurvivalComponent->OnCriticalConditionChanged.AddDynamic(this, &AAhriAndBearGameModeBase::OnAnimalCriticalConditionChanged);
 		dog->OnAnimalCaught.AddDynamic(this, &AAhriAndBearGameModeBase::OnAnimalCaught);
 	}
-#if WITH_EDITOR
-	else {
-		GEngine->AddOnScreenDebugMessage(-1, 1000.f, FColor::Red, TEXT("Couldn't find dog"));
-		UE_LOG(LogTemp, Error, TEXT("Dog could not be found"));
-	}
-#endif
 
 	AActor* catActor = UGameplayStatics::GetActorOfClass(GetWorld(), AABCatCharacter::StaticClass());
 	cat = Cast<AABCatCharacter>(catActor);
 	if (cat != nullptr) {
-		GEngine->AddOnScreenDebugMessage(-1, 1000.f, FColor::Green, TEXT("Found cat. attaching event"));
 		cat->SurvivalComponent->OnCriticalConditionChanged.AddDynamic(this, &AAhriAndBearGameModeBase::OnAnimalCriticalConditionChanged);
 		cat->OnAnimalCaught.AddDynamic(this, &AAhriAndBearGameModeBase::OnAnimalCaught);
 	}
-#if WITH_EDITOR
-	else {
-		GEngine->AddOnScreenDebugMessage(-1, 1000.f, FColor::Red, TEXT("Couldn't find cat"));
-		UE_LOG(LogTemp, Error, TEXT("Cat could not be found"));
-	}
-#endif
 }
 
 void AAhriAndBearGameModeBase::ToNextTask()
