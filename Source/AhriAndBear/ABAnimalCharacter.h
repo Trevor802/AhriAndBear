@@ -148,8 +148,7 @@ public:
 	bool bInClimbingZone;
 	bool bClimbing;
 
-	UFUNCTION(Category = "End", BlueprintCallable)
-		void GetCaught(AActor* byWhom);
+	void GetCaught(AActor* byWhom);
 
 private:
 	bool bWithinRange;
