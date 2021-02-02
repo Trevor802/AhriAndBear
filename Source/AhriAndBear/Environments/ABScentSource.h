@@ -6,7 +6,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "ABScentSource.generated.h"
-
+ 
 class AABDogCharacter;
 class USphereComponent;
 
