@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "ABAnimalCharacter.h"
+#include "Components/PostProcessComponent.h"
 #include "ABCatCharacter.generated.h"
 
 class UPostProcessComponent;
@@ -24,6 +25,7 @@ protected:
 
 private:
 	UPostProcessComponent* postProcess;
+	FPostProcessSettings normalSettings;
 	bool abilityOn;
 
 	void AbilityEnd();
