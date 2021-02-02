@@ -156,6 +156,7 @@ public:
 	bool bInClimbingZone;
 	bool bClimbing;
 
+	UFUNCTION(BlueprintCallable, Category = "Character")
 	void GetCaught(AActor* byWhom);
 
 private:
