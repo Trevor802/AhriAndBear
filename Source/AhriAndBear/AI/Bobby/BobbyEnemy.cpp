@@ -5,16 +5,31 @@
 
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
+#include "Perception/AISenseConfig_Hearing.h"
 
 ABobbyEnemy::ABobbyEnemy() : Super()
 {
+	SightConfig->PeripheralVisionAngleDegrees = 45;
+	SightConfig->DetectionByAffiliation.bDetectEnemies = true;
+	SightConfig->DetectionByAffiliation.bDetectFriendlies = true;
+	SightConfig->DetectionByAffiliation.bDetectNeutrals = true;
+	SightConfig->SightRadius = 750;
+	SightConfig->LoseSightRadius = 900;
+	SightConfig->SetMaxAge(1);
+	PerceptionComponent->ConfigureSense(*SightConfig);
+
+	HearingConfig->DetectionByAffiliation.bDetectEnemies = true;
+	HearingConfig->DetectionByAffiliation.bDetectFriendlies = true;
+	HearingConfig->DetectionByAffiliation.bDetectNeutrals = true;
+	HearingConfig->HearingRange = 1000;
+	HearingConfig->SetMaxAge(7);
+	PerceptionComponent->ConfigureSense(*HearingConfig);
+	
 }
 
 void ABobbyEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-
-	PerceptionComponent->OnPerceptionUpdated.AddDynamic(this, &ABobbyEnemy::HandlePerceptionUpdated);
 }
 
 void ABobbyEnemy::Tick(float DeltaTime)
@@ -33,11 +48,6 @@ void ABobbyEnemy::AttackPlayer(AActor* playerActor)
 }
 
 void ABobbyEnemy::AlertEnemy(AActor* playerActor)
-{
-
-}
-
-void ABobbyEnemy::HandlePerceptionUpdated(const TArray<AActor*>& Actors)
 {
 
 }

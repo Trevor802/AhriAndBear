@@ -9,16 +9,10 @@
 
 #include "BobbyEnemy.generated.h"
 
-class UAISenseConfig_Sight;
-
 UCLASS()
 class AHRIANDBEAR_API ABobbyEnemy : public AEnemyBase
 {
 	GENERATED_BODY()
-
-private:
-	UFUNCTION()
-		void HandlePerceptionUpdated(const TArray<AActor*>& Actors);
 
 protected:
 	virtual void BeginPlay() override;

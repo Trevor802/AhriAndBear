@@ -2,21 +2,33 @@
 
 
 #include "CrierEnemy.h"
-#include "../../ABAnimalCharacter.h"
 
 #include "Perception/AIPerceptionComponent.h"
-
-#include "Kismet/GameplayStatics.h"
+#include "Perception/AISenseConfig_Sight.h"
+#include "Perception/AISenseConfig_Hearing.h"
 
 ACrierEnemy::ACrierEnemy() : Super()
 {
+	SightConfig->PeripheralVisionAngleDegrees = 45;
+	SightConfig->DetectionByAffiliation.bDetectEnemies = true;
+	SightConfig->DetectionByAffiliation.bDetectFriendlies = true;
+	SightConfig->DetectionByAffiliation.bDetectNeutrals = true;
+	SightConfig->SightRadius = 350;
+	SightConfig->LoseSightRadius = 400;
+	SightConfig->SetMaxAge(1);
+	PerceptionComponent->ConfigureSense(*SightConfig);
+
+	HearingConfig->DetectionByAffiliation.bDetectEnemies = true;
+	HearingConfig->DetectionByAffiliation.bDetectFriendlies = true;
+	HearingConfig->DetectionByAffiliation.bDetectNeutrals = true;
+	HearingConfig->HearingRange = 500;
+	HearingConfig->SetMaxAge(7);
+	PerceptionComponent->ConfigureSense(*HearingConfig);
 }
 
 void ACrierEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-
-	PerceptionComponent->OnPerceptionUpdated.AddDynamic(this, &ACrierEnemy::HandlePerceptionUpdated);
 }
 
 void ACrierEnemy::Tick(float DeltaTime)
@@ -27,52 +39,4 @@ void ACrierEnemy::Tick(float DeltaTime)
 void ACrierEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-}
-
-void ACrierEnemy::AttackPlayer(AActor* playerActor)
-{
-	// Do Nothing...
-}
-
-void ACrierEnemy::AlertEnemy(AActor* playerActor)
-{
-
-}
-
-void ACrierEnemy::UpdateAlertCounter(float deltaTime)
-{
-	if (_currentAlertCount > 0)
-	{
-		_alertDelayTimer -= deltaTime;
-		if (_alertDelayTimer <= 0)
-		{
-			_currentAlertCount -= 1;
-			_alertDelayTimer = AlertDelayTime;
-
-			FVector soundLocation = GetActorLocation();
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(), EnemySound, soundLocation, FRotator::ZeroRotator);
-			MakeNoise();
-		}
-	}
-}
-
-void ACrierEnemy::HandlePerceptionUpdated(const TArray<AActor*>& Actors)
-{
-	bool animalLocated = false;
-
-	for (int i = 0; i < Actors.Num(); i++)
-	{
-		AABAnimalCharacter* animalCharacter = Cast<AABAnimalCharacter>(Actors[i]);
-		if (animalCharacter != nullptr)
-		{
-			animalLocated = true;
-			break;
-		}
-	}
-
-	if (animalLocated)
-	{
-		_currentAlertCount = AlertTimesCount;
-		_alertDelayTimer = 0;
-	}
 }
