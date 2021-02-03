@@ -61,6 +61,10 @@ public:
 		bool bDebugJumping = false;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Sprint")
 		float SprintStaminaRateOfChange = 1;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Sprint")
+		float SprintNoiseRange;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Sprint")
+		FName SprintNoiseTag;
 
 	UPROPERTY(BlueprintAssignable, Category = "Delegates")
 		FBark OnAnimalBark;
@@ -148,7 +152,11 @@ public:
 	bool bInClimbingZone;
 	bool bClimbing;
 
-	void GetCaught(AActor* byWhom);
+	UFUNCTION(Category="Game|End", BlueprintCallable)
+		void GetCaught(AActor* byWhom);
+
+	UFUNCTION(Category="Gameplay|Sprint", BlueprintImplementableEvent)
+		void SprintUpdate();
 
 private:
 	bool bWithinRange;
