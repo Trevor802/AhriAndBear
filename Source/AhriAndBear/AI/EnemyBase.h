@@ -6,21 +6,12 @@
 #include "GameFramework/Character.h"
 #include "EnemyBase.generated.h"
 
-class UAISenseConfig_Sight;
-class UAISenseConfig_Hearing;
-
 UCLASS()
 class AHRIANDBEAR_API AEnemyBase : public ACharacter
 {
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY(Category = "AI", BlueprintReadOnly, VisibleDefaultsOnly)
-		class UAIPerceptionComponent* PerceptionComponent;
-
-	UAISenseConfig_Sight* SightConfig;
-	UAISenseConfig_Hearing* HearingConfig;
-
 	virtual void BeginPlay() override;
 
 public:

@@ -9,12 +9,6 @@
 
 AEnemyBase::AEnemyBase()
 {
-	PerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("PerceptionComponent"));
-	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightConfig"));
-	HearingConfig = CreateDefaultSubobject<UAISenseConfig_Hearing>(TEXT("HearingConfig"));
-
-	PerceptionComponent->SetDominantSense(SightConfig->GetSenseImplementation());
-
 	PrimaryActorTick.bCanEverTick = true;
 }
 

@@ -9,6 +9,10 @@
 
 ABobbyEnemy::ABobbyEnemy() : Super()
 {
+	PerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("PerceptionComponent"));
+	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightConfig"));
+	HearingConfig = CreateDefaultSubobject<UAISenseConfig_Hearing>(TEXT("HearingConfig"));
+
 	SightConfig->PeripheralVisionAngleDegrees = 45;
 	SightConfig->DetectionByAffiliation.bDetectEnemies = true;
 	SightConfig->DetectionByAffiliation.bDetectFriendlies = true;
@@ -24,7 +28,9 @@ ABobbyEnemy::ABobbyEnemy() : Super()
 	HearingConfig->HearingRange = 1000;
 	HearingConfig->SetMaxAge(7);
 	PerceptionComponent->ConfigureSense(*HearingConfig);
-	
+
+	PerceptionComponent->SetDominantSense(SightConfig->GetSenseImplementation());
+
 }
 
 void ABobbyEnemy::BeginPlay()

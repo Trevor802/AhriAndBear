@@ -9,12 +9,21 @@
 
 #include "BobbyEnemy.generated.h"
 
+class UAISenseConfig_Hearing;
+class UAISenseConfig_Sight;
+
 UCLASS()
 class AHRIANDBEAR_API ABobbyEnemy : public AEnemyBase
 {
 	GENERATED_BODY()
 
 protected:
+	UPROPERTY(Category = "AI", BlueprintReadOnly, VisibleDefaultsOnly)
+		class UAIPerceptionComponent* PerceptionComponent;
+
+	UAISenseConfig_Sight* SightConfig;
+	UAISenseConfig_Hearing* HearingConfig;
+
 	virtual void BeginPlay() override;
 
 public:
