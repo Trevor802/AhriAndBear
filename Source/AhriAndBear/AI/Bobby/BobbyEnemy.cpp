@@ -13,6 +13,13 @@ ABobbyEnemy::ABobbyEnemy() : Super()
 	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightConfig"));
 	HearingConfig = CreateDefaultSubobject<UAISenseConfig_Hearing>(TEXT("HearingConfig"));
 
+	HearingConfig->DetectionByAffiliation.bDetectEnemies = true;
+	HearingConfig->DetectionByAffiliation.bDetectFriendlies = true;
+	HearingConfig->DetectionByAffiliation.bDetectNeutrals = true;
+	HearingConfig->HearingRange = 1000;
+	HearingConfig->SetMaxAge(7);
+	PerceptionComponent->ConfigureSense(*HearingConfig);
+
 	SightConfig->PeripheralVisionAngleDegrees = 45;
 	SightConfig->DetectionByAffiliation.bDetectEnemies = true;
 	SightConfig->DetectionByAffiliation.bDetectFriendlies = true;
@@ -22,14 +29,7 @@ ABobbyEnemy::ABobbyEnemy() : Super()
 	SightConfig->SetMaxAge(1);
 	PerceptionComponent->ConfigureSense(*SightConfig);
 
-	HearingConfig->DetectionByAffiliation.bDetectEnemies = true;
-	HearingConfig->DetectionByAffiliation.bDetectFriendlies = true;
-	HearingConfig->DetectionByAffiliation.bDetectNeutrals = true;
-	HearingConfig->HearingRange = 1000;
-	HearingConfig->SetMaxAge(7);
-	PerceptionComponent->ConfigureSense(*HearingConfig);
-
-	PerceptionComponent->SetDominantSense(SightConfig->GetSenseImplementation());
+	PerceptionComponent->SetDominantSense(HearingConfig->GetSenseImplementation());
 
 }
 
