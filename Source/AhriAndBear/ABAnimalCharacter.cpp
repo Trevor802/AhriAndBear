@@ -158,8 +158,6 @@ void AABAnimalCharacter::SprintStaminaUpdate(float DeltaTime)
 		{
 			EndSprinting();
 		}
-
-		SprintUpdate();
 	}
 }
 
@@ -219,19 +217,19 @@ void AABAnimalCharacter::SwitchAnimal()
 		{
 			// Toggle scent trail's visibility
 			AABDogCharacter* dog = Cast<AABDogCharacter>(this);
-
+			
 			if (dog)
 			{
 				HideScentFromCat();
 				UE_LOG(LogTemp, Warning, TEXT("Dog"));
-			}
+			}	
 
 			tempPlayerController->UnPossess();
 			tempAIController->UnPossess();
 
 			tempPlayerController->Possess(OtherAnimal);
 			tempAIController->Possess(this);
-
+			
 			if (OtherAnimal->InteractionComponent->IsInteracting())
 			{
 				Cast<AABPlayerController>(tempPlayerController)->UnbindInput();
