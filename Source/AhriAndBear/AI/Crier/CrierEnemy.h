@@ -9,21 +9,17 @@
 
 #include "CrierEnemy.generated.h"
 
-class UAISenseConfig_Hearing;
-class UAISenseConfig_Sight;
+class UAIPerceptionComponent;
 
 UCLASS()
 class AHRIANDBEAR_API ACrierEnemy : public AEnemyBase
 {
 	GENERATED_BODY()
 
+private:
+	UAIPerceptionComponent* _perceptionComponent;
+
 protected:
-	UPROPERTY(Category = "AI", BlueprintReadOnly, VisibleDefaultsOnly)
-		class UAIPerceptionComponent* PerceptionComponent;
-
-	UAISenseConfig_Sight* SightConfig;
-	UAISenseConfig_Hearing* HearingConfig;
-
 	virtual void BeginPlay() override;
 
 public:
