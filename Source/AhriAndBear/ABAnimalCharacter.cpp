@@ -158,6 +158,8 @@ void AABAnimalCharacter::SprintStaminaUpdate(float DeltaTime)
 		{
 			EndSprinting();
 		}
+
+		SprintUpdate();
 	}
 }
 
