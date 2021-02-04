@@ -12,9 +12,6 @@ class AHRIANDBEAR_API AEnemyBase : public ACharacter
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY(Category = "AI", BlueprintReadOnly, VisibleDefaultsOnly)
-		class UAIPerceptionComponent* PerceptionComponent;
-
 	virtual void BeginPlay() override;
 
 public:

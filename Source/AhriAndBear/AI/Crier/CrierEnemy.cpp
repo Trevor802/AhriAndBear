@@ -2,11 +2,8 @@
 
 
 #include "CrierEnemy.h"
-#include "../../ABAnimalCharacter.h"
 
 #include "Perception/AIPerceptionComponent.h"
-
-#include "Kismet/GameplayStatics.h"
 
 ACrierEnemy::ACrierEnemy() : Super()
 {
@@ -16,7 +13,9 @@ void ACrierEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
-	PerceptionComponent->OnPerceptionUpdated.AddDynamic(this, &ACrierEnemy::HandlePerceptionUpdated);
+	AController* controller = GetController();
+	UActorComponent* actorComponent = controller->GetComponentByClass(UAIPerceptionComponent::StaticClass());
+	_perceptionComponent = Cast<UAIPerceptionComponent>(actorComponent);
 }
 
 void ACrierEnemy::Tick(float DeltaTime)
@@ -27,52 +26,4 @@ void ACrierEnemy::Tick(float DeltaTime)
 void ACrierEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-}
-
-void ACrierEnemy::AttackPlayer(AActor* playerActor)
-{
-	// Do Nothing...
-}
-
-void ACrierEnemy::AlertEnemy(AActor* playerActor)
-{
-
-}
-
-void ACrierEnemy::UpdateAlertCounter(float deltaTime)
-{
-	if (_currentAlertCount > 0)
-	{
-		_alertDelayTimer -= deltaTime;
-		if (_alertDelayTimer <= 0)
-		{
-			_currentAlertCount -= 1;
-			_alertDelayTimer = AlertDelayTime;
-
-			FVector soundLocation = GetActorLocation();
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(), EnemySound, soundLocation, FRotator::ZeroRotator);
-			MakeNoise();
-		}
-	}
-}
-
-void ACrierEnemy::HandlePerceptionUpdated(const TArray<AActor*>& Actors)
-{
-	bool animalLocated = false;
-
-	for (int i = 0; i < Actors.Num(); i++)
-	{
-		AABAnimalCharacter* animalCharacter = Cast<AABAnimalCharacter>(Actors[i]);
-		if (animalCharacter != nullptr)
-		{
-			animalLocated = true;
-			break;
-		}
-	}
-
-	if (animalLocated)
-	{
-		_currentAlertCount = AlertTimesCount;
-		_alertDelayTimer = 0;
-	}
 }
