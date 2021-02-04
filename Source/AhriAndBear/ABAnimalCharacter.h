@@ -158,9 +158,6 @@ public:
 	UFUNCTION(Category="Gameplay|Sprint", BlueprintImplementableEvent)
 		void SprintUpdate();
 
-	UFUNCTION(BlueprintCallable, Category = "Character")
-	void GetCaught(AActor* byWhom);
-
 private:
 	bool bWithinRange;
 	AABInteractiveObjectBase* InteractiveObjectRef;
