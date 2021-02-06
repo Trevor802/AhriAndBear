@@ -21,6 +21,8 @@ class UAudioComponent;
 #define GET_MAIN_CHARACTER Cast<AABAnimalCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FBark, FVector, Position);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAnimalCaught, AActor*, captor);
+
 UCLASS()
 class AHRIANDBEAR_API AABAnimalCharacter : public ACharacter
 {
@@ -64,6 +66,12 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Delegates")
 		FBark OnAnimalBark;
+
+	UPROPERTY(BlueprintAssignable, Category = "Character|Events")
+		FAnimalCaught OnAnimalCaught;
+
+	UFUNCTION(BlueprintPure, Category = "Character | Survival")
+		bool IsInCriticalCondition() const;
 
 protected:
 	// Called when the game starts or when spawned
@@ -148,7 +156,11 @@ public:
 	bool bInClimbingZone;
 	bool bClimbing;
 
-	void GetCaught(AActor* byWhom);
+	UFUNCTION(Category="Gameplay|Sprint", BlueprintImplementableEvent)
+		void SprintUpdate();
+
+	UFUNCTION(BlueprintCallable, Category = "Character")
+		void GetCaught(AActor* byWhom);
 
 private:
 	bool bWithinRange;

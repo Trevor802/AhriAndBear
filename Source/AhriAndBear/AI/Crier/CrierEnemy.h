@@ -9,18 +9,15 @@
 
 #include "CrierEnemy.generated.h"
 
+class UAIPerceptionComponent;
+
 UCLASS()
 class AHRIANDBEAR_API ACrierEnemy : public AEnemyBase
 {
 	GENERATED_BODY()
 
 private:
-	UFUNCTION()
-		void HandlePerceptionUpdated(const TArray<AActor*>& Actors);
-	void UpdateAlertCounter(float deltaTime);
-
-	int _currentAlertCount;
-	float _alertDelayTimer;
+	UAIPerceptionComponent* _perceptionComponent;
 
 protected:
 	virtual void BeginPlay() override;
@@ -31,18 +28,9 @@ public:
 	UPROPERTY(Category = "Enemy|Data", EditAnywhere)
 		USoundBase* EnemySound;
 
-	UPROPERTY(Category = "Enemy|Data", EditAnywhere)
-		int AlertTimesCount;
-
-	UPROPERTY(Category = "Enemy|Data", EditAnywhere)
-		float AlertDelayTime;
-
 #pragma endregion
 
 	ACrierEnemy();
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	void AttackPlayer(AActor* playerActor) override;
-	void AlertEnemy(AActor* playerActor) override;
 };

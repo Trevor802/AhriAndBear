@@ -28,6 +28,8 @@ void AABPlayerController::OnPossess(APawn* Pawn)
 	AnimalCharacter = Cast<AABAnimalCharacter>(Pawn);
 	AnimalCharacter->bOrientRotationToMovementSetting = false;
 	AnimalCharacter->ChangeMovementSetting();
+
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetInputMode(FInputModeGameOnly());
 }
 
 void AABPlayerController::Tick(float DeltaTime)
