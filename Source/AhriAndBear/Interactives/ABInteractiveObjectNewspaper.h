@@ -40,6 +40,8 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 		TSubclassOf<class UNewspaperWidget> WidgetClass;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+		FString TempTitle;
 private:
 	bool bOpened;
 

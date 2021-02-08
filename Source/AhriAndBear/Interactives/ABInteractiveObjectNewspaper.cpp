@@ -51,5 +51,5 @@ void AABInteractiveObjectNewspaper::Tick(float DeltaTime)
 void AABInteractiveObjectNewspaper::OpenNewspaper()
 {
 	//NewspaperWidget->addtov;
-
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TempTitle);
 }
