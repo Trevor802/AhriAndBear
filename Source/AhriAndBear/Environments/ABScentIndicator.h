@@ -8,6 +8,7 @@
 
 class USphereComponent;
 class AABScentSource;
+class AABScentWaypoint;
 
 // Stolen from Trevor's research project
 static class BoidHelpler
@@ -42,8 +43,15 @@ public:
 	AABScentIndicator();
 	virtual void Tick(float DeltaTime) override;
 	void SetTargetPosition(FVector target);
+	void SetTargetPosition(AABScentSource* targetSource);
 	void SetIndicatorLifeSpan(float time);
 	void MoveToTarget(float DeltaTime);
+	bool IsTargetReachable();
+	AABScentWaypoint* GetReachableWaypoint();
+	void CalculateDirection();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+		USphereComponent* sensor;
 
 protected:
 	virtual void BeginPlay() override;
@@ -52,7 +60,7 @@ public:
 
 
 private:
-	USphereComponent* sensor;
+	AABScentSource* mySource;
 	float lifeSpan;
 	FVector targetPosition;
 	FVector myVelocity;

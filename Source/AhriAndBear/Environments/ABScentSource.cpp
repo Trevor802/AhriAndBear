@@ -65,7 +65,8 @@ void AABScentSource::SpawnScentIndicator()
 
 	AABScentIndicator* indicator =
 		GetWorld()->SpawnActor<AABScentIndicator>(dogInRange->GetActorLocation() + FVector(0, 30, 0), dogInRange->GetActorRotation());
-	indicator->SetTargetPosition(GetActorLocation());
+	indicator->SetTargetPosition(this);
 	indicator->SetIndicatorLifeSpan(5);
+	indicator->CalculateDirection();
 }
 
