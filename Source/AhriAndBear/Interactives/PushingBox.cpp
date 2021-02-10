@@ -4,11 +4,11 @@
 #include "PushingBox.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
-#include "Interactives/CharacterInteractionComponent.h"
+//#include "Interactives/CharacterInteractionComponent.h"
 #include "ABAnimalCharacter.h"
 #include "ABPlayerController.h"
 #include "Components/PrimitiveComponent.h"
-#include "Characters/ABDogCharacter.h"
+//#include "Characters/ABDogCharacter.h"
 
 APushingBox::APushingBox()
 {
