@@ -33,17 +33,17 @@ void UABPlayerUIComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 
 }
 
-void UABPlayerUIComponent::CallAddWidgetToViewPort(UUserWidget* Widget)
+void UABPlayerUIComponent::AddNewspaperWidgetToViewPort()
 {
 	if (PlayerController)
 	{
-		PlayerController->AddWidgetToViewPort(Widget);
+		PlayerController->AddWidgetToViewPort(NewspaperWidget);
 	}
 }
 
-void UABPlayerUIComponent::CallRemoveWidgetFromViewPort(UUserWidget* Widget)
+void UABPlayerUIComponent::RemoveNewspaperWidgetFromViewPort()
 {
-	Widget->RemoveFromParent();
+	NewspaperWidget->RemoveFromParent();
 }
 
 void UABPlayerUIComponent::InitWidgets()

@@ -30,8 +30,8 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	void CallAddWidgetToViewPort(UUserWidget* Widget);
-	void CallRemoveWidgetFromViewPort(UUserWidget* Widget);
+	void AddNewspaperWidgetToViewPort();
+	void RemoveNewspaperWidgetFromViewPort();
 
 private:
 	AABPlayerController* PlayerController;

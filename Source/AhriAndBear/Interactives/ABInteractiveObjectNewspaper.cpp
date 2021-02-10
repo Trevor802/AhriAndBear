@@ -9,6 +9,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/Widget.h"
 #include "Blueprint/UserWidget.h"
+#include "Interactive.h"
+#include "ABPlayerUIComponent.h"
+#include "ABAnimalCharacter.h"
 
 AABInteractiveObjectNewspaper::AABInteractiveObjectNewspaper()
 	: Super()
@@ -52,4 +55,12 @@ void AABInteractiveObjectNewspaper::OpenNewspaper()
 {
 	//NewspaperWidget->addtov;
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TempTitle);
+
+	AABAnimalCharacter* player = GET_CHARACTER(this);
+
+	if (player)
+	{
+		player->FindComponentByClass<UABPlayerUIComponent>()->AddNewspaperWidgetToViewPort();
+	}
+	
 }
