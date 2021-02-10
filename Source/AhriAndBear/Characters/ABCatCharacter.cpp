@@ -23,6 +23,24 @@ void AABCatCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	abilityOn = false;
+	// Get the normal camera settings
+	normalSettings = camera->PostProcessSettings;
+
+	// Set up the camera settings
+	nightVisionSettings.bOverride_VignetteIntensity = true;
+	nightVisionSettings.bOverride_GrainJitter = true;
+	nightVisionSettings.bOverride_GrainIntensity = true;
+	nightVisionSettings.bOverride_WhiteTemp = true;
+	nightVisionSettings.bOverride_WhiteTint = true;
+	nightVisionSettings.bOverride_ColorSaturation = true;
+	nightVisionSettings.bOverride_ColorOffset = true;
+	nightVisionSettings.VignetteIntensity = 1.1;
+	nightVisionSettings.GrainJitter = 0.0;
+	nightVisionSettings.GrainIntensity = 0.476191;
+	nightVisionSettings.WhiteTemp = 6900;
+	nightVisionSettings.WhiteTint = -0.6;
+	nightVisionSettings.ColorSaturation = FVector4(1.0, 0.280875, 0.702882, 1.0);
+	nightVisionSettings.ColorOffset = FVector4(-0.185722, 0.0, -0.008505, 0.0);
 }
 
 void AABCatCharacter::Tick(float DeltaTime)
@@ -45,50 +63,12 @@ void AABCatCharacter::Tick(float DeltaTime)
 void AABCatCharacter::UseAbility()
 {
 	Super::UseAbility();
-	FPostProcessSettings NVsetting;
 	if (!abilityOn)
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("???"));
-		abilityOn = true;
-		normalSettings = camera->PostProcessSettings;
-
-		NVsetting.bOverride_VignetteIntensity = true;
-		NVsetting.bOverride_GrainJitter = true;
-		NVsetting.bOverride_GrainIntensity = true;
-		NVsetting.bOverride_WhiteTemp = true;
-		NVsetting.bOverride_WhiteTint = true;
-		NVsetting.bOverride_ColorSaturation = true;
-		NVsetting.bOverride_ColorOffset = true;
-
-		NVsetting.VignetteIntensity = 1.1;
-		NVsetting.GrainJitter = 0.0;
-		NVsetting.GrainIntensity = 0.476191;
-		NVsetting.WhiteTemp = 6900;
-		NVsetting.WhiteTint = -0.6;
-		NVsetting.ColorSaturation = FVector4(1.0, 0.280875, 0.702882, 1.0);
-		NVsetting.ColorOffset = FVector4(-0.185722, 0.0, -0.008505, 0.0);
-		//NVsetting.bOverride_AutoExposureMinBrightness = true;
-		//NVsetting.bOverride_AutoExposureMaxBrightness = true;
-		//NVsetting.AutoExposureMinBrightness = 0.1f;
-		//NVsetting.AutoExposureMaxBrightness = 0.1f;
-
-		camera->PostProcessSettings = NVsetting;
+		camera->PostProcessSettings = nightVisionSettings;
 	}
-	else
-		AbilityEnd();
-}
-
-void AABCatCharacter::AbilityEnd()
-{
-	//UE_LOG(LogTemp, Warning, TEXT("???"));
-	abilityOn = false;
-	//camera->PostProcessSettings.AutoExposureMaxBrightness = 1.0f;
-	/*FPostProcessSettings NormalSetting;
-	NormalSetting.bOverride_AutoExposureMinBrightness = true;
-	NormalSetting.bOverride_AutoExposureMaxBrightness = true;
-	NormalSetting.AutoExposureMinBrightness = 1.0f;
-	NormalSetting.AutoExposureMaxBrightness = 8.0f;
-
-	camera->PostProcessSettings = NormalSetting;*/
-	camera->PostProcessSettings = normalSettings;
+	else {
+		camera->PostProcessSettings = normalSettings;
+	}
+	abilityOn = !abilityOn;
 }
