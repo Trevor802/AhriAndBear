@@ -9,6 +9,8 @@
 #include "Components/StaticMeshComponent.h"
 #include "Interactives/Interactive.h"
 #include "Characters/ABCatCharacter.h"
+#include "CharacterInteractionComponent.h"
+#include "DrawDebugHelpers.h"
 
 AABInteractiveObjectGate::AABInteractiveObjectGate()
 	: Super()
@@ -56,9 +58,35 @@ void AABInteractiveObjectGate::Tick(float DeltaTime)
 
 bool AABInteractiveObjectGate::CanInteract(UCharacterInteractionComponent* component) const
 {
-	auto boxComponent = Cast<UBoxComponent>(component);
-	auto character = Cast<AABAnimalCharacter>(boxComponent->GetOwner());
+	//auto boxComponent = Cast<UBoxComponent>(component);
+	auto character = Cast<AABAnimalCharacter>(component->GetOwner());
 	AABCatCharacter* catCharacter = Cast<AABCatCharacter>(character);
+
+	// Only check directions if the UnlockDirection vector is not the zero  vector.
+	if (UnlockDirection != FVector::ZeroVector) {
+		GEngine->AddOnScreenDebugMessage(-1, 60.f, FColor::Green, TEXT("Checking to see if gate can be unlocked"));
+		// Get vector from actor to gate and compare to the UnlockDirection.
+		auto actorLocation = character->GetTransform().GetLocation();
+		
+		auto gateLocation = GetTransform().GetLocation();
+		auto actor2GateVector = gateLocation - actorLocation;
+		auto a2gvDotUd = FVector::DotProduct(actor2GateVector, UnlockDirection);
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("a2gvDotUd is %f"), a2gvDotUd));
+		DrawDebugLine(GetWorld(), actorLocation, gateLocation, FColor::Cyan, false, 1, 0, 5.f);
+		// Get actor's forward vector and compare to UnlockDirection.
+		auto actorForward = character->GetActorForwardVector();
+		auto aFDotUd = FVector::DotProduct(actorForward, UnlockDirection);
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("aFDotUd is %f"), aFDotUd));
+		// All three vectors should be facing the same direction, meaning neither dot
+		// product should be less than zero.
+
+		if (aFDotUd < 0 || a2gvDotUd < 0)
+			return false;
+	}
+	else {
+		GEngine->AddOnScreenDebugMessage(-1, 60.f, FColor::Red, TEXT("No"));
+	}
+
 	if (catCharacter)
 		return !bOpened;
 	else

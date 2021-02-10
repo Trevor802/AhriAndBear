@@ -24,9 +24,8 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-	UPostProcessComponent* postProcess;
 	FPostProcessSettings normalSettings;
+	FPostProcessSettings nightVisionSettings;
+	UPostProcessComponent* postProcess;
 	bool abilityOn;
-
-	void AbilityEnd();
 };

@@ -67,8 +67,8 @@ bool AABScentWaypoint::IsSourceReachable(AABScentSource* targetSource)
 	FCollisionQueryParams CollisionParams;
 	GetWorld()->LineTraceSingleByChannel(onHit,
 		GetActorLocation(),
-		toTarget,
-		ECollisionChannel::ECC_Visibility,
+		GetActorLocation() + toTarget,
+		ECollisionChannel::ECC_WorldDynamic,
 		CollisionParams);
 	if (!Cast<AABScentSource>(onHit.GetActor()))
 	{
