@@ -271,3 +271,12 @@ void AABPlayerController::UnbindInput() const
 	}
 }
 
+void AABPlayerController::AddWidgetToViewPort(UUserWidget* Widget)
+{
+	Widget->AddToViewport();
+}
+
+void AABPlayerController::RemoveWidgetFromViewPort(UUserWidget* Widget)
+{
+}
+

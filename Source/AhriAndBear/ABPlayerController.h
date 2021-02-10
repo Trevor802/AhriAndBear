@@ -46,6 +46,9 @@ public:
 	void BindInput() const;
 	void UnbindInput() const;
 
+	void AddWidgetToViewPort(UUserWidget* Widget);
+	void RemoveWidgetFromViewPort(UUserWidget* Widget);
+
 	FORCEINLINE class UInteractionDurationWidget* GetInteractionWidget() const{ return InteractionWidget; }
 protected:
 	// TODO: Improve this

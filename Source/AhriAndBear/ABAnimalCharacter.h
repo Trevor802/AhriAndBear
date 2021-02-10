@@ -14,6 +14,7 @@ class UStaticMeshComponent;
 class USpringArmComponent;
 class AABInteractiveObjectBase;
 class UAABSurvivalComponent;
+class UABPlayerUIComponent;
 class UPawnSensingComponent;
 class UPawnNoiseEmitterComponent;
 class UAudioComponent;
@@ -39,6 +40,8 @@ public:
 		class USphereComponent* ProjectileStart;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Survival")
 		UAABSurvivalComponent* SurvivalComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+		UABPlayerUIComponent* UIComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
 		UBehaviorTree* BehaviorTree;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound")

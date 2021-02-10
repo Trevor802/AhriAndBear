@@ -4,6 +4,7 @@
 #include "ABPlayerController.h"
 #include "Interactives/Interactive.h"
 #include "AABSurvivalComponent.h"
+#include "ABPlayerUIComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/GameplayStaticsTypes.h"
 #include "Components/SphereComponent.h"
@@ -40,6 +41,7 @@ AABAnimalCharacter::AABAnimalCharacter()
 	InteractionComponent->SetupAttachment(RootComponent);
 
 	SurvivalComponent = CreateDefaultSubobject<UAABSurvivalComponent>(TEXT("Survival Component"));
+	UIComponent = CreateDefaultSubobject<UABPlayerUIComponent>(TEXT("UI Component"));
 
 	baseTurnRate = 45.f;
 	baseLookUpRate = 45.f;
