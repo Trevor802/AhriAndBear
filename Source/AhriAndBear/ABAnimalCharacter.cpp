@@ -205,6 +205,8 @@ void AABAnimalCharacter::ChangeOtherFollowingStatus()
 
 void AABAnimalCharacter::SwitchAnimal()
 {
+	BeforeCharacterSwitch();
+
 	bIsFollowing = false;
 	GetMovementComponent()->StopMovementImmediately();
 
@@ -245,6 +247,8 @@ void AABAnimalCharacter::SwitchAnimal()
 	}
 
 	OtherAnimal->bBlackBoardSet = false;
+
+	AfterCharacterSwitch();
 }
 
 void AABAnimalCharacter::HideScentFromCat()

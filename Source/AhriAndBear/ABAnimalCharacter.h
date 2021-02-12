@@ -149,7 +149,11 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
 		class USoundBase* BarkingSound;
 
-	AABAnimalCharacter* OtherAnimal;
+	UFUNCTION(Category = "Event", BlueprintImplementableEvent)
+		void BeforeCharacterSwitch();
+
+	UPROPERTY(Category = "Animal", BlueprintReadOnly)
+		AABAnimalCharacter* OtherAnimal;
 	bool bBlackBoardSet;
 	bool bOrientRotationToMovementSetting;
 
