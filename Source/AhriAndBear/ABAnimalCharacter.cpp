@@ -247,8 +247,6 @@ void AABAnimalCharacter::SwitchAnimal()
 	}
 
 	OtherAnimal->bBlackBoardSet = false;
-
-	AfterCharacterSwitch();
 }
 
 void AABAnimalCharacter::HideScentFromCat()
