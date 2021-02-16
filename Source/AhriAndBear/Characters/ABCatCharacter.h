@@ -7,6 +7,8 @@
 #include "Components/PostProcessComponent.h"
 #include "ABCatCharacter.generated.h"
 
+constexpr int CAT_SPRINT_VOLUME = 0;
+
 class UPostProcessComponent;
 
 UCLASS()
@@ -22,6 +24,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	void GetSprintMovementVolume() const override { return CAT_SPRINT_VOLUME; }
 
 private:
 	FPostProcessSettings normalSettings;

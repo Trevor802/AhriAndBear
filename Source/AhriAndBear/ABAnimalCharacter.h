@@ -23,6 +23,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FBark, FVector, Position);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAnimalCaught, AActor*, captor);
 
+const int DEFAULT_ANIMAL_VOLUME = 1;
+
 UCLASS()
 class AHRIANDBEAR_API AABAnimalCharacter : public ACharacter
 {
@@ -77,6 +79,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual bool CanJumpInternal_Implementation() const override;
+	virtual int GetSprintMovementVolume() const;
 
 public:
 	// Called every frame
@@ -171,5 +174,6 @@ private:
 
 	FVector OriginalCameraPosition;
 	float OriginalSpringArmLength;
+	int currentMovementVolume = DEFAULT_ANIMAL_VOLUME;
 	void HideScentFromCat();
 };

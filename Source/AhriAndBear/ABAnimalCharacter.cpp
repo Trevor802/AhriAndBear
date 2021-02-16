@@ -83,6 +83,11 @@ bool AABAnimalCharacter::CanJumpInternal_Implementation() const
 	return Super::CanJumpInternal_Implementation();
 }
 
+float AABAnimalCharacter::GetSprintMovementVolume() const
+{
+	return DEFAULT_ANIMAL_VOLUME;
+}
+
 // Called every frame
 void AABAnimalCharacter::Tick(float DeltaTime)
 {
@@ -147,6 +152,8 @@ void AABAnimalCharacter::StartSprinting()
 
 	bSprinting = true;
 	GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
+	// TODO: Set currentMovementVolume here
+	currentMovementVolume = GetSprintMovementVolume();
 }
 
 void AABAnimalCharacter::SprintStaminaUpdate(float DeltaTime)
@@ -167,6 +174,7 @@ void AABAnimalCharacter::EndSprinting()
 {
 	bSprinting = false;
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+	currentMovementVolume = DEFAULT_ANIMAL_VOLUME;
 }
 
 void AABAnimalCharacter::StartCrouch()
