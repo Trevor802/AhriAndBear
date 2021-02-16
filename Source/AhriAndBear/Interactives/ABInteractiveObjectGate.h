@@ -29,6 +29,8 @@ public:
 	//FORCEINLINE virtual bool CanInteract() override { return true; }
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interactive Object | Gate")
+	FVector UnlockDirection = FVector::ZeroVector;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
 		class UBoxComponent* CollisionShape;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")

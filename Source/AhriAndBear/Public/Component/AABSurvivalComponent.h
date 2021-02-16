@@ -6,9 +6,59 @@
 #include "Components/ActorComponent.h"
 #include "ABSurvivalStats.h"
 #include "GameBase/Define.h"
+#include "ABStatModifierInterface.h"
 #include "AABSurvivalComponent.generated.h"
 
-class IABStatModifierInterface;
+class UAABSurvivalComponent;
+class AABAnimalCharacter;
+
+/**
+* Struct for the FStatModifiersChanged event.
+*/
+USTRUCT(Blueprintable, Category = "Character | Survival | Events")
+struct FStatModifierChangedInfo {
+	GENERATED_BODY()
+public:
+	FStatModifierChangedInfo() {}
+	FStatModifierChangedInfo(UAABSurvivalComponent* sender, IABStatModifierInterface* modifier) : SurvivalComponent(sender) {
+		StatModifier.SetInterface(modifier);
+	}
+
+	UPROPERTY(BlueprintReadonly, Category = "Character | Survival | Events")
+	UAABSurvivalComponent* SurvivalComponent;
+	UPROPERTY(BlueprintReadonly, Category = "Character | Survival | Events")
+	TScriptInterface<IABStatModifierInterface> StatModifier;
+};
+
+/**
+* Delegate for when a stat modifier is added or removed.
+*/
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FStatModifiersChanged, const FStatModifierChangedInfo&, info);
+
+/**
+* Struct for the FAnimalCriticalConditionChanged event.
+*/
+USTRUCT(Blueprintable, Category = "Character | Survival | Events")
+struct FAnimalCriticalConditionChangedInfo {
+	GENERATED_BODY()
+public:
+	FAnimalCriticalConditionChangedInfo() {}
+	FAnimalCriticalConditionChangedInfo(AABAnimalCharacter* animal, bool inCriticalCondition) :
+		Owner(animal),
+		IsNowInCriticalCondition(inCriticalCondition)
+	{}
+
+	UPROPERTY(BlueprintReadonly, Category = "Character | Survival | Events")
+	AABAnimalCharacter* Owner;
+
+	UPROPERTY(BlueprintReadonly, Category = "Character | Survival | Events")
+		bool IsNowInCriticalCondition;
+};
+
+/**
+* Delegate for when an animal enters or leaves critical condition.
+*/
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FAnimalCriticalConditionChanged, UAABSurvivalComponent*, sender, const FAnimalCriticalConditionChangedInfo&, info);
 
 UCLASS( Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class AHRIANDBEAR_API UAABSurvivalComponent : public UActorComponent
@@ -39,6 +89,24 @@ public:
 
 	void UpdateStats(float deltaTime);
 
+	UPROPERTY(BlueprintAssignable, Category = "Character | Survival | Events")
+	FStatModifiersChanged StatModifierAdded;
+
+	UPROPERTY(BlueprintAssignable, Category = "Character | Survival | Events")
+	FStatModifiersChanged StatModifierRemoved;
+
+	UPROPERTY(BlueprintAssignable, Category = "Character | Survival | Events")
+	FAnimalCriticalConditionChanged OnCriticalConditionChanged;
+
+	/**
+	* Is the animal in critical condition?
+	*
+	* @return
+	*   TRUE if both thirst and hunger are at zero or lower.
+	*/
+	UFUNCTION(BlueprintPure, Category = "Character | Survival")
+	bool IsInCriticalCondition() const { return zeroedStats >= RequiredSurvivalStats; }
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -58,10 +126,19 @@ private:
 
 	void UpdateRateOfChange(FABSurvivalStat& stat, const float defaultRoC, float(IABStatModifierInterface::*statModMethod)(UAABSurvivalComponent*, float, float), bool (IABStatModifierInterface::*doesModMethod)(void) const);
 
-	//UPROPERTY(VisibleAnywhere, Category = "Character | Survival | Modifiers")
+	/**
+	* Responds to the OnStatZeroStateChanged events on Hunger and Thirst.
+	*/
+	UFUNCTION()
+	void RespondToStatZeroedStateChange(const FStatZeroedStateChangedInfo& stateChangeInfo);
+	
 	TArray<IABStatModifierInterface*> StatModifiers;
 	UPROPERTY(VisibleAnywhere, Category = "Character | Survival")
 	float defaultHungerRateOfChange;
 	UPROPERTY(VisibleAnywhere, Category = "Character | Survival")
 	float defaultThirstRateOfChange;
+
+	const int RequiredSurvivalStats = 2;
+
+	int zeroedStats = 0;
 };

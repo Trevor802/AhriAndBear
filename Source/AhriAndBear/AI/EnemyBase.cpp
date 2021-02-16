@@ -2,12 +2,13 @@
 
 
 #include "EnemyBase.h"
+
 #include "Perception/AIPerceptionComponent.h"
+#include "Perception/AISenseConfig_Sight.h"
+#include "Perception/AISenseConfig_Hearing.h"
 
 AEnemyBase::AEnemyBase()
 {
-	PerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("PerceptionComponent"));
-
 	PrimaryActorTick.bCanEverTick = true;
 }
 

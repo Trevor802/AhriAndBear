@@ -62,6 +62,11 @@ AABAnimalCharacter::AABAnimalCharacter()
 	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
 }
 
+bool AABAnimalCharacter::IsInCriticalCondition() const
+{
+	return SurvivalComponent->IsInCriticalCondition();
+}
+
 // Called when the game starts or when spawned
 void AABAnimalCharacter::BeginPlay()
 {
@@ -95,7 +100,8 @@ void AABAnimalCharacter::Tick(float DeltaTime)
 void AABAnimalCharacter::GetCaught(AActor* byWhom)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, "Animal Caught By: " + byWhom->GetName());
-	UGameplayStatics::OpenLevel(GetWorld(), "level1_Shelter");
+	OnAnimalCaught.Broadcast(byWhom);
+	//UGameplayStatics::OpenLevel(GetWorld(), "level1_Shelter");
 }
 
 void AABAnimalCharacter::Jump()
@@ -156,6 +162,8 @@ void AABAnimalCharacter::SprintStaminaUpdate(float DeltaTime)
 		{
 			EndSprinting();
 		}
+
+		SprintUpdate();
 	}
 }
 
