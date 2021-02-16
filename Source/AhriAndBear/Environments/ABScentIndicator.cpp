@@ -11,60 +11,75 @@ AABScentIndicator::AABScentIndicator()
 {
 	sensor = CreateDefaultSubobject<USphereComponent>(TEXT("Unit Sensor"));
 	sensor->SetupAttachment(RootComponent);
-	sensor->SetSphereRadius(100);
 	PrimaryActorTick.bCanEverTick = true;
 	targetPosition = FVector::ZeroVector;
 }
 
 void AABScentIndicator::BeginPlay()
 {
-	Super::BeginPlay();	
+	Super::BeginPlay();
 }
 
 void AABScentIndicator::CalculateDirection()
 {
 	if (!IsTargetReachable())
 	{
-		if(GetReachableWaypoint())
-			SetTargetPosition(GetReachableWaypoint()->GetActorLocation());
+		if (GetReachableWaypoint())
+		{
+			myCurrentPathNode = myPathNodes.Num() - 1;
+			targetPosition = myPathNodes[myCurrentPathNode];
+			SetTargetPosition(targetPosition);
+			//SetTargetPosition(GetReachableWaypoint()->GetActorLocation());
+		}
+			
 	}
 }
 
 AABScentWaypoint* AABScentIndicator::GetReachableWaypoint()
 {
 	TArray<AActor*> overlappingActors;
+	sensor->SetSphereRadius(scanRange);
 	sensor->UpdateOverlaps();
-	sensor->GetOverlappingActors(overlappingActors);
+	sensor->GetOverlappingActors(overlappingActors, AABScentWaypoint::StaticClass());
 	if (overlappingActors.Num() == 0)
 		return nullptr;
 	else
 	{
 		for (int i = overlappingActors.Num() - 1; i >= 0; i--)
 		{
-			if (!Cast<AABScentWaypoint>(overlappingActors[i]))
+			AABScentWaypoint* waypoint = Cast<AABScentWaypoint>(overlappingActors[i]);
+			if (!IsWaypointReachable(waypoint))
 			{
 				overlappingActors.RemoveAt(i);
 				continue;
 			}
-			else
-			{
-				AABScentWaypoint* waypoint = Cast<AABScentWaypoint>(overlappingActors[i]);
-				if (waypoint->isQueried)
-					overlappingActors.RemoveAt(i);
-			}
+				
+			if (waypoint)
+				waypoint->isQueried = false;
 		}
+		overlappingActors.Sort([this](const AActor& lhs, const AActor& rhs) {
+			return lhs.GetDistanceTo(this) > rhs.GetDistanceTo(this); });
 
 		for (int i = overlappingActors.Num() - 1; i >= 0; i--)
 		{
 			AABScentWaypoint* waypoint = Cast<AABScentWaypoint>(overlappingActors[i]);
 			if (waypoint->IsSourceReachable(mySource))
-				return waypoint;
-			else
 			{
-				AABScentWaypoint* nextReachable = waypoint->GetReachableWaypoint(mySource);
-				if (nextReachable)
-					return nextReachable;
+				myPathNodes.Add(waypoint->GetActorLocation());
+				return waypoint;
 			}
+				
+		}
+		
+		for (int i = overlappingActors.Num() - 1; i >= 0; i--)
+		{
+			AABScentWaypoint* waypoint = Cast<AABScentWaypoint>(overlappingActors[i]);
+			AABScentWaypoint* nextReachable = waypoint->GetReachableWaypoint(mySource, myPathNodes);
+			if (nextReachable)
+			{
+				myPathNodes.Add(waypoint->GetActorLocation());
+				return nextReachable;
+			}	
 		}
 	}
 	return nullptr;
@@ -86,20 +101,28 @@ void AABScentIndicator::Tick(float DeltaTime)
 			FColor::Red);
 	}
 
-	DrawDebugSphere(GetWorld(), GetActorLocation(), 500, 4, FColor::Red);
-	
-	lifeSpan -= DeltaTime;
+	//DrawDebugSphere(GetWorld(), GetActorLocation(), 500, 4, FColor::Red);
+	if (myReachingTarget)
+	{
+		lifeSpan -= DeltaTime;
+		if (lifeSpan <= 0.f)
+			Destroy();
+	}
+		
+
 }
 
 void AABScentIndicator::SetTargetPosition(FVector target)
 {
 	targetPosition = target;
+	myPathNodes.Add(target);
 }
 
 void AABScentIndicator::SetTargetPosition(AABScentSource* target)
 {
 	mySource = target;
 	targetPosition = target->GetActorLocation();
+	myPathNodes.Add(target->GetActorLocation());
 }
 
 void AABScentIndicator::SetIndicatorLifeSpan(float time)
@@ -128,17 +151,59 @@ void AABScentIndicator::MoveToTarget(float DeltaTime)
 	}
 	myVelocity = (arrival + avoid).GetSafeNormal() * 100;
 	SetActorLocation(GetActorLocation() + myVelocity * DeltaTime);
+
+	if (FVector::Distance(targetPosition, GetActorLocation()) <= myReachingRange)
+	{
+		if (myCurrentPathNode - 1 >= 0)
+		{
+			myCurrentPathNode--;
+			SetTargetPosition(myPathNodes[myCurrentPathNode]);
+		}
+		else
+			myReachingTarget = true;
+	}
+
+}
+
+bool AABScentIndicator::IsWaypointReachable(const AABScentWaypoint* actor)
+{
+	FHitResult onHit;
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(this);
+	GetWorld()->LineTraceSingleByChannel(onHit,
+		GetActorLocation(),
+		actor->GetActorLocation(),
+		ECollisionChannel::ECC_WorldDynamic,
+		CollisionParams);
+	if (!Cast<AABScentWaypoint>(onHit.GetActor()))
+	{
+		return false;
+	}
+	else
+		return true;
 }
 
 bool AABScentIndicator::IsTargetReachable()
 {
 	FHitResult onHit;
+	//TArray<FHitResult> hits;
 	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(this);
+	//GetWorld()->LineTraceMultiByChannel(hits,
+	//	GetActorLocation(),
+	//	targetPosition,
+	//	ECollisionChannel::ECC_WorldDynamic,
+	//	CollisionParams);
 	GetWorld()->LineTraceSingleByChannel(onHit,
 		GetActorLocation(),
 		targetPosition,
-		ECollisionChannel::ECC_Visibility,
+		ECollisionChannel::ECC_WorldDynamic,
 		CollisionParams);
+	//for (int i = hits.Num(); i >= 0; i--)
+	//{
+	//	if (Cast<AABDogCharacter>(hits[i].GetActor()) || Cast<AABCatCharacter>(hits[i].GetActor()))
+	//		;
+	//}
 	if (!Cast<AABScentSource>(onHit.GetActor()))
 	{
 		return false;

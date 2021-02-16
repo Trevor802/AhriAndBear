@@ -17,7 +17,7 @@ class AHRIANDBEAR_API AABScentWaypoint : public AActor
 	
 public:	
 	AABScentWaypoint();
-	AABScentWaypoint* GetReachableWaypoint(AABScentSource* targetSource);
+	AABScentWaypoint* GetReachableWaypoint(AABScentSource* targetSource, TArray<FVector>& i_pathNodes);
 	bool IsSourceReachable(AABScentSource* targetSource);
 
 protected:

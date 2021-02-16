@@ -24,7 +24,7 @@ public:
 	void PlayerCharacterInRange(AActor* self, AActor* OtherActor);
 	UFUNCTION()
 	void PlayerCharacterOutRange(AActor* self, AActor* OtherActor);
-	void SpawnScentIndicator();
+	void SpawnScentIndicator(AActor* dog);
 
 protected:
 	// Called when the game starts or when spawned

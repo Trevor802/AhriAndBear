@@ -34,6 +34,6 @@ void AABDogCharacter::UseAbility()
 	{
 		AABScentSource* scent = Cast<AABScentSource>(FoundActors[i]);
 
-		scent->SpawnScentIndicator();
+		scent->SpawnScentIndicator(this);
 	}
 }

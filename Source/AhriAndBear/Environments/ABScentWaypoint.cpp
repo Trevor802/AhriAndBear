@@ -20,41 +20,49 @@ void AABScentWaypoint::BeginPlay()
 	Super::BeginPlay();
 }
 
-AABScentWaypoint* AABScentWaypoint::GetReachableWaypoint(AABScentSource* targetSource)
+AABScentWaypoint* AABScentWaypoint::GetReachableWaypoint(AABScentSource* targetSource, TArray<FVector>& i_pathNodes)
 {
+	if (isQueried)
+		return nullptr;
+
 	TArray<AActor*> overlappingActors;
 	waypointCollider->UpdateOverlaps();
-	waypointCollider->GetOverlappingActors(overlappingActors);
+	waypointCollider->GetOverlappingActors(overlappingActors, AABScentWaypoint::StaticClass());
+	isQueried = true;
 	if (overlappingActors.Num() == 0)
 		return nullptr;
 	else
 	{
+		//for (int i = overlappingActors.Num() - 1; i >= 0; i--)
+		//{
+		//	AABScentWaypoint* waypoint = Cast<AABScentWaypoint>(overlappingActors[i]);
+		//	if(waypoint->isQueried)
+		//		overlappingActors.RemoveAt(i);
+		//}
 		for (int i = overlappingActors.Num() - 1; i >= 0; i--)
 		{
-			if (!Cast<AABScentWaypoint>(overlappingActors[i]))
-			{
+			AABScentWaypoint* waypoint = Cast<AABScentWaypoint>(overlappingActors[i]);
+			if (waypoint == this || waypoint->isQueried)
 				overlappingActors.RemoveAt(i);
-				continue;
-			}
-			else
-			{
-				AABScentWaypoint* waypoint = Cast<AABScentWaypoint>(overlappingActors[i]);
-				if(waypoint->isQueried)
-					overlappingActors.RemoveAt(i);
-			}
 		}
 
 		for (int i = overlappingActors.Num() - 1; i >= 0; i--)
 		{
 			AABScentWaypoint* waypoint = Cast<AABScentWaypoint>(overlappingActors[i]);
 			if (waypoint->IsSourceReachable(targetSource))
-				return waypoint;
-			else
 			{
-				AABScentWaypoint* nextReachable = waypoint->GetReachableWaypoint(targetSource);
-				if (nextReachable)
-					return nextReachable;
+				i_pathNodes.Add(waypoint->GetActorLocation());
+				return waypoint;
 			}
+				
+		}
+
+		for (int i = overlappingActors.Num() - 1; i >= 0; i--)
+		{
+			AABScentWaypoint* waypoint = Cast<AABScentWaypoint>(overlappingActors[i]);
+			AABScentWaypoint* nextReachable = waypoint->GetReachableWaypoint(targetSource, i_pathNodes);
+			if (nextReachable)
+				return nextReachable;
 		}
 	}
 	return nullptr;
@@ -62,12 +70,12 @@ AABScentWaypoint* AABScentWaypoint::GetReachableWaypoint(AABScentSource* targetS
 
 bool AABScentWaypoint::IsSourceReachable(AABScentSource* targetSource)
 {
-	FVector toTarget = targetSource->GetActorLocation() - GetActorLocation();
 	FHitResult onHit;
 	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(this);
 	GetWorld()->LineTraceSingleByChannel(onHit,
 		GetActorLocation(),
-		GetActorLocation() + toTarget,
+		targetSource->GetActorLocation(),
 		ECollisionChannel::ECC_WorldDynamic,
 		CollisionParams);
 	if (!Cast<AABScentSource>(onHit.GetActor()))

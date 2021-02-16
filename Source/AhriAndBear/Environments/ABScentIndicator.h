@@ -9,6 +9,7 @@
 class USphereComponent;
 class AABScentSource;
 class AABScentWaypoint;
+class AABCatCharacter;
 
 // Stolen from Trevor's research project
 static class BoidHelpler
@@ -42,30 +43,36 @@ class AHRIANDBEAR_API AABScentIndicator : public AActor
 public:	
 	AABScentIndicator();
 	virtual void Tick(float DeltaTime) override;
+	void InitIndicator(AABScentSource* targetSource);
 	void SetTargetPosition(FVector target);
 	void SetTargetPosition(AABScentSource* targetSource);
 	void SetIndicatorLifeSpan(float time);
 	void MoveToTarget(float DeltaTime);
 	bool IsTargetReachable();
+	bool IsWaypointReachable(const AABScentWaypoint*);
 	AABScentWaypoint* GetReachableWaypoint();
 	void CalculateDirection();
+	void SetNextWaypoint();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 		USphereComponent* sensor;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+		float scanRange = 500;
 
 protected:
 	virtual void BeginPlay() override;
 
-public:	
-
-
 private:
+	TArray<FVector> myPathNodes;
 	AABScentSource* mySource;
 	float lifeSpan;
 	FVector targetPosition;
 	FVector myVelocity;
 	FVector mySteeringForce;
 	BoidHelpler helper;
+	bool myReachingTarget;
+	float myReachingRange = 30.f;
+	int myCurrentPathNode = 0;
 };
 
 
