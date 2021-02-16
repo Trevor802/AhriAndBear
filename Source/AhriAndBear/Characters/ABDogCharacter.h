@@ -6,8 +6,6 @@
 #include "ABAnimalCharacter.h"
 #include "ABDogCharacter.generated.h"
 
-constexpr int DOG_SPRINT_VOLUME = 2.f;
-
 /**
  * 
  */
@@ -26,5 +24,5 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	int GetSprintMovementVolume() const override { return DOG_SPRINT_VOLUME; }
+	EABAnimalMovementNoiseVolume GetSprintMovementVolume() const override { return EABAnimalMovementNoiseVolume::Loud; }
 };

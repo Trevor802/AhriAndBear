@@ -83,9 +83,9 @@ bool AABAnimalCharacter::CanJumpInternal_Implementation() const
 	return Super::CanJumpInternal_Implementation();
 }
 
-int AABAnimalCharacter::GetSprintMovementVolume() const
+EABAnimalMovementNoiseVolume AABAnimalCharacter::GetSprintMovementVolume() const
 {
-	return DEFAULT_ANIMAL_VOLUME;
+	return EABAnimalMovementNoiseVolume::Normal;
 }
 
 // Called every frame
@@ -103,6 +103,19 @@ void AABAnimalCharacter::GetCaught(AActor* byWhom)
 	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, "Animal Caught By: " + byWhom->GetName());
 	OnAnimalCaught.Broadcast(byWhom);
 	//UGameplayStatics::OpenLevel(GetWorld(), "level1_Shelter");
+}
+
+EABAnimalMovementNoiseVolume AABAnimalCharacter::GetCurrentMovementVolume() const
+{
+	if (GetMovementComponent()->Velocity.IsNearlyZero())  {
+		return EABAnimalMovementNoiseVolume::Silent;
+	}
+	else if (bSprinting) {
+		return GetSprintMovementVolume();
+	}
+	else {
+		return EABAnimalMovementNoiseVolume::Normal;
+	}
 }
 
 void AABAnimalCharacter::Jump()
@@ -152,8 +165,6 @@ void AABAnimalCharacter::StartSprinting()
 
 	bSprinting = true;
 	GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
-	// TODO: Set currentMovementVolume here
-	currentMovementVolume = GetSprintMovementVolume();
 }
 
 void AABAnimalCharacter::SprintStaminaUpdate(float DeltaTime)
@@ -174,7 +185,6 @@ void AABAnimalCharacter::EndSprinting()
 {
 	bSprinting = false;
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
-	currentMovementVolume = DEFAULT_ANIMAL_VOLUME;
 }
 
 void AABAnimalCharacter::StartCrouch()

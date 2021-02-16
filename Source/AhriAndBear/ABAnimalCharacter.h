@@ -23,7 +23,14 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FBark, FVector, Position);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAnimalCaught, AActor*, captor);
 
-const int DEFAULT_ANIMAL_VOLUME = 1;
+UENUM(BlueprintType)
+enum class EABAnimalMovementNoiseVolume : uint8 {
+	Silent UMETA(DisplayName = "No Movement Noise"),
+	Quiet UMETA(DisplayName = "Quiet Movement Noise"),
+	Normal UMETA(DisplayName = "Normal Movement Noise"),
+	Loud UMETA(DisplayName = "Loud Movement Noise"),
+};
+
 
 UCLASS()
 class AHRIANDBEAR_API AABAnimalCharacter : public ACharacter
@@ -79,7 +86,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual bool CanJumpInternal_Implementation() const override;
-	virtual int GetSprintMovementVolume() const;
+	virtual EABAnimalMovementNoiseVolume GetSprintMovementVolume() const;
 
 public:
 	// Called every frame
@@ -165,6 +172,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Character")
 		void GetCaught(AActor* byWhom);
 
+	UFUNCTION(BlueprintPure, Category = "Character")
+		EABAnimalMovementNoiseVolume GetCurrentMovementVolume() const;
+
 private:
 	bool bWithinRange;
 	AABInteractiveObjectBase* InteractiveObjectRef;
@@ -174,6 +184,5 @@ private:
 
 	FVector OriginalCameraPosition;
 	float OriginalSpringArmLength;
-	int currentMovementVolume = DEFAULT_ANIMAL_VOLUME;
 	void HideScentFromCat();
 };
