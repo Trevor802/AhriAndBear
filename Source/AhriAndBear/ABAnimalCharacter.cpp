@@ -83,7 +83,7 @@ bool AABAnimalCharacter::CanJumpInternal_Implementation() const
 	return Super::CanJumpInternal_Implementation();
 }
 
-float AABAnimalCharacter::GetSprintMovementVolume() const
+int AABAnimalCharacter::GetSprintMovementVolume() const
 {
 	return DEFAULT_ANIMAL_VOLUME;
 }

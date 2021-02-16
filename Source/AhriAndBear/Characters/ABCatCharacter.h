@@ -24,7 +24,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	void GetSprintMovementVolume() const override { return CAT_SPRINT_VOLUME; }
+	int GetSprintMovementVolume() const override { return CAT_SPRINT_VOLUME; }
 
 private:
 	FPostProcessSettings normalSettings;
