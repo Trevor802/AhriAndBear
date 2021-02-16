@@ -105,7 +105,8 @@ public:
 
 	void ChangeOtherFollowingStatus();
 
-	void SwitchAnimal();
+	UFUNCTION(BlueprintCallable)
+		void SwitchAnimal();
 	void Bark();
 	void ChangeMovementSetting();
 	void ChangeMovementMode();
