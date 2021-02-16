@@ -46,6 +46,7 @@ AABInteractiveObjectGate::AABInteractiveObjectGate()
 	bOpened = false;
 	bDogCanOpen = true;
 	CombinationOnlyOpen = true;
+	bCanDogInteract = false;
 }
 
 void AABInteractiveObjectGate::BeginPlay()
@@ -62,6 +63,8 @@ void AABInteractiveObjectGate::Tick(float DeltaTime)
 bool AABInteractiveObjectGate::CanInteract(UCharacterInteractionComponent* component) const
 {
 	//auto boxComponent = Cast<UBoxComponent>(component);
+	if (!Super::CanInteract(component)) return false;
+
 	auto character = Cast<AABAnimalCharacter>(component->GetOwner());
 	AABCatCharacter* catCharacter = Cast<AABCatCharacter>(character);
 
