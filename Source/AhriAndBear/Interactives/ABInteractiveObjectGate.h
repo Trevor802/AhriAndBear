@@ -43,6 +43,9 @@ public:
 	UPhysicsConstraintComponent* DoorJoint;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	bool bDogCanOpen;
+
+	UPROPERTY(Category="Interactive Object | Gate", EditAnywhere)
+		bool CombinationOnlyOpen;
 private:
 	bool bOpened;
 };

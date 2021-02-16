@@ -64,6 +64,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Sprint")
 		float SprintStaminaRateOfChange = 1;
 
+	UPROPERTY(Category = "Gameplay|Combination", BlueprintReadWrite)
+		bool AnimalsCombined;
+
 	UPROPERTY(BlueprintAssignable, Category = "Delegates")
 		FBark OnAnimalBark;
 
@@ -160,7 +163,7 @@ public:
 	bool bInClimbingZone;
 	bool bClimbing;
 
-	UFUNCTION(Category="Gameplay|Sprint", BlueprintImplementableEvent)
+	UFUNCTION(Category = "Gameplay|Sprint", BlueprintImplementableEvent)
 		void SprintUpdate();
 
 	UFUNCTION(BlueprintCallable, Category = "Character")
