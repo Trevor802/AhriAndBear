@@ -9,8 +9,10 @@
 #include "Components/StaticMeshComponent.h"
 #include "Interactives/Interactive.h"
 #include "Characters/ABCatCharacter.h"
+#include "Characters/ABDogCharacter.h"
 #include "CharacterInteractionComponent.h"
 #include "DrawDebugHelpers.h"
+#include "Kismet/GameplayStatics.h"
 
 AABInteractiveObjectGate::AABInteractiveObjectGate()
 	: Super()
@@ -43,7 +45,8 @@ AABInteractiveObjectGate::AABInteractiveObjectGate()
 	bCanTriggerTask = false;
 	bOpened = false;
 	bDogCanOpen = true;
-	bCanDogInteract = false;
+	CombinationOnlyOpen = true;
+	//bCanDogInteract = false;
 }
 
 void AABInteractiveObjectGate::BeginPlay()
@@ -60,17 +63,32 @@ void AABInteractiveObjectGate::Tick(float DeltaTime)
 bool AABInteractiveObjectGate::CanInteract(UCharacterInteractionComponent* component) const
 {
 	//auto boxComponent = Cast<UBoxComponent>(component);
-	if (!Super::CanInteract(component)) return false;
+	if (!Super::CanInteract(component))
+	{
+		return false;
+	}
 
 	auto character = Cast<AABAnimalCharacter>(component->GetOwner());
 	AABCatCharacter* catCharacter = Cast<AABCatCharacter>(character);
+
+	TArray<AActor*> animals;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AABAnimalCharacter::StaticClass(), animals);
+	AABDogCharacter* dogCharacter = nullptr;
+	for (int i = 0; i < animals.Num(); i++)
+	{
+		auto dogActor = Cast<AABDogCharacter>(animals[i]);
+		if (dogActor != nullptr)
+		{
+			dogCharacter = dogActor;
+		}
+	}
 
 	// Only check directions if the UnlockDirection vector is not the zero  vector.
 	if (UnlockDirection != FVector::ZeroVector) {
 		GEngine->AddOnScreenDebugMessage(-1, 60.f, FColor::Green, TEXT("Checking to see if gate can be unlocked"));
 		// Get vector from actor to gate and compare to the UnlockDirection.
 		auto actorLocation = character->GetTransform().GetLocation();
-		
+
 		auto gateLocation = GetTransform().GetLocation();
 		auto actor2GateVector = gateLocation - actorLocation;
 		auto a2gvDotUd = FVector::DotProduct(actor2GateVector, UnlockDirection);
@@ -90,10 +108,10 @@ bool AABInteractiveObjectGate::CanInteract(UCharacterInteractionComponent* compo
 		GEngine->AddOnScreenDebugMessage(-1, 60.f, FColor::Red, TEXT("No"));
 	}
 
-	if (catCharacter)
-		return !bOpened;
+	if (!dogCharacter->AnimalsCombined && CombinationOnlyOpen)
+		return false;
 	else
-		return !bOpened && bDogCanOpen;
+		return bDogCanOpen;
 }
 
 void AABInteractiveObjectGate::EndInteraction(bool bResult)

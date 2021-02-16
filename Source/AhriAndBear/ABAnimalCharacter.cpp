@@ -219,6 +219,8 @@ void AABAnimalCharacter::ChangeOtherFollowingStatus()
 
 void AABAnimalCharacter::SwitchAnimal()
 {
+	BeforeCharacterSwitch();
+
 	bIsFollowing = false;
 	GetMovementComponent()->StopMovementImmediately();
 
