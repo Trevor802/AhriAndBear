@@ -38,6 +38,8 @@ public:
 	void CallSwitchAnimal();
 	void CallCrouch();
 	void CallStopCrouch();
+	void CallReading();
+	void CallStopReading();
 	
 	void QuitGame();
 	void Bark();
@@ -45,6 +47,9 @@ public:
 	AABAnimalCharacter* AnimalCharacter;
 	void BindInput() const;
 	void UnbindInput() const;
+
+	void AddWidgetToViewPort(UUserWidget* Widget);
+	void RemoveWidgetFromViewPort(UUserWidget* Widget);
 
 	FORCEINLINE class UInteractionDurationWidget* GetInteractionWidget() const{ return InteractionWidget; }
 protected:
@@ -57,5 +62,4 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<class UInteractionDurationWidget> WidgetClass;
 	class UInteractionDurationWidget* InteractionWidget;
-
 };
