@@ -46,7 +46,7 @@ AABInteractiveObjectGate::AABInteractiveObjectGate()
 	bOpened = false;
 	bDogCanOpen = true;
 	CombinationOnlyOpen = true;
-	bCanDogInteract = false;
+	//bCanDogInteract = false;
 }
 
 void AABInteractiveObjectGate::BeginPlay()
@@ -63,7 +63,10 @@ void AABInteractiveObjectGate::Tick(float DeltaTime)
 bool AABInteractiveObjectGate::CanInteract(UCharacterInteractionComponent* component) const
 {
 	//auto boxComponent = Cast<UBoxComponent>(component);
-	if (!Super::CanInteract(component)) return false;
+	if (!Super::CanInteract(component))
+	{
+		return false;
+	}
 
 	auto character = Cast<AABAnimalCharacter>(component->GetOwner());
 	AABCatCharacter* catCharacter = Cast<AABCatCharacter>(character);
@@ -105,7 +108,7 @@ bool AABInteractiveObjectGate::CanInteract(UCharacterInteractionComponent* compo
 		GEngine->AddOnScreenDebugMessage(-1, 60.f, FColor::Red, TEXT("No"));
 	}
 
-	if (catCharacter || (!dogCharacter->AnimalsCombined && CombinationOnlyOpen))
+	if (!dogCharacter->AnimalsCombined && CombinationOnlyOpen)
 		return false;
 	else
 		return bDogCanOpen;
