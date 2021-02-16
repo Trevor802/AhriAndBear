@@ -173,7 +173,7 @@ public:
 		void GetCaught(AActor* byWhom);
 
 	UFUNCTION(BlueprintPure, Category = "Character")
-		EABAnimalMovementNoiseVolume GetCurrentMovementVolume() const;
+		virtual EABAnimalMovementNoiseVolume GetCurrentMovementVolume() const;
 
 private:
 	bool bWithinRange;
