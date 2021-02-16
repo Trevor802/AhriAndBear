@@ -38,6 +38,8 @@ public:
 	void CallSwitchAnimal();
 	void CallCrouch();
 	void CallStopCrouch();
+	void CallReading();
+	void CallStopReading();
 	
 	void QuitGame();
 	void Bark();

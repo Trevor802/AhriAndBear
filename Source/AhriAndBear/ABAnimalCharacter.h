@@ -89,6 +89,9 @@ public:
 	void StartCrouch();
 	void EndCrouch();
 
+	void StartReading();
+	void EndReading();
+
 	void ChangeOtherFollowingStatus();
 
 	void SwitchAnimal();
@@ -150,6 +153,8 @@ public:
 
 	bool bInClimbingZone;
 	bool bClimbing;
+
+	bool bReading;
 
 	void GetCaught(AActor* byWhom);
 

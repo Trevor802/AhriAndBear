@@ -55,6 +55,8 @@ AABAnimalCharacter::AABAnimalCharacter()
 	bInClimbingZone = false;
 	bClimbing = false;
 
+	bReading = false;
+
 	bAttached = false;
 
 	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
@@ -179,6 +181,16 @@ void AABAnimalCharacter::EndCrouch()
 	GetCharacterMovement()->bWantsToCrouch = false;
 	//GetCharacterMovement()->UnCrouch();
 	//GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = false;
+}
+
+void AABAnimalCharacter::StartReading()
+{
+	bReading = true;
+}
+
+void AABAnimalCharacter::EndReading()
+{
+	bReading = false;
 }
 
 void AABAnimalCharacter::ChangeOtherFollowingStatus()

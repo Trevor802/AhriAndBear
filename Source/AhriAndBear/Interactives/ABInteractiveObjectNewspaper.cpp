@@ -56,10 +56,11 @@ void AABInteractiveObjectNewspaper::OpenNewspaper()
 	//NewspaperWidget->addtov;
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TempTitle);
 
-	AABAnimalCharacter* player = GET_CHARACTER(this);
+	AABAnimalCharacter* player = Cast<AABAnimalCharacter>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetOwner());
 
 	if (player)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("player found"));
 		player->FindComponentByClass<UABPlayerUIComponent>()->AddNewspaperWidgetToViewPort();
 	}
 	
