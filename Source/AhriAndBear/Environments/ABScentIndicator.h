@@ -10,6 +10,8 @@ class USphereComponent;
 class AABScentSource;
 class AABScentWaypoint;
 class AABCatCharacter;
+class UNiagaraSystem;
+class UNiagaraComponent;
 
 // Stolen from Trevor's research project
 static class BoidHelpler
@@ -58,6 +60,8 @@ public:
 		USphereComponent* sensor;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 		float scanRange = 500;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning Property")
+		UNiagaraSystem* trailVFX;
 
 protected:
 	virtual void BeginPlay() override;
@@ -73,6 +77,7 @@ private:
 	bool myReachingTarget;
 	float myReachingRange = 30.f;
 	int myCurrentPathNode = 0;
+	UNiagaraComponent* myTrailComponent;
 };
 
 

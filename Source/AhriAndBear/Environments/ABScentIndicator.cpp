@@ -6,6 +6,9 @@
 #include "CollisionQueryParams.h"
 #include "ABScentSource.h"
 #include "ABScentWaypoint.h"
+#include "NiagaraComponent.h"
+#include "NiagaraSystem.h"
+#include "NiagaraFunctionLibrary.h"
 
 AABScentIndicator::AABScentIndicator()
 {
@@ -13,11 +16,15 @@ AABScentIndicator::AABScentIndicator()
 	sensor->SetupAttachment(RootComponent);
 	PrimaryActorTick.bCanEverTick = true;
 	targetPosition = FVector::ZeroVector;
+	myTrailComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Trail Comp"));
+	myTrailComponent->SetupAttachment(RootComponent);
 }
 
 void AABScentIndicator::BeginPlay()
 {
 	Super::BeginPlay();
+	//myTrailComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), trailVFX, GetActorLocation(), FRotator::ZeroRotator, (FVector)1.0f, false);
+	//myTrailComponent->Activate(true);
 }
 
 void AABScentIndicator::CalculateDirection()
@@ -89,17 +96,21 @@ void AABScentIndicator::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	if (lifeSpan <= 0)
+	{
+		myTrailComponent->DestroyComponent();
 		Destroy();
+	}
+		
 
 	MoveToTarget(DeltaTime);
 
-	for (int i = 0; i < helper.G_S_directions.Num(); i++)
-	{
-		DrawDebugLine(GetWorld(),
-			GetActorLocation(),
-			GetActorLocation() + helper.G_S_directions[i] * 30,
-			FColor::Red);
-	}
+	//for (int i = 0; i < helper.G_S_directions.Num(); i++)
+	//{
+	//	DrawDebugLine(GetWorld(),
+	//		GetActorLocation(),
+	//		GetActorLocation() + helper.G_S_directions[i] * 30,
+	//		FColor::Red);
+	//}
 
 	//DrawDebugSphere(GetWorld(), GetActorLocation(), 500, 4, FColor::Red);
 	if (myReachingTarget)
@@ -108,8 +119,6 @@ void AABScentIndicator::Tick(float DeltaTime)
 		if (lifeSpan <= 0.f)
 			Destroy();
 	}
-		
-
 }
 
 void AABScentIndicator::SetTargetPosition(FVector target)

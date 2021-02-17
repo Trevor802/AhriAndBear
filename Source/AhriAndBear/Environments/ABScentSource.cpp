@@ -63,10 +63,14 @@ void AABScentSource::SpawnScentIndicator(AActor* dog)
 	if (!dogInRange)
 		return;
 
-	AABScentIndicator* indicator =
-		GetWorld()->SpawnActor<AABScentIndicator>(dogInRange->GetActorLocation() + FVector(0, 50, 0), dogInRange->GetActorRotation());
-	indicator->SetTargetPosition(this);
-	indicator->SetIndicatorLifeSpan(3);
-	indicator->CalculateDirection();
+	if (scentIndicator)
+	{
+		AABScentIndicator* indicator =
+			GetWorld()->SpawnActor<AABScentIndicator>(scentIndicator, dogInRange->GetActorLocation() + FVector(0, 50, 0), dogInRange->GetActorRotation());
+		indicator->SetTargetPosition(this);
+		indicator->SetIndicatorLifeSpan(3);
+		indicator->CalculateDirection();
+	}
+	
 }
 

@@ -33,6 +33,8 @@ protected:
 public:	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 		USphereComponent* scentRangeSphere;
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class AABScentIndicator> scentIndicator;
 
 private:
 	AABDogCharacter* dogInRange;
