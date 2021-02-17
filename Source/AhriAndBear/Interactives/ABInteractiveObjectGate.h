@@ -36,8 +36,6 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
 	UStaticMeshComponent* GateMesh;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
-	UStaticMeshComponent* GateHinge;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
 	UStaticMeshComponent* FrameMesh;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Constraint")
 	UPhysicsConstraintComponent* DoorJoint;
