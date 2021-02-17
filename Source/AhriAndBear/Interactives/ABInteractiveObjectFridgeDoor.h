@@ -3,18 +3,20 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
 #include "Interactives/OccupyingInteractive.h"
-#include "ABInteractiveObjectGarageDoor.generated.h"
+#include "ABInteractiveObjectFridgeDoor.generated.h"
 
+/**
+ * 
+ */
 UCLASS()
-class AHRIANDBEAR_API AABInteractiveObjectGarageDoor : public AOccupyingInteractive
+class AHRIANDBEAR_API AABInteractiveObjectFridgeDoor : public AOccupyingInteractive
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
-	AABInteractiveObjectGarageDoor();
+	AABInteractiveObjectFridgeDoor();
 
 protected:
 	// Called when the game starts or when spawned
@@ -22,13 +24,12 @@ protected:
 	FORCEINLINE virtual bool CanInteract(UCharacterInteractionComponent* component) const override { return !bOpened; }
 	virtual void EndInteraction(bool) override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 private:
 	void OpenDoor();
-	void RotateDoor();
 	void StopRotation();
 
 public:
@@ -36,15 +37,7 @@ public:
 		class UBoxComponent* CollisionShape;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
 		UStaticMeshComponent* DoorMesh;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
-		UStaticMeshComponent* ButtonMesh;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
-		class USplineComponent* Spline;
-	UPROPERTY(EditAnywhere, Category = "Controller")
-		float TotalPathTime = 4.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rotation")
-		bool CanRotate;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rotation")
 		float RotationTimeLength;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rotation")
@@ -52,6 +45,6 @@ public:
 
 private:
 	bool bOpened;
-	float StartTime;
-
+	bool bOpening;
+	float AngleAxis;
 };

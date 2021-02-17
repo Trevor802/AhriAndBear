@@ -4,6 +4,7 @@
 #include "ABPlayerController.h"
 #include "Interactives/Interactive.h"
 #include "AABSurvivalComponent.h"
+#include "ABPlayerUIComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/GameplayStaticsTypes.h"
 #include "Components/SphereComponent.h"
@@ -40,6 +41,7 @@ AABAnimalCharacter::AABAnimalCharacter()
 	InteractionComponent->SetupAttachment(RootComponent);
 
 	SurvivalComponent = CreateDefaultSubobject<UAABSurvivalComponent>(TEXT("Survival Component"));
+	UIComponent = CreateDefaultSubobject<UABPlayerUIComponent>(TEXT("UI Component"));
 
 	baseTurnRate = 45.f;
 	baseLookUpRate = 45.f;
@@ -52,6 +54,8 @@ AABAnimalCharacter::AABAnimalCharacter()
 
 	bInClimbingZone = false;
 	bClimbing = false;
+
+	bReading = false;
 
 	bAttached = false;
 
@@ -187,6 +191,16 @@ void AABAnimalCharacter::EndCrouch()
 	//GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = false;
 }
 
+void AABAnimalCharacter::StartReading()
+{
+	bReading = true;
+}
+
+void AABAnimalCharacter::EndReading()
+{
+	bReading = false;
+}
+
 void AABAnimalCharacter::ChangeOtherFollowingStatus()
 {
 	if (OtherAnimal)
@@ -205,6 +219,8 @@ void AABAnimalCharacter::ChangeOtherFollowingStatus()
 
 void AABAnimalCharacter::SwitchAnimal()
 {
+	BeforeCharacterSwitch();
+
 	bIsFollowing = false;
 	GetMovementComponent()->StopMovementImmediately();
 

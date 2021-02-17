@@ -14,6 +14,7 @@ class UStaticMeshComponent;
 class USpringArmComponent;
 class AABInteractiveObjectBase;
 class UAABSurvivalComponent;
+class UABPlayerUIComponent;
 class UPawnSensingComponent;
 class UPawnNoiseEmitterComponent;
 class UAudioComponent;
@@ -41,6 +42,8 @@ public:
 		class USphereComponent* ProjectileStart;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Survival")
 		UAABSurvivalComponent* SurvivalComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+		UABPlayerUIComponent* UIComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
 		UBehaviorTree* BehaviorTree;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound")
@@ -63,6 +66,9 @@ public:
 		bool bDebugJumping = false;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Sprint")
 		float SprintStaminaRateOfChange = 1;
+
+	UPROPERTY(Category = "Gameplay|Combination", BlueprintReadWrite)
+		bool AnimalsCombined;
 
 	UPROPERTY(BlueprintAssignable, Category = "Delegates")
 		FBark OnAnimalBark;
@@ -94,9 +100,13 @@ public:
 	void StartCrouch();
 	void EndCrouch();
 
+	void StartReading();
+	void EndReading();
+
 	void ChangeOtherFollowingStatus();
 
-	void SwitchAnimal();
+	UFUNCTION(BlueprintCallable)
+		void SwitchAnimal();
 	void Bark();
 	void ChangeMovementSetting();
 	void ChangeMovementMode();
@@ -149,15 +159,20 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
 		class USoundBase* BarkingSound;
 
-	AABAnimalCharacter* OtherAnimal;
+	UFUNCTION(Category = "Event", BlueprintImplementableEvent)
+		void BeforeCharacterSwitch();
+
+	UPROPERTY(Category = "Animal", BlueprintReadOnly)
+		AABAnimalCharacter* OtherAnimal;
 	bool bBlackBoardSet;
 	bool bOrientRotationToMovementSetting;
 
 	bool bInClimbingZone;
 	bool bClimbing;
 
-	UFUNCTION(Category="Gameplay|Sprint", BlueprintImplementableEvent)
+	UFUNCTION(Category = "Gameplay|Sprint", BlueprintImplementableEvent)
 		void SprintUpdate();
+	bool bReading;
 
 	UFUNCTION(BlueprintCallable, Category = "Character")
 		void GetCaught(AActor* byWhom);
