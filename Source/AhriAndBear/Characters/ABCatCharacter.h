@@ -24,8 +24,8 @@ protected:
 	virtual void BeginPlay() override;
 	EABAnimalMovementNoiseVolume GetSprintMovementVolume() const override { return EABAnimalMovementNoiseVolume::Quiet; }
 
-	UFUNCTION(BlueprintPure, Category = "Character")
-		virtual EABAnimalMovementNoiseVolume GetCurrentMovementVolume() const override;
+	
+	virtual EABAnimalMovementNoiseVolume GetCurrentMovementVolume() const override;
 
 private:
 	FPostProcessSettings normalSettings;
