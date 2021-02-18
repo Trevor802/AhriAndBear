@@ -41,6 +41,11 @@ void AABInteractiveObjectGarageDoor::Tick(float DeltaTime)
 	if (bOpened == true)
 	{
 		OpenDoor();
+
+		if (CanRotate == true)
+		{
+			RotateDoor();
+		}
 	}
 }
 
@@ -55,6 +60,9 @@ void AABInteractiveObjectGarageDoor::EndInteraction(bool bResult)
 
 	StartTime = GetWorld()->GetTimeSeconds();
 	bOpened = true;
+
+	FTimerDelegate DoorTimerDelegate = FTimerDelegate::CreateUObject(this, &AABInteractiveObjectGarageDoor::StopRotation);
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, DoorTimerDelegate, RotationTimeLength, false);
 }
 
 void AABInteractiveObjectGarageDoor::OpenDoor()
@@ -73,5 +81,17 @@ void AABInteractiveObjectGarageDoor::OpenDoor()
 	FRotator Rotator = FRotationMatrix::MakeFromX(rotation).Rotator();
 
 	//DoorMesh->SetWorldRotation(Rotator);
+}
+
+void AABInteractiveObjectGarageDoor::RotateDoor()
+{
+	FQuat Rotation = FQuat(FRotator(RotationRate, 0.f, 0.f));
+
+	AddActorLocalRotation(Rotation, false, 0, ETeleportType::None);
+}
+
+void AABInteractiveObjectGarageDoor::StopRotation()
+{
+	CanRotate = false;
 }
 

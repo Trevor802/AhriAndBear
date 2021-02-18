@@ -7,7 +7,6 @@
 
 #include "Components/PawnNoiseEmitterComponent.h"
 #include "Perception/PawnSensingComponent.h"
-#include "Components/PostProcessComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Engine/Scene.h"
 
@@ -24,6 +23,24 @@ void AABCatCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	abilityOn = false;
+	// Get the normal camera settings
+	normalSettings = camera->PostProcessSettings;
+
+	// Set up the camera settings
+	nightVisionSettings.bOverride_VignetteIntensity = true;
+	nightVisionSettings.bOverride_GrainJitter = true;
+	nightVisionSettings.bOverride_GrainIntensity = true;
+	nightVisionSettings.bOverride_WhiteTemp = true;
+	nightVisionSettings.bOverride_WhiteTint = true;
+	nightVisionSettings.bOverride_ColorSaturation = true;
+	nightVisionSettings.bOverride_ColorOffset = true;
+	nightVisionSettings.VignetteIntensity = 1.1;
+	nightVisionSettings.GrainJitter = 0.0;
+	nightVisionSettings.GrainIntensity = 0.476191;
+	nightVisionSettings.WhiteTemp = 6900;
+	nightVisionSettings.WhiteTint = -0.6;
+	nightVisionSettings.ColorSaturation = FVector4(1.0, 0.280875, 0.702882, 1.0);
+	nightVisionSettings.ColorOffset = FVector4(-0.185722, 0.0, -0.008505, 0.0);
 }
 
 void AABCatCharacter::Tick(float DeltaTime)
@@ -46,29 +63,12 @@ void AABCatCharacter::Tick(float DeltaTime)
 void AABCatCharacter::UseAbility()
 {
 	Super::UseAbility();
-
-	//UE_LOG(LogTemp, Warning, TEXT("???"));
-	abilityOn = true;
-	FPostProcessSettings NVsetting;
-	NVsetting.bOverride_AutoExposureMinBrightness = true;
-	NVsetting.bOverride_AutoExposureMaxBrightness = true;
-	NVsetting.AutoExposureMinBrightness = 0.1f;
-	NVsetting.AutoExposureMaxBrightness = 0.1f;
-
-	camera->PostProcessSettings = NVsetting;
-	AbilityEnd();
-}
-
-void AABCatCharacter::AbilityEnd()
-{
-	//UE_LOG(LogTemp, Warning, TEXT("???"));
-	//abilityOn = false;
-	camera->PostProcessSettings.AutoExposureMaxBrightness = 1.0f;
-	/*FPostProcessSettings NormalSetting;
-	NormalSetting.bOverride_AutoExposureMinBrightness = true;
-	NormalSetting.bOverride_AutoExposureMaxBrightness = true;
-	NormalSetting.AutoExposureMinBrightness = 1.0f;
-	NormalSetting.AutoExposureMaxBrightness = 8.0f;
-
-	camera->PostProcessSettings = NormalSetting;*/
+	if (!abilityOn)
+	{
+		camera->PostProcessSettings = nightVisionSettings;
+	}
+	else {
+		camera->PostProcessSettings = normalSettings;
+	}
+	abilityOn = !abilityOn;
 }

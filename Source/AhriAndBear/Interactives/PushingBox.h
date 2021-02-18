@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Interactives/Interactive.h"
+#include "Characters/ABDogCharacter.h"
+#include "Interactives/CharacterInteractionComponent.h"
+
 #include "PushingBox.generated.h"
 
 #define RETURN_IF_NULL(x) if(!x) return;
@@ -21,7 +24,9 @@ public:
 protected:
 	virtual void Tick(float DeltaTime) override;
 	virtual void BeginPlay() override;
-	FORCEINLINE virtual bool CanInteract(UCharacterInteractionComponent*) const override { return true; }
+	FORCEINLINE virtual bool CanInteract(UCharacterInteractionComponent* interactingComponent) const override { 
+		return Cast<AABDogCharacter>(GET_CHARACTER(interactingComponent)) != nullptr;
+	}
 	FORCEINLINE virtual void CallSprint() override {};
 	FORCEINLINE virtual void CallStopSprint() override {};
 	

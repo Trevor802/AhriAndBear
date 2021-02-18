@@ -14,12 +14,15 @@ class UStaticMeshComponent;
 class USpringArmComponent;
 class AABInteractiveObjectBase;
 class UAABSurvivalComponent;
+class UABPlayerUIComponent;
 class UPawnSensingComponent;
 class UPawnNoiseEmitterComponent;
 class UAudioComponent;
 
 #define GET_MAIN_CHARACTER Cast<AABAnimalCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FBark, FVector, Position);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAnimalCaught, AActor*, captor);
 
 UCLASS()
 class AHRIANDBEAR_API AABAnimalCharacter : public ACharacter
@@ -39,6 +42,8 @@ public:
 		class USphereComponent* ProjectileStart;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Survival")
 		UAABSurvivalComponent* SurvivalComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+		UABPlayerUIComponent* UIComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
 		UBehaviorTree* BehaviorTree;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound")
@@ -62,8 +67,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Sprint")
 		float SprintStaminaRateOfChange = 1;
 
+	UPROPERTY(Category = "Gameplay|Combination", BlueprintReadWrite)
+		bool AnimalsCombined;
+
 	UPROPERTY(BlueprintAssignable, Category = "Delegates")
 		FBark OnAnimalBark;
+
+	UPROPERTY(BlueprintAssignable, Category = "Character|Events")
+		FAnimalCaught OnAnimalCaught;
+
+	UFUNCTION(BlueprintPure, Category = "Character | Survival")
+		bool IsInCriticalCondition() const;
 
 protected:
 	// Called when the game starts or when spawned
@@ -86,9 +100,13 @@ public:
 	void StartCrouch();
 	void EndCrouch();
 
+	void StartReading();
+	void EndReading();
+
 	void ChangeOtherFollowingStatus();
 
-	void SwitchAnimal();
+	UFUNCTION(BlueprintCallable)
+		void SwitchAnimal();
 	void Bark();
 	void ChangeMovementSetting();
 	void ChangeMovementMode();
@@ -141,14 +159,23 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
 		class USoundBase* BarkingSound;
 
-	AABAnimalCharacter* OtherAnimal;
+	UFUNCTION(Category = "Event", BlueprintImplementableEvent)
+		void BeforeCharacterSwitch();
+
+	UPROPERTY(Category = "Animal", BlueprintReadOnly)
+		AABAnimalCharacter* OtherAnimal;
 	bool bBlackBoardSet;
 	bool bOrientRotationToMovementSetting;
 
 	bool bInClimbingZone;
 	bool bClimbing;
 
-	void GetCaught(AActor* byWhom);
+	UFUNCTION(Category = "Gameplay|Sprint", BlueprintImplementableEvent)
+		void SprintUpdate();
+	bool bReading;
+
+	UFUNCTION(BlueprintCallable, Category = "Character")
+		void GetCaught(AActor* byWhom);
 
 private:
 	bool bWithinRange;
@@ -159,4 +186,5 @@ private:
 
 	FVector OriginalCameraPosition;
 	float OriginalSpringArmLength;
+	void HideScentFromCat();
 };

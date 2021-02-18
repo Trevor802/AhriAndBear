@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "ABAnimalCharacter.h"
+#include "Components/PostProcessComponent.h"
 #include "ABCatCharacter.generated.h"
 
 class UPostProcessComponent;
@@ -23,8 +24,8 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+	FPostProcessSettings normalSettings;
+	FPostProcessSettings nightVisionSettings;
 	UPostProcessComponent* postProcess;
 	bool abilityOn;
-
-	void AbilityEnd();
 };

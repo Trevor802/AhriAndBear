@@ -3,6 +3,7 @@
 #include "ABPlayerController.h"
 #include "Engine/World.h"
 #include "Interactives/CharacterInteractionComponent.h"
+#include "ABPlayerUIComponent.h"
 #include "Components/InputComponent.h"
 #include "UI/InteractionDurationWidget.h"
 #include "Blueprint/UserWidget.h"
@@ -28,6 +29,8 @@ void AABPlayerController::OnPossess(APawn* Pawn)
 	AnimalCharacter = Cast<AABAnimalCharacter>(Pawn);
 	AnimalCharacter->bOrientRotationToMovementSetting = false;
 	AnimalCharacter->ChangeMovementSetting();
+
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetInputMode(FInputModeGameOnly());
 }
 
 void AABPlayerController::Tick(float DeltaTime)
@@ -69,7 +72,7 @@ void AABPlayerController::SetupInputComponent()
 
 void AABPlayerController::CallMoveForward(float value)
 {
-    if (AnimalCharacter && value != 0.f)
+    if (AnimalCharacter && value != 0.f && !AnimalCharacter->bReading)
     {
         const FRotator rotation = GetControlRotation();
         const FRotator YawRotation(0, rotation.Yaw, 0);
@@ -103,7 +106,7 @@ void AABPlayerController::CallMoveForward(float value)
 
 void AABPlayerController::CallMoveRight(float value)
 {
-    if (AnimalCharacter && value != 0.f)
+    if (AnimalCharacter && value != 0.f && !AnimalCharacter->bReading)
     {
         const FRotator rotation = GetControlRotation();
         const FRotator YawRotation(0, rotation.Yaw, 0);
@@ -115,7 +118,7 @@ void AABPlayerController::CallMoveRight(float value)
 
 void AABPlayerController::CallTurnAtRate(float value)
 {
-	if (AnimalCharacter)
+	if (AnimalCharacter && !AnimalCharacter->bReading)
 	{
 		AnimalCharacter->AddControllerYawInput(value * AnimalCharacter->baseTurnRate * GetWorld()->GetDeltaSeconds());
 	}
@@ -123,7 +126,7 @@ void AABPlayerController::CallTurnAtRate(float value)
 
 void AABPlayerController::CallLookUpAtRate(float value)
 {
-	if (AnimalCharacter)
+	if (AnimalCharacter && !AnimalCharacter->bReading)
 	{
 		AnimalCharacter->AddControllerPitchInput(value * AnimalCharacter->baseLookUpRate * GetWorld()->GetDeltaSeconds());
 	}
@@ -131,7 +134,7 @@ void AABPlayerController::CallLookUpAtRate(float value)
 
 void AABPlayerController::CallTurn(float value)
 {
-	if (AnimalCharacter)
+	if (AnimalCharacter && !AnimalCharacter->bReading)
 	{
 		AnimalCharacter->AddControllerYawInput(value);
 	}
@@ -139,7 +142,7 @@ void AABPlayerController::CallTurn(float value)
 
 void AABPlayerController::CallLookUp(float value)
 {
-	if (AnimalCharacter)
+	if (AnimalCharacter && !AnimalCharacter->bReading)
 	{
 		AnimalCharacter->AddControllerPitchInput(value);
 	}
@@ -147,7 +150,7 @@ void AABPlayerController::CallLookUp(float value)
 
 void AABPlayerController::CallJump()
 {
-	if (AnimalCharacter && AnimalCharacter->CanJump())
+	if (AnimalCharacter && AnimalCharacter->CanJump() && !AnimalCharacter->bReading)
 	{
 		AnimalCharacter->StartJumping();
 		AnimalCharacter->Jump();
@@ -156,7 +159,7 @@ void AABPlayerController::CallJump()
 
 void AABPlayerController::CallSprint()
 {
-	if (AnimalCharacter)
+	if (AnimalCharacter && !AnimalCharacter->bReading)
 	{
 		AnimalCharacter->StartSprinting();
 	}
@@ -172,17 +175,23 @@ void AABPlayerController::CallStopSprint()
 
 void AABPlayerController::CallInteract()
 {
-	if (AnimalCharacter)
+	if (AnimalCharacter && !AnimalCharacter->bReading)
 	{
 		auto interactionComponent = AnimalCharacter->FindComponentByClass<UCharacterInteractionComponent>();
 		interactionComponent->TryInteracting();
 		return;
 	}
+	else if (AnimalCharacter && AnimalCharacter->bReading)
+	{
+		auto UIComponent = AnimalCharacter->FindComponentByClass<UABPlayerUIComponent>();
+		UIComponent->RemoveNewspaperWidgetFromViewPort();
+		CallStopReading();
+	}
 }
 
 void AABPlayerController::CallUseAbility()
 {
-	if (AnimalCharacter)
+	if (AnimalCharacter && !AnimalCharacter->bReading)
 	{
 		AnimalCharacter->UseAbility();
 	}
@@ -195,7 +204,7 @@ void AABPlayerController::CallStopInteract()
 
 void AABPlayerController::CallFollowing()
 {
-	if (AnimalCharacter)
+	if (AnimalCharacter && !AnimalCharacter->bReading)
 	{
 		AnimalCharacter->ChangeOtherFollowingStatus();
 	}
@@ -203,7 +212,7 @@ void AABPlayerController::CallFollowing()
 
 void AABPlayerController::CallSwitchAnimal()
 {
-	if (AnimalCharacter)
+	if (AnimalCharacter && !AnimalCharacter->bReading)
 	{
 		AnimalCharacter->SwitchAnimal();
 	}
@@ -211,7 +220,7 @@ void AABPlayerController::CallSwitchAnimal()
 
 void AABPlayerController::CallCrouch()
 {
-	if (AnimalCharacter && AnimalCharacter->CanCrouch())
+	if (AnimalCharacter && AnimalCharacter->CanCrouch() && !AnimalCharacter->bReading)
 	{
 		AnimalCharacter->StartCrouch();
 	}
@@ -225,9 +234,25 @@ void AABPlayerController::CallStopCrouch()
 	}
 }
 
-void AABPlayerController::Bark()
+void AABPlayerController::CallReading()
 {
 	if (AnimalCharacter)
+	{
+		AnimalCharacter->bReading = true;
+	}
+}
+
+void AABPlayerController::CallStopReading()
+{
+	if (AnimalCharacter)
+	{
+		AnimalCharacter->bReading = false;
+	}
+}
+
+void AABPlayerController::Bark()
+{
+	if (AnimalCharacter && !AnimalCharacter->bReading)
 	{
 		AnimalCharacter->Bark();
 	}
@@ -269,5 +294,14 @@ void AABPlayerController::UnbindInput() const
 													   return x.AxisName == a.AxisName;
 												   });
 	}
+}
+
+void AABPlayerController::AddWidgetToViewPort(UUserWidget* Widget)
+{
+	Widget->AddToViewport();
+}
+
+void AABPlayerController::RemoveWidgetFromViewPort(UUserWidget* Widget)
+{
 }
 

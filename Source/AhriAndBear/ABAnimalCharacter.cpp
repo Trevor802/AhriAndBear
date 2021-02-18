@@ -4,6 +4,7 @@
 #include "ABPlayerController.h"
 #include "Interactives/Interactive.h"
 #include "AABSurvivalComponent.h"
+#include "ABPlayerUIComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/GameplayStaticsTypes.h"
 #include "Components/SphereComponent.h"
@@ -15,6 +16,9 @@
 #include "Components/PawnNoiseEmitterComponent.h"
 #include "Perception/PawnSensingComponent.h"
 #include "Components/AudioComponent.h"
+#include "Environments/ABScentTrail.h"
+#include "Characters/ABCatCharacter.h"
+#include "Characters/ABDogCharacter.h"
 
 // Sets default values
 AABAnimalCharacter::AABAnimalCharacter()
@@ -37,6 +41,7 @@ AABAnimalCharacter::AABAnimalCharacter()
 	InteractionComponent->SetupAttachment(RootComponent);
 
 	SurvivalComponent = CreateDefaultSubobject<UAABSurvivalComponent>(TEXT("Survival Component"));
+	UIComponent = CreateDefaultSubobject<UABPlayerUIComponent>(TEXT("UI Component"));
 
 	baseTurnRate = 45.f;
 	baseLookUpRate = 45.f;
@@ -50,9 +55,16 @@ AABAnimalCharacter::AABAnimalCharacter()
 	bInClimbingZone = false;
 	bClimbing = false;
 
+	bReading = false;
+
 	bAttached = false;
 
 	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
+}
+
+bool AABAnimalCharacter::IsInCriticalCondition() const
+{
+	return SurvivalComponent->IsInCriticalCondition();
 }
 
 // Called when the game starts or when spawned
@@ -88,7 +100,8 @@ void AABAnimalCharacter::Tick(float DeltaTime)
 void AABAnimalCharacter::GetCaught(AActor* byWhom)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, "Animal Caught By: " + byWhom->GetName());
-	UGameplayStatics::OpenLevel(GetWorld(), "level1_Shelter");
+	OnAnimalCaught.Broadcast(byWhom);
+	//UGameplayStatics::OpenLevel(GetWorld(), "level1_Shelter");
 }
 
 void AABAnimalCharacter::Jump()
@@ -149,6 +162,8 @@ void AABAnimalCharacter::SprintStaminaUpdate(float DeltaTime)
 		{
 			EndSprinting();
 		}
+
+		SprintUpdate();
 	}
 }
 
@@ -176,6 +191,16 @@ void AABAnimalCharacter::EndCrouch()
 	//GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = false;
 }
 
+void AABAnimalCharacter::StartReading()
+{
+	bReading = true;
+}
+
+void AABAnimalCharacter::EndReading()
+{
+	bReading = false;
+}
+
 void AABAnimalCharacter::ChangeOtherFollowingStatus()
 {
 	if (OtherAnimal)
@@ -194,6 +219,8 @@ void AABAnimalCharacter::ChangeOtherFollowingStatus()
 
 void AABAnimalCharacter::SwitchAnimal()
 {
+	BeforeCharacterSwitch();
+
 	bIsFollowing = false;
 	GetMovementComponent()->StopMovementImmediately();
 
@@ -206,6 +233,15 @@ void AABAnimalCharacter::SwitchAnimal()
 		AController* tempAIController = OtherAnimal->GetController();
 		if (tempPlayerController && tempAIController)
 		{
+			// Toggle scent trail's visibility
+			AABDogCharacter* dog = Cast<AABDogCharacter>(this);
+			
+			if (dog)
+			{
+				HideScentFromCat();
+				UE_LOG(LogTemp, Warning, TEXT("Dog"));
+			}	
+
 			tempPlayerController->UnPossess();
 			tempAIController->UnPossess();
 
@@ -225,6 +261,18 @@ void AABAnimalCharacter::SwitchAnimal()
 	}
 
 	OtherAnimal->bBlackBoardSet = false;
+}
+
+void AABAnimalCharacter::HideScentFromCat()
+{
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AABScentTrail::StaticClass(), FoundActors);
+	for (int i = 0; i < FoundActors.Num(); i++)
+	{
+		AABScentTrail* scent = Cast<AABScentTrail>(FoundActors[i]);
+
+		scent->HideTrail();
+	}
 }
 
 void AABAnimalCharacter::ChangeMovementSetting()

@@ -43,8 +43,10 @@ void UBtServiceUpdateTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 		FVector actorLocation = shopKeeperController->GetPawn()->GetActorLocation();
 		FVector playerLocation = playerCharacter->GetActorLocation();
 
+		float angle = blackboardComponent->GetValueAsFloat(KeyPlayerAngle);
 		float distance = FVector::Dist(actorLocation, playerLocation);
-		if (distance <= MaxSenseDistance)
+
+		if ((angle <= FOVHalfAngle && distance <= MaxDirectSenseDistance) || (angle > FOVHalfAngle && distance <= MaxInDirectSenseDistance))
 		{
 			FCollisionShape sphereShape = FCollisionShape::MakeSphere(10); // Probably can be cached
 			FHitResult hitResult;
