@@ -151,6 +151,7 @@ void AABAnimalCharacter::StartSprinting()
 
 	bSprinting = true;
 	GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
+	OnSprintStart.Broadcast();
 }
 
 void AABAnimalCharacter::SprintStaminaUpdate(float DeltaTime)
@@ -171,6 +172,7 @@ void AABAnimalCharacter::EndSprinting()
 {
 	bSprinting = false;
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+	OnSprintEnd.Broadcast();
 }
 
 void AABAnimalCharacter::StartCrouch()

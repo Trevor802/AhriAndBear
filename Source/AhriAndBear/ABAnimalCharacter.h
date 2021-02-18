@@ -22,6 +22,16 @@ class UAudioComponent;
 #define GET_MAIN_CHARACTER Cast<AABAnimalCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FBark, FVector, Position);
 
+/**
+* Delegate for when an animal begins sprinting.
+*/
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAnimalBeganSprinting);
+
+/**
+* Delegate for when an animal stops sprinting.
+*/
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAnimalStoppedSprinting);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAnimalCaught, AActor*, captor);
 
 UCLASS()
@@ -75,6 +85,12 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Character|Events")
 		FAnimalCaught OnAnimalCaught;
+
+	UPROPERTY(BlueprintAssignable, Category = "Character|Events")
+		FAnimalBeganSprinting OnSprintStart;
+
+	UPROPERTY(BlueprintAssignable, Category = "Character|Events")
+		FAnimalStoppedSprinting OnSprintEnd;
 
 	UFUNCTION(BlueprintPure, Category = "Character | Survival")
 		bool IsInCriticalCondition() const;
