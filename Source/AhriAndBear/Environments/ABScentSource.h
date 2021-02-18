@@ -6,8 +6,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "ABScentSource.generated.h"
-
-class ABScentIndicator;
+ 
 class AABDogCharacter;
 class USphereComponent;
 
@@ -25,6 +24,7 @@ public:
 	void PlayerCharacterInRange(AActor* self, AActor* OtherActor);
 	UFUNCTION()
 	void PlayerCharacterOutRange(AActor* self, AActor* OtherActor);
+	void SpawnScentIndicator(AActor* dog);
 
 protected:
 	// Called when the game starts or when spawned
@@ -33,8 +33,11 @@ protected:
 public:	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 		USphereComponent* scentRangeSphere;
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class AABScentIndicator> scentIndicator;
 
 private:
 	AABDogCharacter* dogInRange;
 	bool isDogInRange;
+	
 };

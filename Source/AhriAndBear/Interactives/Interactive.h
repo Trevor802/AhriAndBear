@@ -20,7 +20,7 @@ class AHRIANDBEAR_API AInteractive : public AActor
 protected:
 	AInteractive();
 	UCharacterInteractionComponent* InteractingComponent;
-	virtual bool CanInteract(UCharacterInteractionComponent*) const PURE_VIRTUAL(AInteractive::CanInteract, return false;);
+	virtual bool CanInteract(UCharacterInteractionComponent*) const;
 
 	virtual void BeginInteraction() {};
 	virtual void EndInteraction(bool) {};
@@ -66,6 +66,12 @@ public:
 	bool bOccupyMouth;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gameplay")
 	bool bOccupyPaw;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
+		bool bCanDogInteract = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
+		bool bCanCatInteract = true;
 
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Task")
 	bool bCanTriggerTask;

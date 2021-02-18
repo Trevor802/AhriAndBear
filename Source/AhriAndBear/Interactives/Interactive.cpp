@@ -4,7 +4,8 @@
 #include "Interactive.h"
 #include "ABPlayerController.h"
 #include "Components/InputComponent.h"
-#include "ABPlayerController.h"
+#include "Characters/ABCatCharacter.h"
+#include "Characters/ABDogCharacter.h"
 #include "CharacterInteractionComponent.h"
 
 AInteractive::AInteractive()
@@ -54,6 +55,18 @@ AInteractive::AInteractive()
     axis = FInputAxisBinding("LookUp");
     axis.AxisDelegate.BindDelegate(this, &AInteractive::LookUp);
     AxisBindings.Add(axis);
+}
+
+bool AInteractive::CanInteract(UCharacterInteractionComponent* interactingComponent) const
+{
+    auto character = GET_CHARACTER(interactingComponent);
+    if (bCanDogInteract && Cast<AABDogCharacter>(character) != nullptr) {
+        return true;
+    }
+    else if (bCanCatInteract && Cast <AABCatCharacter>(character) != nullptr) {
+        return true;
+    }
+    return false;
 }
 
 void AInteractive::CallMoveForward(float value)

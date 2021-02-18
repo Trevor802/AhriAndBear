@@ -36,13 +36,14 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
 	UStaticMeshComponent* GateMesh;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
-	UStaticMeshComponent* GateHinge;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
 	UStaticMeshComponent* FrameMesh;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Constraint")
 	UPhysicsConstraintComponent* DoorJoint;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	bool bDogCanOpen;
+
+	UPROPERTY(Category="Interactive Object | Gate", EditAnywhere)
+		bool CombinationOnlyOpen;
 private:
 	bool bOpened;
 };
