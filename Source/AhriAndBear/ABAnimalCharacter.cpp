@@ -87,6 +87,11 @@ bool AABAnimalCharacter::CanJumpInternal_Implementation() const
 	return Super::CanJumpInternal_Implementation();
 }
 
+EABAnimalMovementNoiseVolume AABAnimalCharacter::GetSprintMovementVolume() const
+{
+	return EABAnimalMovementNoiseVolume::Normal;
+}
+
 // Called every frame
 void AABAnimalCharacter::Tick(float DeltaTime)
 {
@@ -102,6 +107,19 @@ void AABAnimalCharacter::GetCaught(AActor* byWhom)
 	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, "Animal Caught By: " + byWhom->GetName());
 	OnAnimalCaught.Broadcast(byWhom);
 	//UGameplayStatics::OpenLevel(GetWorld(), "level1_Shelter");
+}
+
+EABAnimalMovementNoiseVolume AABAnimalCharacter::GetCurrentMovementVolume() const
+{
+	if (GetMovementComponent()->Velocity.IsNearlyZero())  {
+		return EABAnimalMovementNoiseVolume::Silent;
+	}
+	else if (bSprinting) {
+		return GetSprintMovementVolume();
+	}
+	else {
+		return EABAnimalMovementNoiseVolume::Normal;
+	}
 }
 
 void AABAnimalCharacter::Jump()
