@@ -23,18 +23,6 @@ AABInteractiveObjectGate::AABInteractiveObjectGate()
 	GateMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GateMesh"));
 	GateMesh->SetupAttachment(RootComponent);
 
-	GateHinge = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GateHinge"));
-	GateHinge->SetupAttachment(RootComponent);
-	// Set the hinge mesh to a cylinder
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> CylinderAsset(TEXT("/Game/StarterContent/Shapes/Shape_Cylinder.Shape_Cylinder"));
-	if (CylinderAsset.Succeeded())
-	{
-		GateHinge->SetStaticMesh(CylinderAsset.Object);
-		GateHinge->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
-		GateHinge->SetWorldScale3D(FVector(0.2f, 0.2f, 2.0f));
-		GateHinge->SetHiddenInGame(true);
-	}
-
 	FrameMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FrameMesh"));
 	FrameMesh->SetupAttachment(RootComponent);
 
