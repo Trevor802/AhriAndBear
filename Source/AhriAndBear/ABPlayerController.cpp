@@ -72,10 +72,10 @@ void AABPlayerController::SetupInputComponent()
 
 void AABPlayerController::CallMoveForward(float value)
 {
-    if (AnimalCharacter && value != 0.f && !AnimalCharacter->bReading)
-    {
-        const FRotator rotation = GetControlRotation();
-        const FRotator YawRotation(0, rotation.Yaw, 0);
+	if (AnimalCharacter && value != 0.f && !AnimalCharacter->bReading)
+	{
+		const FRotator rotation = GetControlRotation();
+		const FRotator YawRotation(0, rotation.Yaw, 0);
 
 		FVector Direction;
 		if (AnimalCharacter->bInClimbingZone && AnimalCharacter->bSprinting)
@@ -89,7 +89,7 @@ void AABPlayerController::CallMoveForward(float value)
 			AnimalCharacter->bClimbing = false;
 		}
 		AnimalCharacter->AddMovementInput(Direction, value);
-    }
+	}
 	// Don't delete code below, they are for climbing
 		//if (AnimalCharacter && value != 0.f)
 		//{
@@ -106,14 +106,14 @@ void AABPlayerController::CallMoveForward(float value)
 
 void AABPlayerController::CallMoveRight(float value)
 {
-    if (AnimalCharacter && value != 0.f && !AnimalCharacter->bReading)
-    {
-        const FRotator rotation = GetControlRotation();
-        const FRotator YawRotation(0, rotation.Yaw, 0);
+	if (AnimalCharacter && value != 0.f && !AnimalCharacter->bReading)
+	{
+		const FRotator rotation = GetControlRotation();
+		const FRotator YawRotation(0, rotation.Yaw, 0);
 
-        const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-        AnimalCharacter->AddMovementInput(Direction, value);
-    }
+		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+		AnimalCharacter->AddMovementInput(Direction, value);
+	}
 }
 
 void AABPlayerController::CallTurnAtRate(float value)
@@ -153,7 +153,6 @@ void AABPlayerController::CallJump()
 	if (AnimalCharacter && AnimalCharacter->CanJump() && !AnimalCharacter->bReading)
 	{
 		AnimalCharacter->StartJumping();
-		AnimalCharacter->Jump();
 	}
 }
 
@@ -258,7 +257,7 @@ void AABPlayerController::Bark()
 	}
 }
 
-void AABPlayerController::QuitGame() 
+void AABPlayerController::QuitGame()
 {
 	UGameplayStatics::OpenLevel(GetWorld(), FName(TEXT("MenuLevel")));
 }
@@ -290,9 +289,9 @@ void AABPlayerController::UnbindInput() const
 	for (auto& a : AxisBindings)
 	{
 		InputComponent->AxisBindings.RemoveAllSwap([&a](const FInputAxisBinding& x)
-												   {
-													   return x.AxisName == a.AxisName;
-												   });
+			{
+				return x.AxisName == a.AxisName;
+			});
 	}
 }
 
