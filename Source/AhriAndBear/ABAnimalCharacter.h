@@ -78,13 +78,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Jumping")
 		float MaxJumpHeight = 500.f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Jumping")
-		float JumpStamina = 25;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Jumping")
 		float EdgeForwardOffset = 50.f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Debug")
 		bool bDebugJumping = false;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Sprint")
-		float SprintStaminaRateOfChange = 1;
 
 	UPROPERTY(Category = "Gameplay|Combination", BlueprintReadWrite)
 		bool AnimalsCombined;
@@ -121,7 +117,7 @@ public:
 
 	void StartSprinting();
 	void EndSprinting();
-	void SprintStaminaUpdate(float DeltaTime);
+	void UpdateSprinting(float DeltaTime);
 
 	void StartCrouch();
 	void EndCrouch();

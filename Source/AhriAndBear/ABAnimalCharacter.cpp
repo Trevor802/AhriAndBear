@@ -99,7 +99,7 @@ void AABAnimalCharacter::Tick(float DeltaTime)
 
 	ChangeMovementMode();
 	ChangeCameraLocation(DeltaTime);
-	SprintStaminaUpdate(DeltaTime);
+	UpdateSprinting(DeltaTime);
 }
 
 void AABAnimalCharacter::GetCaught(AActor* byWhom)
@@ -111,7 +111,7 @@ void AABAnimalCharacter::GetCaught(AActor* byWhom)
 
 EABAnimalMovementNoiseVolume AABAnimalCharacter::GetCurrentMovementVolume() const
 {
-	if (GetMovementComponent()->Velocity.IsNearlyZero())  {
+	if (GetMovementComponent()->Velocity.IsNearlyZero()) {
 		return EABAnimalMovementNoiseVolume::Silent;
 	}
 	else if (bSprinting) {
@@ -137,22 +137,24 @@ void AABAnimalCharacter::Bark()
 
 void AABAnimalCharacter::UpdateChecking()
 {
-	if (SurvivalComponent->Stamina.CurrentValue < JumpStamina)
-	{
-		bCanJump = false;
-		return;
-	}
-
 	//bCanJump = CheckJumping(JumpingVelocity);
 	bCanJump = CanJump();
 }
 
 void AABAnimalCharacter::StartJumping()
 {
+	if (AnimalsCombined)
+	{
+		bJumping = false;
+		return;
+	}
+
 	bJumping = true;
 
 	FTimerDelegate JumpTimerDelegate = FTimerDelegate::CreateUObject(this, &AABAnimalCharacter::EndJumping);
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, JumpTimerDelegate, 0.5f, false);
+
+	Jump();
 }
 
 void AABAnimalCharacter::EndJumping()
@@ -162,8 +164,9 @@ void AABAnimalCharacter::EndJumping()
 
 void AABAnimalCharacter::StartSprinting()
 {
-	if (SurvivalComponent->Stamina.CurrentValue <= 0)
+	if (AnimalsCombined)
 	{
+		bSprinting = false;
 		return;
 	}
 
@@ -172,12 +175,11 @@ void AABAnimalCharacter::StartSprinting()
 	OnSprintStart.Broadcast();
 }
 
-void AABAnimalCharacter::SprintStaminaUpdate(float DeltaTime)
+void AABAnimalCharacter::UpdateSprinting(float DeltaTime)
 {
 	if (bSprinting)
 	{
-		UABSurvivalStatFunctions::AddToCurrentValue(SurvivalComponent->Stamina, -SprintStaminaRateOfChange * DeltaTime);
-		if (SurvivalComponent->Stamina.CurrentValue <= 0)
+		if (AnimalsCombined)
 		{
 			EndSprinting();
 		}
@@ -255,19 +257,19 @@ void AABAnimalCharacter::SwitchAnimal()
 		{
 			// Toggle scent trail's visibility
 			AABDogCharacter* dog = Cast<AABDogCharacter>(this);
-			
+
 			if (dog)
 			{
 				HideScentFromCat();
 				UE_LOG(LogTemp, Warning, TEXT("Dog"));
-			}	
+			}
 
 			tempPlayerController->UnPossess();
 			tempAIController->UnPossess();
 
 			tempPlayerController->Possess(OtherAnimal);
 			tempAIController->Possess(this);
-			
+
 			if (OtherAnimal->InteractionComponent->IsInteracting())
 			{
 				Cast<AABPlayerController>(tempPlayerController)->UnbindInput();
