@@ -84,7 +84,8 @@ void AABAnimalCharacter::BeginPlay()
 
 bool AABAnimalCharacter::CanJumpInternal_Implementation() const
 {
-	return Super::CanJumpInternal_Implementation();
+	// Prevent animals from jumping if they're interacting with something
+	return Super::CanJumpInternal_Implementation() && !InteractionComponent->IsInteracting();
 }
 
 EABAnimalMovementNoiseVolume AABAnimalCharacter::GetSprintMovementVolume() const
