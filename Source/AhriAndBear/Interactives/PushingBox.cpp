@@ -10,6 +10,9 @@
 #include "Components/PrimitiveComponent.h"
 //#include "Characters/ABDogCharacter.h"
 
+// My testing showed that this works as expected.
+constexpr float INTERACTABLE_ANGLE_THRESHOLD_RADIANS = 2;
+
 APushingBox::APushingBox()
 {
 	collider = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Collider"));
@@ -42,6 +45,25 @@ void APushingBox::BeginPlay()
 	collider->GetBodyInstance()->bLockZRotation = true;
 	//collider->GetBodyInstance()->bLockZTranslation = true;
 	//LockMeshLocation();
+}
+
+bool APushingBox::CanInteract(UCharacterInteractionComponent* interactingComponent) const {
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("Can we interact?"));
+	if (!Super::CanInteract(interactingComponent)) {
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Can't"));
+		return false;
+	}
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, TEXT("Reeee"));
+	auto actor = GET_CHARACTER(interactingComponent);
+	if (!actor) {
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("Nani the heck?"));
+		return false;
+	}
+	auto vec2Box = (GetActorLocation() - actor->GetActorLocation()).GetSafeNormal();
+	auto dot = FVector::DotProduct(vec2Box, FVector::UpVector);
+	auto angle = acos(dot);
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Dot: %f | Angle: %f"), dot, angle));
+	return angle < INTERACTABLE_ANGLE_THRESHOLD_RADIANS;
 }
 
 void APushingBox::BeginInteraction()

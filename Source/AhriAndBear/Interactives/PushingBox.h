@@ -24,9 +24,7 @@ public:
 protected:
 	virtual void Tick(float DeltaTime) override;
 	virtual void BeginPlay() override;
-	FORCEINLINE virtual bool CanInteract(UCharacterInteractionComponent* interactingComponent) const override { 
-		return Cast<AABDogCharacter>(GET_CHARACTER(interactingComponent)) != nullptr;
-	}
+	virtual bool CanInteract(UCharacterInteractionComponent* interactingComponent) const override;
 	FORCEINLINE virtual void CallSprint() override {};
 	FORCEINLINE virtual void CallStopSprint() override {};
 	
