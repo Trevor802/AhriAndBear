@@ -81,9 +81,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "Character | Survival")
 	FABSurvivalStat Hunger;
 
-	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "Character | Survival")
-	FABSurvivalStat Stamina;
-
 	UPROPERTY(VisibleAnywhere, Category = "Character | Survival | Deprecated")
 	float UpdateInterval = 2.0f;
 
@@ -115,7 +112,7 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	FORCEINLINE FSurvivalData GetSurvivalData() const { return FSurvivalData{ Health.CurrentValue, Hunger.CurrentValue, Thirst.CurrentValue, Warmth.CurrentValue, Stamina.CurrentValue }; }
+	FORCEINLINE FSurvivalData GetSurvivalData() const { return FSurvivalData{ Health.CurrentValue, Hunger.CurrentValue, Thirst.CurrentValue, Warmth.CurrentValue }; }
 	void AddSurvivalData(const FSurvivalData& value);
 
 	void AddModifier(IABStatModifierInterface* modifier);
