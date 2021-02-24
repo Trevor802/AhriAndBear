@@ -8,7 +8,6 @@
 #include "ABAnimalCharacter.h"
 #include "ABPlayerController.h"
 #include "Components/PrimitiveComponent.h"
-#include "DrawDebugHelpers.h"
 //#include "Characters/ABDogCharacter.h"
 
 // My testing showed that this works as expected.
@@ -61,7 +60,6 @@ bool APushingBox::CanInteract(UCharacterInteractionComponent* interactingCompone
 		return false;
 	}
 	auto vec2Box = (GetActorLocation() - actor->GetActorLocation()).GetSafeNormal();
-	DrawDebugLine(GetWorld(), actor->GetActorLocation(), GetActorLocation(), FColor::Emerald, false, 5.f, 0, 1.5f);
 	auto dot = FVector::DotProduct(vec2Box, FVector::UpVector);
 	auto angle = acos(dot);
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Dot: %f | Angle: %f"), dot, angle));
