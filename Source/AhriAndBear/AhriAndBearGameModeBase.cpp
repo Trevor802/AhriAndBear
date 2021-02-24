@@ -23,14 +23,14 @@ void AAhriAndBearGameModeBase::BeginPlay()
 	AActor* dogActor = UGameplayStatics::GetActorOfClass(GetWorld(), AABDogCharacter::StaticClass());
 	dog = Cast<AABDogCharacter>(dogActor);
 	if (dog != nullptr) {
-		dog->SurvivalComponent->OnCriticalConditionChanged.AddDynamic(this, &AAhriAndBearGameModeBase::OnAnimalCriticalConditionChanged);
+		//dog->SurvivalComponent->OnCriticalConditionChanged.AddDynamic(this, &AAhriAndBearGameModeBase::OnAnimalCriticalConditionChanged);
 		dog->OnAnimalCaught.AddDynamic(this, &AAhriAndBearGameModeBase::OnAnimalCaught);
 	}
 
 	AActor* catActor = UGameplayStatics::GetActorOfClass(GetWorld(), AABCatCharacter::StaticClass());
 	cat = Cast<AABCatCharacter>(catActor);
 	if (cat != nullptr) {
-		cat->SurvivalComponent->OnCriticalConditionChanged.AddDynamic(this, &AAhriAndBearGameModeBase::OnAnimalCriticalConditionChanged);
+		//cat->SurvivalComponent->OnCriticalConditionChanged.AddDynamic(this, &AAhriAndBearGameModeBase::OnAnimalCriticalConditionChanged);
 		cat->OnAnimalCaught.AddDynamic(this, &AAhriAndBearGameModeBase::OnAnimalCaught);
 	}
 }
