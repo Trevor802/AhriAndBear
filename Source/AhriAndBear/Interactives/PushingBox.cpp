@@ -8,7 +8,7 @@
 #include "ABAnimalCharacter.h"
 #include "ABPlayerController.h"
 #include "Components/PrimitiveComponent.h"
-//#include "Characters/ABDogCharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // My testing showed that this works as expected.
 constexpr float INTERACTABLE_ANGLE_THRESHOLD_RADIANS = 2;
@@ -86,6 +86,8 @@ void APushingBox::BeginInteraction()
 		}*/
 
 		AttachToComponent(character->GetMesh(), FAttachmentTransformRules(EAttachmentRule::KeepWorld, true));
+		auto controller = dogCharacter->GetCharacterMovement();
+		controller->bOrientRotationToMovement = !controller->bOrientRotationToMovement;
 	}
 
 }
@@ -95,6 +97,10 @@ void APushingBox::EndInteraction(bool)
 	DetachFromActor(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
 	collider->SetSimulatePhysics(true);
 	collider->SetEnableGravity(true);
+	auto character = GET_CHARACTER(InteractingComponent);
+	AABDogCharacter* dogCharacter = Cast<AABDogCharacter>(character);
+	auto controller = dogCharacter->GetCharacterMovement();
+	controller->bOrientRotationToMovement = !controller->bOrientRotationToMovement;
 }
 
 void APushingBox::Tick(float DeltaTime)
