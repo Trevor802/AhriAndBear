@@ -6,6 +6,7 @@
 #include "ABPlayerController.h"
 
 #include "Components/PawnNoiseEmitterComponent.h"
+#include "Environments/ABScentSource.h"
 #include "Perception/PawnSensingComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Engine/Scene.h"

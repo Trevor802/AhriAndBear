@@ -8,6 +8,7 @@
 #include "ABCatCharacter.generated.h"
 
 class UPostProcessComponent;
+class AABScentSource;
 
 UCLASS()
 class AHRIANDBEAR_API AABCatCharacter : public AABAnimalCharacter
@@ -18,6 +19,7 @@ public:
 	AABCatCharacter();
 	virtual void Tick(float DeltaTime) override;
 	virtual void UseAbility() override;
+	AABScentSource* myScentSource;
 
 protected:
 	// Called when the game starts or when spawned
