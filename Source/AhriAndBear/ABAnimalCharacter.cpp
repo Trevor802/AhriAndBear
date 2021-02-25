@@ -300,7 +300,7 @@ void AABAnimalCharacter::HideScentFromCat()
 
 void AABAnimalCharacter::ChangeMovementSetting()
 {
-	GetCharacterMovement()->bOrientRotationToMovement = bOrientRotationToMovementSetting;
+	// GetCharacterMovement()->bOrientRotationToMovement = bOrientRotationToMovementSetting;
 }
 
 void AABAnimalCharacter::ChangeMovementMode()
