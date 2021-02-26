@@ -15,6 +15,8 @@ constexpr float INTERACTABLE_ANGLE_THRESHOLD_RADIANS = 2;
 
 APushingBox::APushingBox()
 {
+	PrimaryActorTick.bCanEverTick = true;
+
 	collider = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Collider"));
 	RootComponent = collider;
 
@@ -119,7 +121,7 @@ void APushingBox::EndInteraction(bool)
 void APushingBox::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	//UpdateBox();
+	UpdateBox();
 }
 
 void APushingBox::UpdateBox()
@@ -128,6 +130,7 @@ void APushingBox::UpdateBox()
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Broke"));
 		EndInteraction(true);
+		AfterInteraction(true);
 	}
 }
 /*
