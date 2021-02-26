@@ -15,12 +15,17 @@ constexpr float INTERACTABLE_ANGLE_THRESHOLD_RADIANS = 2;
 
 APushingBox::APushingBox()
 {
+	PrimaryActorTick.bCanEverTick = true;
+
 	collider = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Collider"));
 	RootComponent = collider;
 
 	boxMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Box Mesh"));
 	boxMesh->SetupAttachment(RootComponent);
 	
+	BoxJoint = CreateDefaultSubobject<UPhysicsConstraintComponent>(TEXT("BoxJoint"));
+	BoxJoint->SetupAttachment(RootComponent);
+	BoxJoint->SetDisableCollision(true);
 	
 	/*trigger_h = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger Horizontal"));
 	trigger_h->SetBoxExtent(FVector(60, 2, 20));
@@ -33,16 +38,22 @@ APushingBox::APushingBox()
 	trigger_v->SetupAttachment(boxMesh);
 	trigger_v->OnComponentBeginOverlap.AddDynamic(this, &APushingBox::v_OnOverlapBegin);
 	trigger_v->OnComponentEndOverlap.AddDynamic(this, &APushingBox::v_OnOverlapEnd);*/
+
+	bHeld = false;
 }
 
 void APushingBox::BeginPlay()
 {
+	Super::BeginPlay();
+
 	horizontal = false;
 	verticle = false;
+	
 	collider->SetSimulatePhysics(true);
 	collider->GetBodyInstance()->bLockXRotation = true;
 	collider->GetBodyInstance()->bLockYRotation = true;
 	collider->GetBodyInstance()->bLockZRotation = true;
+	
 	//collider->GetBodyInstance()->bLockZTranslation = true;
 	//LockMeshLocation();
 }
@@ -73,8 +84,12 @@ void APushingBox::BeginInteraction()
 	AABDogCharacter* dogCharacter = Cast<AABDogCharacter>(character);
 	if (dogCharacter)
 	{
-		collider->SetSimulatePhysics(false);
-		collider->SetEnableGravity(false);
+		BoxJoint->SetConstrainedComponents(boxMesh, "",dogCharacter->GetMesh(), "");
+		bHeld = true;
+
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("attach box"));
+		//collider->SetSimulatePhysics(false);
+		//collider->SetEnableGravity(false);
 		// Not used for now
 		/*if (horizontal)
 		{
@@ -85,29 +100,40 @@ void APushingBox::BeginInteraction()
 			boxMesh->GetBodyInstance()->bLockXTranslation = false;
 		}*/
 
-		AttachToComponent(character->GetMesh(), FAttachmentTransformRules(EAttachmentRule::KeepWorld, true));
+		//AttachToComponent(character->GetMesh(), FAttachmentTransformRules(EAttachmentRule::KeepWorld, true));
 	}
 
 }
 
 void APushingBox::EndInteraction(bool)
 {
-	DetachFromActor(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
-	collider->SetSimulatePhysics(true);
-	collider->SetEnableGravity(true);
+	//DetachFromActor(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Detach box"));
+	bHeld = false;
+	BoxJoint->SetConstrainedComponents(nullptr, NAME_None, nullptr, NAME_None);
+	BoxJoint->BreakConstraint();
+
+	//collider->SetSimulatePhysics(true);
+	//collider->SetEnableGravity(true);
 }
 
 void APushingBox::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	//UpdateBox();
+	UpdateBox();
 }
 
 void APushingBox::UpdateBox()
 {
-	
+	if (BoxJoint->ConstraintInstance.IsBroken() && bHeld)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Broke"));
+		EndInteraction(true);
+		AfterInteraction(true);
+	}
 }
-
+/*
 void APushingBox::CallMoveForward(float value)
 {
 	if (InteractingComponent)
@@ -130,7 +156,7 @@ void APushingBox::CallMoveRight(float value)
 			Super::CallMoveRight(value);
 	}
 }
-
+*/
 // ==============The below functions are not used for now===============
 // Designed for box that only moves along specific axis
 
