@@ -46,11 +46,17 @@ void AABDogCharacter::CatScentTracker()
 	AABCatCharacter* cat = Cast<AABCatCharacter>(OtherAnimal);
 	if (cat)
 	{
+		cat->UpdateCatScentSource();
 		if (scentIndicator)
 		{
 			AABScentIndicator* indicator =
 				GetWorld()->SpawnActor<AABScentIndicator>(scentIndicator, GetActorLocation() + FVector(0, 50, 0), GetActorRotation());
+			if (cat->myScentSource)
+				indicator->SetTargetPosition(cat->myScentSource);
+			else
+				UE_LOG(LogTemp, Error, TEXT("AABDogCharacter: Cat's scnet source not available."));
 			indicator->SetTargetPosition(cat->GetActorLocation());
+			indicator->SetIndicatorLifeSpan(3);
 			indicator->CalculateDirection();
 		}
 		

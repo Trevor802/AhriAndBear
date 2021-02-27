@@ -19,14 +19,15 @@ public:
 	AABCatCharacter();
 	virtual void Tick(float DeltaTime) override;
 	virtual void UseAbility() override;
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class AABScentSource> scentSourceBP;
 	AABScentSource* myScentSource;
+	void SetupNVParams();
+	void UpdateCatScentSource();
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	EABAnimalMovementNoiseVolume GetSprintMovementVolume() const override { return EABAnimalMovementNoiseVolume::Quiet; }
-
-	
 	virtual EABAnimalMovementNoiseVolume GetCurrentMovementVolume() const override;
 
 private:
