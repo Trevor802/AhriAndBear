@@ -22,6 +22,10 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	EABAnimalMovementNoiseVolume GetSprintMovementVolume() const override { return EABAnimalMovementNoiseVolume::Quiet; }
+
+	
+	virtual EABAnimalMovementNoiseVolume GetCurrentMovementVolume() const override;
 
 private:
 	FPostProcessSettings normalSettings;

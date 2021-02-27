@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Interactives/Interactive.h"
 #include "Characters/ABDogCharacter.h"
+#include "PhysicsEngine/PhysicsConstraintComponent.h"
 #include "Interactives/CharacterInteractionComponent.h"
 
 #include "PushingBox.generated.h"
@@ -20,21 +21,19 @@ class AHRIANDBEAR_API APushingBox : public AInteractive
 	
 public:
 	APushingBox();
+	virtual void Tick(float DeltaTime) override;
 
 protected:
-	virtual void Tick(float DeltaTime) override;
 	virtual void BeginPlay() override;
-	FORCEINLINE virtual bool CanInteract(UCharacterInteractionComponent* interactingComponent) const override { 
-		return Cast<AABDogCharacter>(GET_CHARACTER(interactingComponent)) != nullptr;
-	}
+	virtual bool CanInteract(UCharacterInteractionComponent* interactingComponent) const override;
 	FORCEINLINE virtual void CallSprint() override {};
 	FORCEINLINE virtual void CallStopSprint() override {};
 	
 	class USceneComponent* Root;
 
-	virtual void CallMoveForward(float) override;
-	virtual void CallMoveRight(float value) override ;
-	virtual void CallTurn(float value)override {};
+	//virtual void CallMoveForward(float) override;
+	//virtual void CallMoveRight(float value) override ;
+	//virtual void CallTurn(float value)override {};
 	virtual void BeginInteraction() override;
 	virtual void EndInteraction(bool) override;
 
@@ -45,6 +44,8 @@ public:
 	UStaticMeshComponent* boxMesh;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Collision")
 	UBoxComponent* collider;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Constraint")
+		UPhysicsConstraintComponent* BoxJoint;
 	/*UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
 	UBoxComponent* trigger_h;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
@@ -64,4 +65,6 @@ private:
 
 	bool horizontal;
 	bool verticle;
+
+	bool bHeld;
 };

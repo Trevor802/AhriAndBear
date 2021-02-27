@@ -22,7 +22,26 @@ class UAudioComponent;
 #define GET_MAIN_CHARACTER Cast<AABAnimalCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FBark, FVector, Position);
 
+/**
+* Delegate for when an animal begins sprinting.
+*/
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAnimalBeganSprinting);
+
+/**
+* Delegate for when an animal stops sprinting.
+*/
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAnimalStoppedSprinting);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAnimalCaught, AActor*, captor);
+
+UENUM(BlueprintType)
+enum class EABAnimalMovementNoiseVolume : uint8 {
+	Silent UMETA(DisplayName = "No Movement Noise"),
+	Quiet UMETA(DisplayName = "Quiet Movement Noise"),
+	Normal UMETA(DisplayName = "Normal Movement Noise"),
+	Loud UMETA(DisplayName = "Loud Movement Noise"),
+};
+
 
 UCLASS()
 class AHRIANDBEAR_API AABAnimalCharacter : public ACharacter
@@ -59,13 +78,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Jumping")
 		float MaxJumpHeight = 500.f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Jumping")
-		float JumpStamina = 25;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Jumping")
 		float EdgeForwardOffset = 50.f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Debug")
 		bool bDebugJumping = false;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay|Sprint")
-		float SprintStaminaRateOfChange = 1;
 
 	UPROPERTY(Category = "Gameplay|Combination", BlueprintReadWrite)
 		bool AnimalsCombined;
@@ -76,6 +91,12 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Character|Events")
 		FAnimalCaught OnAnimalCaught;
 
+	UPROPERTY(BlueprintAssignable, Category = "Character|Events")
+		FAnimalBeganSprinting OnSprintStart;
+
+	UPROPERTY(BlueprintAssignable, Category = "Character|Events")
+		FAnimalStoppedSprinting OnSprintEnd;
+
 	UFUNCTION(BlueprintPure, Category = "Character | Survival")
 		bool IsInCriticalCondition() const;
 
@@ -83,6 +104,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual bool CanJumpInternal_Implementation() const override;
+	virtual EABAnimalMovementNoiseVolume GetSprintMovementVolume() const;
 
 public:
 	// Called every frame
@@ -95,7 +117,7 @@ public:
 
 	void StartSprinting();
 	void EndSprinting();
-	void SprintStaminaUpdate(float DeltaTime);
+	void UpdateSprinting(float DeltaTime);
 
 	void StartCrouch();
 	void EndCrouch();
@@ -176,6 +198,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Character")
 		void GetCaught(AActor* byWhom);
+
+	UFUNCTION(BlueprintPure, Category = "Character")
+		virtual EABAnimalMovementNoiseVolume GetCurrentMovementVolume() const;
 
 private:
 	bool bWithinRange;

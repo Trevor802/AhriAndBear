@@ -20,7 +20,6 @@ void UAABSurvivalComponent::UpdateStats(float deltaTime)
 {
 	UABSurvivalStatFunctions::TickStat(Thirst, deltaTime);
 	UABSurvivalStatFunctions::TickStat(Hunger, deltaTime);
-	UABSurvivalStatFunctions::TickStat(Stamina, deltaTime);
 }
 
 // Called when the game starts
@@ -30,7 +29,6 @@ void UAABSurvivalComponent::BeginPlay()
 	
 	UABSurvivalStatFunctions::StartStat(Thirst, "Thirst");
 	UABSurvivalStatFunctions::StartStat(Hunger, "Hunger");
-	UABSurvivalStatFunctions::StartStat(Stamina, "Stamina");
 
 	// TODO: Do we want a separate one for each stat? We can have flags for if the
 	// stat is zeroed or not and when both are set to true, it becomes true.
@@ -57,7 +55,6 @@ void UAABSurvivalComponent::AddSurvivalData(const FSurvivalData& value)
 	UABSurvivalStatFunctions::AddToCurrentValue(Warmth, value.Warmth);
 	UABSurvivalStatFunctions::AddToCurrentValue(Thirst, value.Thirst);
 	UABSurvivalStatFunctions::AddToCurrentValue(Hunger, value.Hunger);
-	UABSurvivalStatFunctions::AddToCurrentValue(Stamina, value.Stamina);
 }
 
 void UAABSurvivalComponent::AddModifier(IABStatModifierInterface* modifier)

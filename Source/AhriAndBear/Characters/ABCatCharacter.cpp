@@ -72,3 +72,11 @@ void AABCatCharacter::UseAbility()
 	}
 	abilityOn = !abilityOn;
 }
+
+EABAnimalMovementNoiseVolume AABCatCharacter::GetCurrentMovementVolume() const
+{
+	auto retVal = Super::GetCurrentMovementVolume();
+	if (retVal != EABAnimalMovementNoiseVolume::Silent)
+		retVal = EABAnimalMovementNoiseVolume::Quiet;
+	return retVal;
+}
