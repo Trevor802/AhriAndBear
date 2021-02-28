@@ -118,4 +118,6 @@ void AABInteractiveObjectGate::EndInteraction(bool bResult)
 		AAhriAndBearGameModeBase* GameMode = (AAhriAndBearGameModeBase*)GetWorld()->GetAuthGameMode();
 		GameMode->ToNextTask();
 	}
+
+	OnDoorOpened();
 }
