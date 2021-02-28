@@ -74,3 +74,8 @@ void AABScentSource::SpawnScentIndicator(AActor* dog)
 	
 }
 
+void AABScentSource::SetScentRange(float range)
+{
+	scentRangeSphere->SetSphereRadius(range, true);
+}
+
