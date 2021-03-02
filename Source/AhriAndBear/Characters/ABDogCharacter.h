@@ -17,8 +17,9 @@ class AHRIANDBEAR_API AABDogCharacter : public AABAnimalCharacter
 	GENERATED_BODY()
 	
 public:
-	AABDogCharacter();
 
+	
+	AABDogCharacter();
 	virtual void UseAbility() override;
 
 protected:
