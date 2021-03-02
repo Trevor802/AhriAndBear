@@ -33,16 +33,23 @@ void AABInteractiveObjectNewspaper::BeginPlay()
 
 }
 
-void AABInteractiveObjectNewspaper::EndInteraction(bool bResult)
+void AABInteractiveObjectNewspaper::BeginInteraction()
 {
-	Super::EndInteraction(bResult);
-
-	if (!bResult)
-	{
-		return;
-	}
-
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("read news"));
 	OpenNewspaper();
+}
+
+void AABInteractiveObjectNewspaper::EndInteraction(bool)
+{
+	auto character = GET_CHARACTER(InteractingComponent);
+
+	AABAnimalCharacter* player = Cast<AABAnimalCharacter>(character);
+
+	if (player)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("close news"));
+		player->FindComponentByClass<UABPlayerUIComponent>()->RemoveNewspaperWidgetFromViewPort();
+	}
 }
 
 void AABInteractiveObjectNewspaper::Tick(float DeltaTime)
@@ -54,9 +61,11 @@ void AABInteractiveObjectNewspaper::Tick(float DeltaTime)
 void AABInteractiveObjectNewspaper::OpenNewspaper()
 {
 	//NewspaperWidget->addtov;
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TempTitle);
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TempTitle);
 
-	AABAnimalCharacter* player = Cast<AABAnimalCharacter>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetOwner());
+	auto character = GET_CHARACTER(InteractingComponent);
+
+	AABAnimalCharacter* player = Cast<AABAnimalCharacter>(character);
 
 	if (player)
 	{
