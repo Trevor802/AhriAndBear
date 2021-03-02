@@ -109,7 +109,7 @@ void APushingBox::EndInteraction(bool)
 {
 	//DetachFromActor(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Detach box"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Detach box"));
 	bHeld = false;
 	BoxJoint->SetConstrainedComponents(nullptr, NAME_None, nullptr, NAME_None);
 	BoxJoint->BreakConstraint();
@@ -128,7 +128,7 @@ void APushingBox::UpdateBox()
 {
 	if (BoxJoint->ConstraintInstance.IsBroken() && bHeld)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Broke"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Broke"));
 		EndInteraction(true);
 		AfterInteraction(true);
 	}

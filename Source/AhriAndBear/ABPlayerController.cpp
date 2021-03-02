@@ -298,9 +298,12 @@ void AABPlayerController::UnbindInput() const
 void AABPlayerController::AddWidgetToViewPort(UUserWidget* Widget)
 {
 	Widget->AddToViewport();
+	Widget->SetVisibility(ESlateVisibility::Visible);
 }
 
 void AABPlayerController::RemoveWidgetFromViewPort(UUserWidget* Widget)
 {
+	Widget->SetVisibility(ESlateVisibility::Hidden);
+	Widget->RemoveFromViewport();
 }
 
