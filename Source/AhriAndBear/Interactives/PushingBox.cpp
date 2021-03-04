@@ -109,13 +109,15 @@ void APushingBox::BeginInteraction()
 
 void APushingBox::EndInteraction(bool)
 {
-	DetachFromActor(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
-	collider->SetSimulatePhysics(true);
-	collider->SetEnableGravity(true);
-	auto character = GET_CHARACTER(InteractingComponent);
-	AABDogCharacter* dogCharacter = Cast<AABDogCharacter>(character);
-	auto controller = dogCharacter->GetCharacterMovement();
-	controller->bOrientRotationToMovement = !controller->bOrientRotationToMovement;
+	//DetachFromActor(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Detach box"));
+	bHeld = false;
+	BoxJoint->SetConstrainedComponents(nullptr, NAME_None, nullptr, NAME_None);
+	BoxJoint->BreakConstraint();
+
+	//collider->SetSimulatePhysics(true);
+	//collider->SetEnableGravity(true);
 }
 
 void APushingBox::Tick(float DeltaTime)
