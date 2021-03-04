@@ -10,6 +10,7 @@
  * 
  */
 
+class AABScentIndicator;
 
 UCLASS()
 class AHRIANDBEAR_API AABDogCharacter : public AABAnimalCharacter
@@ -21,7 +22,10 @@ public:
 	
 	AABDogCharacter();
 	virtual void UseAbility() override;
+	void CatScentTracker();
 
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class AABScentIndicator> scentIndicator;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

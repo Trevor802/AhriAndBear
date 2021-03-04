@@ -3,15 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Interactives/OccupyingInteractive.h"
+#include "Interactives/Interactive.h"
 #include "UI/NewspaperWidget.h"
+#include "ABAnimalCharacter.h"
+#include "Interactives/CharacterInteractionComponent.h"
+
 #include "ABInteractiveObjectNewspaper.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class AHRIANDBEAR_API AABInteractiveObjectNewspaper : public AOccupyingInteractive
+class AHRIANDBEAR_API AABInteractiveObjectNewspaper : public AInteractive
 {
 	GENERATED_BODY()
 	
@@ -22,8 +25,12 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	FORCEINLINE virtual bool CanInteract(UCharacterInteractionComponent* component) const override { return !bOpened; }
+	virtual void BeginInteraction() override;
 	virtual void EndInteraction(bool) override;
+
+	virtual void CallMoveForward(float) override {};
+	virtual void CallMoveRight(float value) override {};
+	virtual void CallTurn(float value)override {};
 
 public:
 	// Called every frame

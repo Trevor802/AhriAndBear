@@ -44,6 +44,8 @@ public:
 
 	UPROPERTY(Category="Interactive Object | Gate", EditAnywhere)
 		bool CombinationOnlyOpen;
+	UFUNCTION(BlueprintImplementableEvent, Category = "Gameplay")
+		void OnDoorOpened();
 private:
 	bool bOpened;
 };
