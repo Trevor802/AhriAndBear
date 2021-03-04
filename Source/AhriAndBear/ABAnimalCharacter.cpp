@@ -144,7 +144,7 @@ void AABAnimalCharacter::UpdateChecking()
 
 void AABAnimalCharacter::StartJumping()
 {
-	if (AnimalsCombined)
+	if (AnimalsCombined || AnimalOnTop)
 	{
 		bJumping = false;
 		return;
@@ -165,7 +165,7 @@ void AABAnimalCharacter::EndJumping()
 
 void AABAnimalCharacter::StartSprinting()
 {
-	if (AnimalsCombined)
+	if (AnimalsCombined || AnimalOnTop)
 	{
 		bSprinting = false;
 		return;
@@ -180,7 +180,7 @@ void AABAnimalCharacter::UpdateSprinting(float DeltaTime)
 {
 	if (bSprinting)
 	{
-		if (AnimalsCombined)
+		if (AnimalsCombined || AnimalOnTop)
 		{
 			EndSprinting();
 		}

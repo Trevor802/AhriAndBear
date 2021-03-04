@@ -85,6 +85,9 @@ public:
 	UPROPERTY(Category = "Gameplay|Combination", BlueprintReadWrite)
 		bool AnimalsCombined;
 
+	UPROPERTY(Category = "Gameplay|Combination", BlueprintReadWrite)
+		bool AnimalOnTop;
+
 	UPROPERTY(BlueprintAssignable, Category = "Delegates")
 		FBark OnAnimalBark;
 

@@ -28,7 +28,7 @@ void AABPlayerController::OnPossess(APawn* Pawn)
 	//get reference to character
 	AnimalCharacter = Cast<AABAnimalCharacter>(Pawn);
 	AnimalCharacter->bOrientRotationToMovementSetting = false;
-	AnimalCharacter->ChangeMovementSetting();
+	//AnimalCharacter->ChangeMovementSetting();
 
 	UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetInputMode(FInputModeGameOnly());
 }
