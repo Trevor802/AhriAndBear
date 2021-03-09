@@ -17,6 +17,7 @@ enum class EAccessibilitySoundType : uint8 {
 	Music,
 	SFX,
 	Dialogue,
+	Ambient,
 };
 
 /**

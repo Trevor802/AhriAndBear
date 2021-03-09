@@ -161,7 +161,12 @@ float UABSoundSystemFacade::GetMixedVolumeBySoundType(EAccessibilitySoundType st
 		return userSettings->MusicVolume * masterVolume;
 	case EAccessibilitySoundType::SFX:
 		return userSettings->SoundEffectVolume * masterVolume;
+	case EAccessibilitySoundType::Dialogue:
+		return userSettings->DialogueVolume * masterVolume;
+	case EAccessibilitySoundType::Ambient:
+		return userSettings->AmbientVolume * masterVolume;
 	default:
+		UE_LOG(LogTemp, Warning, TEXT("Unknown sound category %s"), st);
 		return 1.f;
 	}
 }
