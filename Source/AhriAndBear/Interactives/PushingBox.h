@@ -18,7 +18,7 @@ UCLASS()
 class AHRIANDBEAR_API APushingBox : public AInteractive
 {
 	GENERATED_BODY()
-	
+
 public:
 	APushingBox();
 	virtual void Tick(float DeltaTime) override;
@@ -28,7 +28,7 @@ protected:
 	virtual bool CanInteract(UCharacterInteractionComponent* interactingComponent) const override;
 	FORCEINLINE virtual void CallSprint() override {};
 	FORCEINLINE virtual void CallStopSprint() override {};
-	
+
 	class USceneComponent* Root;
 
 	//virtual void CallMoveForward(float) override;
@@ -41,9 +41,9 @@ protected:
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
-	UStaticMeshComponent* boxMesh;
+		UStaticMeshComponent* boxMesh;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Collision")
-	UBoxComponent* collider;
+		UBoxComponent* collider;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Constraint")
 		UPhysicsConstraintComponent* BoxJoint;
 	/*UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")

@@ -8,7 +8,7 @@
 #include "ABAnimalCharacter.h"
 #include "ABPlayerController.h"
 #include "Components/PrimitiveComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
+//#include "Characters/ABDogCharacter.h"
 
 // My testing showed that this works as expected.
 constexpr float INTERACTABLE_ANGLE_THRESHOLD_RADIANS = 2;
@@ -22,11 +22,11 @@ APushingBox::APushingBox()
 
 	boxMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Box Mesh"));
 	boxMesh->SetupAttachment(RootComponent);
-	
+
 	BoxJoint = CreateDefaultSubobject<UPhysicsConstraintComponent>(TEXT("BoxJoint"));
 	BoxJoint->SetupAttachment(RootComponent);
 	BoxJoint->SetDisableCollision(true);
-	
+
 	/*trigger_h = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger Horizontal"));
 	trigger_h->SetBoxExtent(FVector(60, 2, 20));
 	trigger_h->SetupAttachment(boxMesh);
@@ -48,12 +48,12 @@ void APushingBox::BeginPlay()
 
 	horizontal = false;
 	verticle = false;
-	
+
 	collider->SetSimulatePhysics(true);
 	collider->GetBodyInstance()->bLockXRotation = true;
 	collider->GetBodyInstance()->bLockYRotation = true;
 	collider->GetBodyInstance()->bLockZRotation = true;
-	
+
 	//collider->GetBodyInstance()->bLockZTranslation = true;
 	//LockMeshLocation();
 }
@@ -79,12 +79,12 @@ bool APushingBox::CanInteract(UCharacterInteractionComponent* interactingCompone
 
 void APushingBox::BeginInteraction()
 {
-	
+
 	auto character = GET_CHARACTER(InteractingComponent);
 	AABDogCharacter* dogCharacter = Cast<AABDogCharacter>(character);
 	if (dogCharacter)
 	{
-		BoxJoint->SetConstrainedComponents(boxMesh, "",dogCharacter->GetMesh(), "");
+		BoxJoint->SetConstrainedComponents(boxMesh, "", dogCharacter->GetMesh(), "");
 		bHeld = true;
 
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("attach box"));
@@ -100,22 +100,22 @@ void APushingBox::BeginInteraction()
 			boxMesh->GetBodyInstance()->bLockXTranslation = false;
 		}*/
 
-		AttachToComponent(character->GetMesh(), FAttachmentTransformRules(EAttachmentRule::KeepWorld, true));
-		auto controller = dogCharacter->GetCharacterMovement();
-		controller->bOrientRotationToMovement = !controller->bOrientRotationToMovement;
+		//AttachToComponent(character->GetMesh(), FAttachmentTransformRules(EAttachmentRule::KeepWorld, true));
 	}
 
 }
 
 void APushingBox::EndInteraction(bool)
 {
-	DetachFromActor(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
-	collider->SetSimulatePhysics(true);
-	collider->SetEnableGravity(true);
-	auto character = GET_CHARACTER(InteractingComponent);
-	AABDogCharacter* dogCharacter = Cast<AABDogCharacter>(character);
-	auto controller = dogCharacter->GetCharacterMovement();
-	controller->bOrientRotationToMovement = !controller->bOrientRotationToMovement;
+	//DetachFromActor(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Detach box"));
+	bHeld = false;
+	BoxJoint->SetConstrainedComponents(nullptr, NAME_None, nullptr, NAME_None);
+	BoxJoint->BreakConstraint();
+
+	//collider->SetSimulatePhysics(true);
+	//collider->SetEnableGravity(true);
 }
 
 void APushingBox::Tick(float DeltaTime)
@@ -128,7 +128,7 @@ void APushingBox::UpdateBox()
 {
 	if (BoxJoint->ConstraintInstance.IsBroken() && bHeld)
 	{
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Broke"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Broke"));
 		EndInteraction(true);
 		AfterInteraction(true);
 	}
@@ -199,7 +199,7 @@ void APushingBox::CallMoveRight(float value)
 
 void APushingBox::LockMeshLocation()
 {
-	
+
 	boxMesh->GetBodyInstance()->bLockZTranslation = true;
 	boxMesh->GetBodyInstance()->bLockYTranslation = true;
 	boxMesh->GetBodyInstance()->bLockXTranslation = true;
