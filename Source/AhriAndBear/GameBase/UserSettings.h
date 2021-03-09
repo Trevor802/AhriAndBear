@@ -24,19 +24,22 @@ public:
 	* What multiplier should we apply to volume in general?
 	*/
 	UPROPERTY(VisibleAnywhere, Category = Settings)
-	float MasterVolume = 1;
+	float MasterVolume = 1.f;
 
 	/**
 	* What multiplier should we apply to the music?
 	*/
 	UPROPERTY(VisibleAnywhere, Category = Settings)
-	float MusicVolume = 1;
+	float MusicVolume = 1.f;
 
 	/**
 	* What multiplier should we apply to the sound cues?
 	*/
 	UPROPERTY(VisibleAnywhere, Category = Settings)
-	float SoundEffectVolume = 1;
+	float SoundEffectVolume = 1.f;
+
+	UPROPERTY(VisibleAnywhere, Category = Settings)
+	float DialogueVolume = 1.f;
 
 	/**
 	* Should we show subtitles in the game? (WIP)
