@@ -23,48 +23,32 @@ public:
 	/**
 	* What multiplier should we apply to volume in general?
 	*/
-	UPROPERTY(VisibleAnywhere, Category = Settings)
+	UPROPERTY(VisibleAnywhere, Category = "Settings | Accessibility | Sound")
 	float MasterVolume = 1.f;
 
 	/**
 	* What multiplier should we apply to the music?
 	*/
-	UPROPERTY(VisibleAnywhere, Category = Settings)
+	UPROPERTY(VisibleAnywhere, Category = "Settings | Accessibility | Sound")
 	float MusicVolume = 1.f;
 
 	/**
 	* What multiplier should we apply to the sound cues?
 	*/
-	UPROPERTY(VisibleAnywhere, Category = Settings)
+	UPROPERTY(VisibleAnywhere, Category = "Settings | Accessibility | Sound")
 	float SoundEffectVolume = 1.f;
 
-	UPROPERTY(VisibleAnywhere, Category = Settings)
+	UPROPERTY(VisibleAnywhere, Category = "Settings | Accessibility | Sound")
 	float DialogueVolume = 1.f;
 
 	/**
 	* Should we show subtitles in the game? (WIP)
 	*/
-	UPROPERTY(VisibleAnywhere, Category = Settings)
+	UPROPERTY(VisibleAnywhere, Category = "Settings | Accessibility | Sound")
 	bool ShowSubtitles = false;
 
 	/**
 	* Constructs a user settings object.
 	*/
 	UUserSettings() { }
-
-	/**
-	* Retrieves the actual music volume.
-	* 
-	* @return MusicVolume * MasterVolume.
-	*/
-	UFUNCTION(BlueprintPure, Category = "Settings | Volume")
-	FORCEINLINE float GetActualMusicVolume() const { return MusicVolume * MasterVolume; }
-
-	/**
-	* Retrieves the actual sound effect volume.
-	* 
-	* @return SoundEffectVolume * MasterVolume.
-	*/
-	UFUNCTION(BlueprintPure, Category = "Settings | Volume")
-	FORCEINLINE float GetActualSoundEffectVolume() const { return SoundEffectVolume * MasterVolume; }
 };
