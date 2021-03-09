@@ -84,7 +84,7 @@ void APushingBox::BeginInteraction()
 	AABDogCharacter* dogCharacter = Cast<AABDogCharacter>(character);
 	if (dogCharacter)
 	{
-		BoxJoint->SetConstrainedComponents(boxMesh, "", dogCharacter->GetMesh(), "");
+		BoxJoint->SetConstrainedComponents(boxMesh, "", dogCharacter->GetMesh(), "Wolf_-Ponytail1");
 		bHeld = true;
 
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("attach box"));
