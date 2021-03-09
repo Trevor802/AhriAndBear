@@ -10,10 +10,6 @@
 #include "Components/PrimitiveComponent.h"
 //#include "Characters/ABDogCharacter.h"
 
-#if WITH_EDITOR
-#include "UnrealEd.h"
-#endif
-
 // My testing showed that this works as expected.
 constexpr float INTERACTABLE_ANGLE_THRESHOLD_RADIANS = 2;
 
@@ -88,10 +84,7 @@ void APushingBox::BeginInteraction()
 	AABDogCharacter* dogCharacter = Cast<AABDogCharacter>(character);
 	if (dogCharacter)
 	{
-#if WITH_EDITOR
-     GUnrealEd->PlayWorld->bDebugPauseExecution = true;
- #endif
-		BoxJoint->SetConstrainedComponents(boxMesh, "", dogCharacter->GetMesh(), "Wolf_-Ponytail1");
+		BoxJoint->SetConstrainedComponents(boxMesh, "", dogCharacter->GetMesh(), "");
 		bHeld = true;
 
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("attach box"));
