@@ -79,7 +79,6 @@ bool APushingBox::CanInteract(UCharacterInteractionComponent* interactingCompone
 
 void APushingBox::BeginInteraction()
 {
-
 	auto character = GET_CHARACTER(InteractingComponent);
 	AABDogCharacter* dogCharacter = Cast<AABDogCharacter>(character);
 	if (dogCharacter)
