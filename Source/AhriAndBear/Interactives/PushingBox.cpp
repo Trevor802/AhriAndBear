@@ -84,6 +84,9 @@ void APushingBox::BeginInteraction()
 	AABDogCharacter* dogCharacter = Cast<AABDogCharacter>(character);
 	if (dogCharacter)
 	{
+		dogCharacter->bOrientRotationToMovementSetting = false;
+		dogCharacter->ChangeMovementSetting();
+
 		BoxJoint->SetConstrainedComponents(boxMesh, "", dogCharacter->GetMesh(), "");
 		bHeld = true;
 
@@ -113,6 +116,14 @@ void APushingBox::EndInteraction(bool)
 	bHeld = false;
 	BoxJoint->SetConstrainedComponents(nullptr, NAME_None, nullptr, NAME_None);
 	BoxJoint->BreakConstraint();
+
+	auto character = GET_CHARACTER(InteractingComponent);
+	AABDogCharacter* dogCharacter = Cast<AABDogCharacter>(character);
+	if (dogCharacter)
+	{
+		dogCharacter->bOrientRotationToMovementSetting = true;
+		dogCharacter->ChangeMovementSetting();
+	}
 
 	//collider->SetSimulatePhysics(true);
 	//collider->SetEnableGravity(true);
