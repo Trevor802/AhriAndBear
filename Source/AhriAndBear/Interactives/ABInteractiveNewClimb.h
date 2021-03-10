@@ -18,11 +18,11 @@ class AHRIANDBEAR_API AABInteractiveNewClimb : public AInteractive
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
 		TArray<class AActor*> ClimbPoints;
-
+/*
 public:
 	// Sets default values for this actor's properties
 	AABInteractiveNewClimb();
-
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -35,4 +35,5 @@ protected:
 	virtual void CallMoveForward(float) override {};
 	virtual void CallMoveRight(float value) override {};
 	virtual void CallTurn(float value)override {};
+	*/
 };
