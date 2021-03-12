@@ -75,6 +75,7 @@ void AABCatCharacter::SetupNVParams()
 	nightVisionSettings.bOverride_WhiteTint = true;
 	nightVisionSettings.bOverride_ColorSaturation = true;
 	nightVisionSettings.bOverride_ColorOffset = true;
+	nightVisionSettings.bOverride_ColorGamma = true;
 	nightVisionSettings.VignetteIntensity = 1.1;
 	nightVisionSettings.GrainJitter = 0.0;
 	nightVisionSettings.GrainIntensity = 0.476191;
@@ -82,6 +83,7 @@ void AABCatCharacter::SetupNVParams()
 	nightVisionSettings.WhiteTint = -0.6;
 	nightVisionSettings.ColorSaturation = FVector4(1.0, 0.280875, 0.702882, 1.0);
 	nightVisionSettings.ColorOffset = FVector4(-0.185722, 0.0, -0.008505, 0.0);
+	nightVisionSettings.ColorGamma = nightVisionSettings.ColorGamma * 1.5;
 }
 
 void AABCatCharacter::UpdateCatScentSource()
