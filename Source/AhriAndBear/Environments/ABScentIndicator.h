@@ -78,6 +78,8 @@ private:
 	float myReachingRange = 30.f;
 	int myCurrentPathNode = 0;
 	UNiagaraComponent* myTrailComponent;
+	float stuckTimer;
+	FVector lastFrameLocation;
 };
 
 
