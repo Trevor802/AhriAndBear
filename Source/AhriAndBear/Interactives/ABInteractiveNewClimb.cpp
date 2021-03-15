@@ -6,6 +6,7 @@
 #include "ABPlayerController.h"
 #include "Characters/ABCatCharacter.h"
 #include "Components/BoxComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AABInteractiveNewClimb::AABInteractiveNewClimb()
 {
@@ -43,6 +44,15 @@ void AABInteractiveNewClimb::BeginInteraction()
 	AABCatCharacter* catCharacter = Cast<AABCatCharacter>(character);
 	if (catCharacter)
 	{
+		//catCharacter->GetCharacterMovement()->StopActiveMovement(); 
+		//catCharacter->GetCharacterMovement()->StopMovementImmediately();
+		/*
+		if (catCharacter->GetCharacterMovement()->Velocity != FVector::ZeroVector)
+		{
+			AfterInteraction(true);
+			return;
+		}
+		*/
 		catCharacter->bClimbing = true;
 		CatInteractionComponent = InteractingComponent;
 	}
@@ -52,6 +62,28 @@ void AABInteractiveNewClimb::EndInteraction(bool)
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("Reset"));
 	ResetClimb();
+}
+
+bool AABInteractiveNewClimb::CanInteract(UCharacterInteractionComponent* interactingComponent) const {
+	if (!Super::CanInteract(interactingComponent)) {
+		return false;
+	}
+
+	auto character = GET_CHARACTER(interactingComponent);
+	AABCatCharacter* catCharacter = Cast<AABCatCharacter>(character);
+	if (!catCharacter)
+	{
+		return false;
+	}
+	else
+	{
+		if (catCharacter->GetCharacterMovement()->Velocity != FVector::ZeroVector)
+		{
+			return false;
+		}
+	}
+
+	return true;
 }
 
 void AABInteractiveNewClimb::CallInteract()
@@ -83,7 +115,13 @@ void AABInteractiveNewClimb::ClimbToNext(float DeltaTime)
 		AABCatCharacter* catCharacter = Cast<AABCatCharacter>(character);
 		if (catCharacter)
 		{
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("Climbing"));
+			/*
+			if (catCharacter->GetCharacterMovement()->Velocity != FVector::ZeroVector)
+			{
+				return;
+			}
+			*/
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("Climbing"));
 
 			FVector CurrentPosition = FMath::VInterpConstantTo(catCharacter->GetActorLocation(), ClimbPoints[ClimbPointsIndex]->GetActorLocation(), DeltaTime, ClimbSpeed);
 			catCharacter->SetActorLocation(CurrentPosition);
@@ -111,10 +149,15 @@ void AABInteractiveNewClimb::ResetClimb()
 	ClimbPointsIndex = 0;
 	bClimbing = false;
 
-	auto character = GET_CHARACTER(CatInteractionComponent);
-	AABCatCharacter* catCharacter = Cast<AABCatCharacter>(character);
-	if (catCharacter)
+	if (CatInteractionComponent)
 	{
-		catCharacter->bClimbing = false;
+		auto character = GET_CHARACTER(CatInteractionComponent);
+		AABCatCharacter* catCharacter = Cast<AABCatCharacter>(character);
+		if (catCharacter)
+		{
+			catCharacter->bClimbing = false;
+			CatInteractionComponent = nullptr;
+		}
 	}
+	
 }

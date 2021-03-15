@@ -40,6 +40,7 @@ protected:
 
 	virtual void BeginInteraction() override;
 	virtual void EndInteraction(bool) override;
+	virtual bool CanInteract(UCharacterInteractionComponent* interactingComponent) const override;
 	virtual void CallInteract()override;
 
 	virtual void CallMoveForward(float) override {};
