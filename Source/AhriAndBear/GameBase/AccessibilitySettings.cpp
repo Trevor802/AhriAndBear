@@ -2,11 +2,3 @@
 
 
 #include "GameBase/AccessibilitySettings.h"
-
-AccessibilitySettings::AccessibilitySettings()
-{
-}
-
-AccessibilitySettings::~AccessibilitySettings()
-{
-}
