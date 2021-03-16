@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
+#include "AccessibilitySettings.h"
 #include "UserSettings.generated.h"
 
 /**
@@ -14,11 +15,6 @@ class AHRIANDBEAR_API UUserSettings : public USaveGame
 {
 	GENERATED_BODY()
 public:
-
-	/**
-	* Where does this item get slaved?
-	*/
-	const FString SAVE_SLOT_NAME = TEXT("UserSettings");
 
 	/**
 	* What multiplier should we apply to volume in general?
@@ -57,4 +53,12 @@ public:
 	* Constructs a user settings object.
 	*/
 	UUserSettings() { }
+
+	static FString GetSaveSlotName() { return TEXT("UserSettings"); }
+
+	UFUNCTION(BlueprintCallable, Category = "Settings | Accessibility | Sound")
+		static void SaveSettingsToDisc(const FAccessibilitySettings& settings);
+
+	UFUNCTION(BlueprintCallable, Category = "Settings | Accessibility | Sound")
+		static FAccessibilitySettings LoadSettingsFromDisc();
 };
