@@ -5,6 +5,7 @@
 
 #include "Characters/ABDogCharacter.h"
 #include "Characters/ABCatCharacter.h"
+#include "GameBase/UserSettings.h"
 
 AAhriAndBearGameModeBase::AAhriAndBearGameModeBase()
 {
@@ -33,6 +34,8 @@ void AAhriAndBearGameModeBase::BeginPlay()
 		//cat->SurvivalComponent->OnCriticalConditionChanged.AddDynamic(this, &AAhriAndBearGameModeBase::OnAnimalCriticalConditionChanged);
 		cat->OnAnimalCaught.AddDynamic(this, &AAhriAndBearGameModeBase::OnAnimalCaught);
 	}
+
+	AccessibilitySettings = UUserSettings::LoadSettingsFromDisc();
 }
 
 void AAhriAndBearGameModeBase::ToNextTask()

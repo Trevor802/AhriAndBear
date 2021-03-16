@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "GameBase/AccessibilitySettings.h"
 #include "AABSurvivalComponent.h"
 #include "AhriAndBearGameModeBase.generated.h"
 
@@ -57,8 +58,8 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Game Mode | Events")
 		FGameOver OnGameOver;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Settings)
-		UUserSettings* userSettings;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Game Mode | Settings | Accessibility")
+		FAccessibilitySettings AccessibilitySettings;
 
 public:
 	AAhriAndBearGameModeBase();
