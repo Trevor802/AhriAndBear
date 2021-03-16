@@ -88,6 +88,7 @@ bool AABInteractiveNewClimb::CanInteract(UCharacterInteractionComponent* interac
 
 void AABInteractiveNewClimb::CallInteract()
 {
+	/*
 	if (bClimbing == true)
 	{
 		return;
@@ -98,6 +99,7 @@ void AABInteractiveNewClimb::CallInteract()
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("To Next"));
 		bClimbing = true;
 	}
+	*/
 	/*
 	else
 	{
@@ -135,7 +137,7 @@ void AABInteractiveNewClimb::IncrementClimbIndex(FVector CharacterLocation, FVec
 	if (FVector::Dist(CharacterLocation, TargetLocation) <= 0.1f)
 	{
 		ClimbPointsIndex++;
-		bClimbing = false;
+		//bClimbing = false;
 
 		if (ClimbPointsIndex >= ClimbPoints.Num())
 		{
