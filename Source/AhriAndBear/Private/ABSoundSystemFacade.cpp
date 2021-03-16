@@ -135,36 +135,33 @@ void UABSoundSystemFacade::ABPlaySoundAtLocation(EAccessibilitySoundType soundTy
 // vvvvvvvvvvvvvvvvvvvvvv
 // Private static methods
 // ^^^^^^^^^^^^^^^^^^^^^^
-UUserSettings* UABSoundSystemFacade::GetVolumeSettings()
+
+const FAccessibilitySettings& UABSoundSystemFacade::GetVolumeSettings()
 {
 	AActor* gameModeActor = UGameplayStatics::GetActorOfClass(GEngine->GetWorld(), AAhriAndBearGameModeBase::StaticClass());
-	if (!gameModeActor) {
-		return nullptr;
-	}
+	ensure(gameModeActor);
+	
 	AAhriAndBearGameModeBase* gameMode = Cast<AAhriAndBearGameModeBase>(gameModeActor);
-	if (!gameMode) return nullptr;
+	ensure(gameMode);
 
-	return gameMode->userSettings;
+	return gameMode->AccessibilitySettings;
 }
 
 float UABSoundSystemFacade::GetMixedVolumeBySoundType(EAccessibilitySoundType st, float inVolume)
 {
-	auto userSettings = GetVolumeSettings();
-	if (!userSettings) {
-		// Let's make sure to report an error here
-		return 1.f;
-	}
-	float masterVolume = userSettings->MasterVolume * inVolume;
+	const FAccessibilitySettings userSettings = GetVolumeSettings();
+	
+	float masterVolume = userSettings.MasterVolume * inVolume;
 
 	switch (st) {
 	case EAccessibilitySoundType::Music:
-		return userSettings->MusicVolume * masterVolume;
+		return userSettings.MusicVolume * masterVolume;
 	case EAccessibilitySoundType::SFX:
-		return userSettings->SoundEffectVolume * masterVolume;
+		return userSettings.SoundEffectVolume * masterVolume;
 	case EAccessibilitySoundType::Dialogue:
-		return userSettings->DialogueVolume * masterVolume;
+		return userSettings.DialogueVolume * masterVolume;
 	case EAccessibilitySoundType::Ambient:
-		return userSettings->AmbientVolume * masterVolume;
+		return userSettings.AmbientVolume * masterVolume;
 	default:
 		UE_LOG(LogTemp, Warning, TEXT("Unknown sound category %s"), st);
 		return 1.f;

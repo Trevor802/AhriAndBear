@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
-#include "Sound/DialogueWave.h"
+#include "../GameBase/AccessibilitySettings.h"
 #include "ABSoundSystemFacade.generated.h"
 
 class UUserSettings;
@@ -217,12 +217,12 @@ public:
 private:
 
 	/**
-	 * Retrieves user's settings.
+	 * Retrieves user's accessibility settings.
 	 * 
 	 * @return
 	 *   The user's settings.
 	 */
-	static UUserSettings* GetVolumeSettings();
+	static const FAccessibilitySettings& GetVolumeSettings();
 
 	/**
 	 * Gets the volume mixed by the sound type.
