@@ -4,13 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "GameBase/AccessibilitySettings.h"
 #include "AABSurvivalComponent.h"
 #include "AhriAndBearGameModeBase.generated.h"
 
 class AABCatCharacter;
 class AABDogCharacter;
-class UUserSettings;
 
 /**
 * Provides the reason why a game 
@@ -57,9 +55,6 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Game Mode | Events")
 		FGameOver OnGameOver;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Game Mode | Settings | Accessibility")
-		FAccessibilitySettings AccessibilitySettings;
 
 public:
 	AAhriAndBearGameModeBase();
