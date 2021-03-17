@@ -13,8 +13,8 @@ void UUserSettings::SaveSettingsToDisc(const FAccessibilitySettings& settings) {
 		userSettings->SoundEffectVolume = settings.SoundEffectVolume;
 		userSettings->DialogueVolume = settings.DialogueVolume;
 		userSettings->ShowSubtitles = settings.ShowSubtitles;
+		UGameplayStatics::SaveGameToSlot(userSettings, GetSaveSlotName(), 0);
 	}
-	//UGameplayStatics::SaveGameToSlot(userSettings, GetSaveSlotName(), 0);
 }
 
 FAccessibilitySettings UUserSettings::LoadSettingsFromDisc() {
