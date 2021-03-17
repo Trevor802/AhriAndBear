@@ -18,11 +18,13 @@ AABScentIndicator::AABScentIndicator()
 	targetPosition = FVector::ZeroVector;
 	myTrailComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Trail Comp"));
 	myTrailComponent->SetupAttachment(RootComponent);
+	stuckTimer = 3.f;
 }
 
 void AABScentIndicator::BeginPlay()
 {
 	Super::BeginPlay();
+	lastFrameLocation = GetActorLocation();
 	//myTrailComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), trailVFX, GetActorLocation(), FRotator::ZeroRotator, (FVector)1.0f, false);
 	//myTrailComponent->Activate(true);
 }
@@ -116,9 +118,10 @@ void AABScentIndicator::Tick(float DeltaTime)
 	if (myReachingTarget)
 	{
 		lifeSpan -= DeltaTime;
-		if (lifeSpan <= 0.f)
-			Destroy();
 	}
+
+	if (lifeSpan <= 0.f)
+		Destroy();
 }
 
 void AABScentIndicator::SetTargetPosition(FVector target)
@@ -159,7 +162,9 @@ void AABScentIndicator::MoveToTarget(float DeltaTime)
 		}
 	}
 	myVelocity = (arrival + avoid).GetSafeNormal() * 100;
-	SetActorLocation(GetActorLocation() + myVelocity * DeltaTime);
+	lastFrameLocation = GetActorLocation();
+	FVector updatedLocation = GetActorLocation() + myVelocity * DeltaTime;
+	SetActorLocation(updatedLocation);
 
 	if (FVector::Distance(targetPosition, GetActorLocation()) <= myReachingRange)
 	{
@@ -172,6 +177,12 @@ void AABScentIndicator::MoveToTarget(float DeltaTime)
 			myReachingTarget = true;
 	}
 
+	if (FVector::Distance(updatedLocation, lastFrameLocation) < 100.f * DeltaTime)
+	{
+		stuckTimer -= DeltaTime;
+		if (stuckTimer <= 0.f)
+			lifeSpan = 0.f;
+	}
 }
 
 bool AABScentIndicator::IsWaypointReachable(const AABScentWaypoint* actor)
