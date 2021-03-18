@@ -33,6 +33,8 @@ void AAhriAndBearGameModeBase::BeginPlay()
 		//cat->SurvivalComponent->OnCriticalConditionChanged.AddDynamic(this, &AAhriAndBearGameModeBase::OnAnimalCriticalConditionChanged);
 		cat->OnAnimalCaught.AddDynamic(this, &AAhriAndBearGameModeBase::OnAnimalCaught);
 	}
+
+	//AccessibilitySettings = UUserSettings::LoadSettingsFromDisc();
 }
 
 void AAhriAndBearGameModeBase::ToNextTask()
