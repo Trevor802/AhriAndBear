@@ -23,10 +23,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void BeginPlay() override;
 	virtual bool CanInteract(UCharacterInteractionComponent* component) const override;
-	//FORCEINLINE virtual bool CanInteract(UCharacterInteractionComponent* component) const override { return !bOpened; }
-	//virtual void BeginInteraction() override;
+	virtual void BeginInteraction() override;
 	virtual void EndInteraction(bool) override;
-	//FORCEINLINE virtual bool CanInteract() override { return true; }
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interactive Object | Gate")
@@ -45,7 +43,9 @@ public:
 	UPROPERTY(Category="Interactive Object | Gate", EditAnywhere)
 		bool CombinationOnlyOpen;
 	UFUNCTION(BlueprintImplementableEvent, Category = "Gameplay")
-		void OnDoorOpened();
+		void OnDoorOpened(bool bResult);
+	UFUNCTION(BlueprintImplementableEvent, Category = "Gameplay")
+		void OnBeginOpen();
 private:
 	bool bOpened;
 };
