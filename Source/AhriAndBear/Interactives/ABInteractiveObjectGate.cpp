@@ -56,6 +56,11 @@ bool AABInteractiveObjectGate::CanInteract(UCharacterInteractionComponent* compo
 		return false;
 	}
 
+	if (bOpened == true)
+	{
+		return false;
+	}
+
 	auto character = Cast<AABAnimalCharacter>(component->GetOwner());
 	AABCatCharacter* catCharacter = Cast<AABCatCharacter>(character);
 
