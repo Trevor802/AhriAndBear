@@ -315,7 +315,10 @@ void AABAnimalCharacter::ChangeMovementMode()
 	}
 	else if (bClimbing == true)
 	{
-		GetCharacterMovement()->SetMovementMode(MOVE_Flying);
+		//GetCharacterMovement()->SetMovementMode(MOVE_Flying);
+		GetCharacterMovement()->StopActiveMovement();
+		GetCharacterMovement()->StopMovementImmediately();
+		GetCharacterMovement()->SetMovementMode(MOVE_None);
 	}
 }
 
