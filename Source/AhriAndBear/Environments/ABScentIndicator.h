@@ -55,11 +55,16 @@ public:
 	AABScentWaypoint* GetReachableWaypoint();
 	void CalculateDirection();
 	void SetNextWaypoint();
+	void StartDissipating();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 		USphereComponent* sensor;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 		float scanRange = 500;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+		UNiagaraComponent* myTrailComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
+		bool bIsDissipating;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning Property")
 		UNiagaraSystem* trailVFX;
 
@@ -77,9 +82,9 @@ private:
 	bool myReachingTarget;
 	float myReachingRange = 30.f;
 	int myCurrentPathNode = 0;
-	UNiagaraComponent* myTrailComponent;
 	float stuckTimer;
 	FVector lastFrameLocation;
+	bool isDestructing = false;
 };
 
 

@@ -9,6 +9,7 @@
 #include "NiagaraComponent.h"
 #include "NiagaraSystem.h"
 #include "NiagaraFunctionLibrary.h"
+#include "NiagaraDataInterfaceColorCurve.h"
 
 AABScentIndicator::AABScentIndicator()
 {
@@ -42,6 +43,12 @@ void AABScentIndicator::CalculateDirection()
 		}
 			
 	}
+}
+
+void AABScentIndicator::StartDissipating()
+{
+	isDestructing = true;
+	bIsDissipating = true;
 }
 
 AABScentWaypoint* AABScentIndicator::GetReachableWaypoint()
@@ -97,12 +104,21 @@ AABScentWaypoint* AABScentIndicator::GetReachableWaypoint()
 void AABScentIndicator::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (lifeSpan <= 0)
+	if (lifeSpan <= 0 && !isDestructing)
 	{
-		myTrailComponent->DestroyComponent();
-		Destroy();
+		StartDissipating();
+		lifeSpan = 100.f;
 	}
-		
+	else if (isDestructing)
+	{
+		lifeSpan -= DeltaTime;
+		if (lifeSpan <= 0.f)
+		{
+			myTrailComponent->DestroyComponent();
+			Destroy();
+		}
+		return;
+	}
 
 	MoveToTarget(DeltaTime);
 
@@ -120,8 +136,11 @@ void AABScentIndicator::Tick(float DeltaTime)
 		lifeSpan -= DeltaTime;
 	}
 
-	if (lifeSpan <= 0.f)
-		Destroy();
+	//if (lifeSpan <= 0.f)
+	//{
+	//	myTrailComponent->DestroyComponent();
+	//	Destroy();
+	//}
 }
 
 void AABScentIndicator::SetTargetPosition(FVector target)

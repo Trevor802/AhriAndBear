@@ -104,12 +104,19 @@ bool AABInteractiveObjectGate::CanInteract(UCharacterInteractionComponent* compo
 		return bDogCanOpen;
 }
 
+void AABInteractiveObjectGate::BeginInteraction()
+{
+	Super::BeginInteraction();
+	OnBeginOpen();
+}
+
 void AABInteractiveObjectGate::EndInteraction(bool bResult)
 {
 	Super::EndInteraction(bResult);
 
 	if (!bResult)
 	{
+		OnDoorOpened(false);
 		return;
 	}
 
@@ -124,5 +131,5 @@ void AABInteractiveObjectGate::EndInteraction(bool bResult)
 		GameMode->ToNextTask();
 	}
 
-	OnDoorOpened();
+	OnDoorOpened(true);
 }
