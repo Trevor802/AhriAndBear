@@ -7,6 +7,8 @@
 #include "Characters/ABCatCharacter.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Engine/World.h"
+#include "DrawDebugHelpers.h"
 
 AABInteractiveNewClimb::AABInteractiveNewClimb()
 {
@@ -53,6 +55,30 @@ void AABInteractiveNewClimb::BeginInteraction()
 			return;
 		}
 		*/
+
+		FHitResult hit;
+		auto c = FCollisionQueryParams(false);
+		c.AddIgnoredActor(catCharacter);
+		auto start = catCharacter->GetActorLocation();
+		auto end = start + FVector(-1000, 0, 0);
+		this->GetWorld()->LineTraceSingleByObjectType(hit, start, end, ECC_WorldStatic, c);
+		/*
+		DrawDebugLine(
+			GetWorld(),
+			start,
+			end,
+			FColor(255, 255, 255),
+			true, // sets weather or not the line is in the world permanently
+			-1.f, 0,
+			5
+		);
+		*/
+		auto a = hit.GetActor();
+		if (a != nullptr) {
+			auto angle = FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(hit.Normal, FVector(0, 0, 1))));
+			catCharacter->TargetClimbingRotation = angle;
+			//GEngine->AddOnScreenDebugMessage(0, 0.5f, FColor::Cyan, FString::Printf(TEXT("Angle: %f"), angle));
+		}
 		catCharacter->bClimbing = true;
 		CatInteractionComponent = InteractingComponent;
 	}
@@ -123,7 +149,7 @@ void AABInteractiveNewClimb::ClimbToNext(float DeltaTime)
 				return;
 			}
 			*/
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("Climbing"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("Climbing"));
 
 			FVector CurrentPosition = FMath::VInterpConstantTo(catCharacter->GetActorLocation(), ClimbPoints[ClimbPointsIndex]->GetActorLocation(), DeltaTime, ClimbSpeed);
 			catCharacter->SetActorLocation(CurrentPosition);
