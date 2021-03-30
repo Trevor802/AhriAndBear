@@ -173,6 +173,8 @@ public:
 		bool bSprinting;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		bool bInteracting;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		bool bClimbing;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 		EAnimalType AnimalType;
 
@@ -193,7 +195,8 @@ public:
 	bool bOrientRotationToMovementSetting;
 
 	bool bInClimbingZone;
-	bool bClimbing;
+	float TargetClimbingRotation;
+	float ClimbingRotationRate;
 
 	UFUNCTION(Category = "Gameplay|Sprint", BlueprintImplementableEvent)
 		void SprintUpdate();
@@ -215,4 +218,6 @@ private:
 	FVector OriginalCameraPosition;
 	float OriginalSpringArmLength;
 	void HideScentFromCat();
+
+	void CheckClimbingRotation();
 };

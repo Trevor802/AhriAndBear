@@ -45,7 +45,7 @@ AABAnimalCharacter::AABAnimalCharacter()
 
 	baseTurnRate = 45.f;
 	baseLookUpRate = 45.f;
-	cameraLerpSpeed = 2.0f;
+	cameraLerpSpeed = 1.0f;
 
 	bWithinRange = false;
 	bIsFollowing = false;
@@ -60,6 +60,8 @@ AABAnimalCharacter::AABAnimalCharacter()
 	bAttached = false;
 
 	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
+
+	ClimbingRotationRate = 2.0f;
 }
 
 bool AABAnimalCharacter::IsInCriticalCondition() const
@@ -101,6 +103,7 @@ void AABAnimalCharacter::Tick(float DeltaTime)
 	ChangeMovementMode();
 	ChangeCameraLocation(DeltaTime);
 	UpdateSprinting(DeltaTime);
+	CheckClimbingRotation();
 }
 
 void AABAnimalCharacter::GetCaught(AActor* byWhom)
@@ -120,6 +123,27 @@ EABAnimalMovementNoiseVolume AABAnimalCharacter::GetCurrentMovementVolume() cons
 	}
 	else {
 		return EABAnimalMovementNoiseVolume::Normal;
+	}
+}
+
+void AABAnimalCharacter::CheckClimbingRotation()
+{
+	GEngine->AddOnScreenDebugMessage(0, 0.5f, FColor::Cyan, FString::Printf(TEXT("Angle: %f"), GetActorRotation().Roll));
+	if (bClimbing == true)
+	{
+		if (GetActorRotation().Pitch <= TargetClimbingRotation)
+		{
+			FQuat Rotation = FQuat(FRotator(ClimbingRotationRate, 0.f, 0.f));
+			AddActorLocalRotation(Rotation, false, 0, ETeleportType::None);
+		}
+	}
+	else
+	{
+		if (GetActorRotation().Pitch >= 0)
+		{
+			FQuat Rotation = FQuat(FRotator(-ClimbingRotationRate, 0.f, 0.f));
+			AddActorLocalRotation(Rotation, false, 0, ETeleportType::None);
+		}
 	}
 }
 
