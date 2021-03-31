@@ -44,7 +44,10 @@ void UABPlayerUIComponent::AddNewspaperWidgetToViewPort()
 
 void UABPlayerUIComponent::RemoveNewspaperWidgetFromViewPort()
 {
-	NewspaperWidget->RemoveFromParent();
+	if (NewspaperWidget)
+	{
+		NewspaperWidget->RemoveFromParent();
+	}
 
 	if (PlayerController)
 	{
