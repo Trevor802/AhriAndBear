@@ -18,6 +18,8 @@ public:
 	TArray<class ALight*> Lights;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	bool bDefaultOn;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+		bool bCurrentOn;
 protected:
 	FORCEINLINE virtual bool CanInteract(UCharacterInteractionComponent*) const override { return true; }
 	virtual void BeginPlay() override;
@@ -25,5 +27,4 @@ protected:
 	virtual void EndInteraction(bool);
 private:
 	void SwitchAllLights(bool);
-	bool bCurrentOn;
 };
