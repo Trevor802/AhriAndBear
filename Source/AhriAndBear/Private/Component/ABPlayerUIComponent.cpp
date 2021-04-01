@@ -28,7 +28,7 @@ void UABPlayerUIComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 
 	PlayerController = Cast<AABPlayerController>(Cast<AABAnimalCharacter>(GetOwner())->GetController());
 
-	if (!NewspaperWidget)
+	if (NewspaperWidget == nullptr)
 	{
 		InitWidgets();
 	}
@@ -48,6 +48,7 @@ void UABPlayerUIComponent::RemoveNewspaperWidgetFromViewPort()
 	if (NewspaperWidget)
 	{
 		NewspaperWidget->RemoveFromParent();
+		NewspaperWidget = nullptr;
 	}
 
 	if (PlayerController)
