@@ -18,11 +18,6 @@ UABPlayerUIComponent::UABPlayerUIComponent()
 void UABPlayerUIComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	PlayerController = Cast<AABPlayerController>(Cast<AABAnimalCharacter>(GetOwner())->GetController());
-
-	InitWidgets();
-	
 }
 
 
@@ -31,6 +26,12 @@ void UABPlayerUIComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	PlayerController = Cast<AABPlayerController>(Cast<AABAnimalCharacter>(GetOwner())->GetController());
+
+	if (!NewspaperWidget)
+	{
+		InitWidgets();
+	}
 }
 
 void UABPlayerUIComponent::AddNewspaperWidgetToViewPort()

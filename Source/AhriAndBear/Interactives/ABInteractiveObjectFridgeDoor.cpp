@@ -98,7 +98,9 @@ void AABInteractiveObjectFridgeDoor::OpenDoor()
 {
 	FQuat Rotation = FQuat(FRotator(0.f, RotationRate, 0.f));
 
-	AddActorLocalRotation(Rotation, false, 0, ETeleportType::None);
+	//AddActorLocalRotation(Rotation, false, 0, ETeleportType::None);
+
+	DoorMesh->AddLocalRotation(Rotation, false, 0, ETeleportType::None);
 }
 
 void AABInteractiveObjectFridgeDoor::StopRotation()
