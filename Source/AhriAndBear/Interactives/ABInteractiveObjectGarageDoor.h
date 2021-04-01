@@ -43,6 +43,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Controller")
 		float TotalPathTime = 4.f;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "GamePlay")
+		bool bOpened;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rotation")
 		bool CanRotate;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rotation")
@@ -51,7 +54,6 @@ public:
 		float RotationRate;
 
 private:
-	bool bOpened;
 	float StartTime;
 
 };
