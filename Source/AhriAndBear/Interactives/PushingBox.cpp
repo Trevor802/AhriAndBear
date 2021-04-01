@@ -90,8 +90,8 @@ void APushingBox::BeginInteraction()
 		bHeld = true;
 
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("attach box"));
-		//collider->SetSimulatePhysics(false);
-		//collider->SetEnableGravity(false);
+		collider->SetSimulatePhysics(false);
+		collider->SetEnableGravity(false);
 		// Not used for now
 		/*if (horizontal)
 		{
@@ -102,14 +102,14 @@ void APushingBox::BeginInteraction()
 			boxMesh->GetBodyInstance()->bLockXTranslation = false;
 		}*/
 
-		//AttachToComponent(character->GetMesh(), FAttachmentTransformRules(EAttachmentRule::KeepWorld, true));
+		AttachToComponent(character->GetMesh(), FAttachmentTransformRules(EAttachmentRule::KeepWorld, true));
 	}
 
 }
 
 void APushingBox::EndInteraction(bool)
 {
-	//DetachFromActor(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
+	DetachFromActor(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
 
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Detach box"));
 	bHeld = false;
