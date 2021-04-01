@@ -27,17 +27,20 @@ void UABPlayerUIComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	PlayerController = Cast<AABPlayerController>(Cast<AABAnimalCharacter>(GetOwner())->GetController());
-
+	/*
 	if (NewspaperWidget == nullptr)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("init widget"));
 		InitWidgets();
 	}
+	*/
 }
 
 void UABPlayerUIComponent::AddNewspaperWidgetToViewPort()
 {
 	if (PlayerController)
 	{
+		InitWidgets();
 		PlayerController->AddWidgetToViewPort(NewspaperWidget);
 		PlayerController->CallReading();
 	}
