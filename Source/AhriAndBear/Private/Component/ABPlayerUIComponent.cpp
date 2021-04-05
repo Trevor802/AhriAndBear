@@ -18,11 +18,6 @@ UABPlayerUIComponent::UABPlayerUIComponent()
 void UABPlayerUIComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	PlayerController = Cast<AABPlayerController>(Cast<AABAnimalCharacter>(GetOwner())->GetController());
-
-	InitWidgets();
-	
 }
 
 
@@ -31,12 +26,21 @@ void UABPlayerUIComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	PlayerController = Cast<AABPlayerController>(Cast<AABAnimalCharacter>(GetOwner())->GetController());
+	/*
+	if (NewspaperWidget == nullptr)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("init widget"));
+		InitWidgets();
+	}
+	*/
 }
 
 void UABPlayerUIComponent::AddNewspaperWidgetToViewPort()
 {
 	if (PlayerController)
 	{
+		InitWidgets();
 		PlayerController->AddWidgetToViewPort(NewspaperWidget);
 		PlayerController->CallReading();
 	}
@@ -44,7 +48,11 @@ void UABPlayerUIComponent::AddNewspaperWidgetToViewPort()
 
 void UABPlayerUIComponent::RemoveNewspaperWidgetFromViewPort()
 {
-	NewspaperWidget->RemoveFromParent();
+	if (NewspaperWidget)
+	{
+		NewspaperWidget->RemoveFromParent();
+		NewspaperWidget = nullptr;
+	}
 
 	if (PlayerController)
 	{
