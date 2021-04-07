@@ -62,6 +62,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 		float scanRange = 500;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+		float moveSpeed = 100;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 		UNiagaraComponent* myTrailComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
 		bool bIsDissipating;

@@ -180,7 +180,7 @@ void AABScentIndicator::MoveToTarget(float DeltaTime)
 			avoid += -helper.G_S_directions[i].GetSafeNormal();
 		}
 	}
-	myVelocity = (arrival + avoid).GetSafeNormal() * 100;
+	myVelocity = (arrival + avoid).GetSafeNormal() * moveSpeed;
 	lastFrameLocation = GetActorLocation();
 	FVector updatedLocation = GetActorLocation() + myVelocity * DeltaTime;
 	SetActorLocation(updatedLocation);
@@ -196,7 +196,7 @@ void AABScentIndicator::MoveToTarget(float DeltaTime)
 			myReachingTarget = true;
 	}
 
-	if (FVector::Distance(updatedLocation, lastFrameLocation) < 100.f * DeltaTime)
+	if (FVector::Distance(updatedLocation, lastFrameLocation) < moveSpeed * DeltaTime)
 	{
 		stuckTimer -= DeltaTime;
 		if (stuckTimer <= 0.f)
