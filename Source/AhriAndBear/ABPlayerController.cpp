@@ -7,6 +7,7 @@
 #include "Components/InputComponent.h"
 #include "UI/InteractionDurationWidget.h"
 #include "Blueprint/UserWidget.h"
+#include "UI/GamepadCompatibleWidget.h"
 
 AABPlayerController::AABPlayerController()
 	: Super()
@@ -54,6 +55,8 @@ void AABPlayerController::SetupInputComponent()
 	AxisBindings.Add(InputComponent->BindAxis("Turn", this, &AABPlayerController::CallTurn));
 	AxisBindings.Add(InputComponent->BindAxis("LookUp", this, &AABPlayerController::CallLookUp));
 	AxisBindings.Add(InputComponent->BindAxis("LookUpRate", this, &AABPlayerController::CallLookUpAtRate));
+	AxisBindings.Add(InputComponent->BindAxis("UI_SelectionChange", this, &AABPlayerController::UI_SelectionChange));
+	AxisBindings.Add(InputComponent->BindAxis("UI_SliderChange", this, &AABPlayerController::UI_SliderChange));
 
 	ActionBindings.Add(InputComponent->BindAction("Catch", IE_Pressed, this, &AABPlayerController::CallInteract));
 	ActionBindings.Add(InputComponent->BindAction("Catch", IE_Released, this, &AABPlayerController::CallStopInteract));
@@ -258,7 +261,7 @@ void AABPlayerController::Pause()
 	}
 	// We currently rely on the pause menu to do this
 	else if (!UGameplayStatics::IsGamePaused(GetWorld())) {
-		pauseMenu = CreateWidget<UUserWidget>(GetWorld(), PauseMenuWidgetClass);
+		pauseMenu = CreateWidget<UGamepadCompatibleWidget>(GetWorld(), PauseMenuWidgetClass);
 
 		if (!pauseMenu) {
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("Pausing failed - pauseMenu not created?"));
@@ -268,6 +271,34 @@ void AABPlayerController::Pause()
 		SetInputMode(FInputModeUIOnly());
 		SetShowMouseCursor(true);
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
+	}
+}
+
+void AABPlayerController::UI_SelectionChange(float value)
+{
+	if (UGameplayStatics::IsGamePaused(GetWorld()) && pauseMenu) {
+		pauseMenu->UIHorizontalSelectionChanged(value);
+	}
+}
+
+void AABPlayerController::UI_SliderChange(float value)
+{
+	if (UGameplayStatics::IsGamePaused(GetWorld()) && pauseMenu) {
+		pauseMenu->UIHorizontalSelectionChanged(value);
+	}
+}
+
+void AABPlayerController::UI_Confirm()
+{
+	if (UGameplayStatics::IsGamePaused(GetWorld()) && pauseMenu) {
+		pauseMenu->UIConfirmPressed();
+	}
+}
+
+void AABPlayerController::UI_Cancel()
+{
+	if (UGameplayStatics::IsGamePaused(GetWorld()) && pauseMenu) {
+		pauseMenu->UICancelPressed();
 	}
 }
 

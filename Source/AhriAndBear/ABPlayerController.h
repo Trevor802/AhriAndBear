@@ -42,6 +42,25 @@ public:
 	void CallStopReading();
 	void Pause();
 
+	/**
+	* Passes this input event over to a GamepadCompatibleWidget.
+	*/
+	void UI_SelectionChange(float value);
+	/**
+	* Passes this input event over to a GamepadCompatibleWidget.
+	*/
+	void UI_SliderChange(float value);
+
+	/**
+	* Passes this input event over to a GamepadCompatibleWidget.
+	*/
+	void UI_Confirm();
+
+	/**
+	* Passes this input event over to a GamepadeCompatibleWidget.
+	*/
+	void UI_Cancel();
+
 	void QuitGame();
 	void Bark();
 
@@ -63,7 +82,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<class UInteractionDurationWidget> WidgetClass;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
-	TSubclassOf<class UUserWidget> PauseMenuWidgetClass;
-	UUserWidget* pauseMenu;
+	TSubclassOf<class UGamepadCompatibleWidget> PauseMenuWidgetClass;
+	UGamepadCompatibleWidget* pauseMenu;
 	class UInteractionDurationWidget* InteractionWidget;
 };
