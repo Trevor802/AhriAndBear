@@ -50,6 +50,6 @@ public:
 private:
 	bool bMoving;
 	bool bCanMove;
-	int PathIndex;
+	int PathIndex = 0;
 	float BikeSpeed;
 };

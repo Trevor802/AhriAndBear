@@ -29,11 +29,14 @@ AABInteractiveBike::AABInteractiveBike()
 
 void AABInteractiveBike::MoveBike(float DeltaTime)
 {
-	if (BikePathPoints.Num() != 0)
+	if (BikePathPoints.Num() != 0 && PathIndex < BikePathPoints.Num() && BikePathPoints[PathIndex] != nullptr)
 	{
 		FVector CurrentPosition = FMath::VInterpConstantTo(GetActorLocation(), BikePathPoints[PathIndex]->GetActorLocation(), DeltaTime, BikeSpeed);
 		SetActorLocation(CurrentPosition);
 		IncrementPathIndex(GetActorLocation(), BikePathPoints[PathIndex]->GetActorLocation());
+	}
+	else {
+		AfterInteraction(false);
 	}
 }
 
