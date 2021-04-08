@@ -64,6 +64,7 @@ void AABPlayerController::SetupInputComponent()
 	ActionBindings.Add(InputComponent->BindAction("Crouch", IE_Released, this, &AABPlayerController::CallStopCrouch));
 	ActionBindings.Add(InputComponent->BindAction("UseSkill", IE_Pressed, this, &AABPlayerController::CallUseAbility));
 	ActionBindings.Add(InputComponent->BindAction("AnimalTogether", IE_Pressed, this, &AABPlayerController::CallFollowing));
+	ActionBindings.Add(InputComponent->BindAction("Pause", IE_Pressed, this, &AABPlayerController::Pause));
 
 	ConstantActionBindings.Add(InputComponent->BindAction("ChangeAnimal", IE_Pressed, this, &AABPlayerController::CallSwitchAnimal));
 	ConstantActionBindings.Add(InputComponent->BindAction("Bark", IE_Pressed, this, &AABPlayerController::Bark));
@@ -246,6 +247,27 @@ void AABPlayerController::CallStopReading()
 	if (AnimalCharacter)
 	{
 		AnimalCharacter->bReading = false;
+	}
+}
+
+void AABPlayerController::Pause()
+{
+	if (PauseMenuWidgetClass == nullptr) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Pause menu widget class has not been set"));
+		return;
+	}
+	// We currently rely on the pause menu to do this
+	else if (!UGameplayStatics::IsGamePaused(GetWorld())) {
+		pauseMenu = CreateWidget<UUserWidget>(GetWorld(), PauseMenuWidgetClass);
+
+		if (!pauseMenu) {
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("Pausing failed - pauseMenu not created?"));
+			return;
+		}
+		pauseMenu->AddToViewport();
+		SetInputMode(FInputModeUIOnly());
+		SetShowMouseCursor(true);
+		UGameplayStatics::SetGamePaused(GetWorld(), true);
 	}
 }
 

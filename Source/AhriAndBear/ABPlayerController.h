@@ -40,7 +40,8 @@ public:
 	void CallStopCrouch();
 	void CallReading();
 	void CallStopReading();
-	
+	void Pause();
+
 	void QuitGame();
 	void Bark();
 
@@ -61,5 +62,8 @@ protected:
 	// Naive implementation, TODO: Move all UIs to a UI Manager class
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<class UInteractionDurationWidget> WidgetClass;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<class UUserWidget> PauseMenuWidgetClass;
+	UUserWidget* pauseMenu;
 	class UInteractionDurationWidget* InteractionWidget;
 };
