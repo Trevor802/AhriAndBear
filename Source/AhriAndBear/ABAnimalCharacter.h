@@ -175,6 +175,10 @@ public:
 		bool bInteracting;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		bool bClimbing;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		bool bPushing;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		bool bPulling;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 		EAnimalType AnimalType;
 
