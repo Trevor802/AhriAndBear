@@ -37,6 +37,7 @@ void AABPlayerController::OnPossess(APawn* Pawn)
 void AABPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
 	if (AnimalCharacter)
 	{
 		AnimalCharacter->UpdateChecking();
@@ -268,7 +269,7 @@ void AABPlayerController::Pause()
 			return;
 		}
 		pauseMenu->AddToViewport();
-		SetInputMode(FInputModeUIOnly());
+		//SetInputMode(FInputModeUIOnly());
 		SetShowMouseCursor(true);
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
 	}

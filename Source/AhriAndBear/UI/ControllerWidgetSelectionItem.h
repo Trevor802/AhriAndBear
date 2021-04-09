@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/Button.h"
+#include "Components/TextBlock.h"
 
 #include "ControllerWidgetSelectionItem.generated.h"
 
@@ -19,6 +20,9 @@ struct AHRIANDBEAR_API FControllerWidgetSelectionItem
 public:
 	UPROPERTY(BlueprintReadWrite, Category="UI|Input")
 	UButton* button;
+
+	UPROPERTY(BlueprintReadWrite, Category="UI|Input")
+	UTextBlock* buttonText;
 
 	UPROPERTY(BlueprintReadWrite, Category = "UI|Input")
 	FUIButtonPressed buttonPressEvent;
