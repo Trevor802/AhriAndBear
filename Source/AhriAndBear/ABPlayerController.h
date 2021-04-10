@@ -81,8 +81,12 @@ protected:
 	// Naive implementation, TODO: Move all UIs to a UI Manager class
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<class UInteractionDurationWidget> WidgetClass;
+	
+	// This is the class of the pause menu widget shown while paused.
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<class UGamepadCompatibleWidget> PauseMenuWidgetClass;
+	// The created pause menu.
 	UGamepadCompatibleWidget* pauseMenu;
+
 	class UInteractionDurationWidget* InteractionWidget;
 };

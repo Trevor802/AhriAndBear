@@ -56,9 +56,7 @@ void AABPlayerController::SetupInputComponent()
 	AxisBindings.Add(InputComponent->BindAxis("Turn", this, &AABPlayerController::CallTurn));
 	AxisBindings.Add(InputComponent->BindAxis("LookUp", this, &AABPlayerController::CallLookUp));
 	AxisBindings.Add(InputComponent->BindAxis("LookUpRate", this, &AABPlayerController::CallLookUpAtRate));
-	AxisBindings.Add(InputComponent->BindAxis("UI_SelectionChange", this, &AABPlayerController::UI_SelectionChange));
-	AxisBindings.Add(InputComponent->BindAxis("UI_SliderChange", this, &AABPlayerController::UI_SliderChange));
-
+	
 	ActionBindings.Add(InputComponent->BindAction("Catch", IE_Pressed, this, &AABPlayerController::CallInteract));
 	ActionBindings.Add(InputComponent->BindAction("Catch", IE_Released, this, &AABPlayerController::CallStopInteract));
 	ActionBindings.Add(InputComponent->BindAction("Jump", IE_Pressed, this, &AABPlayerController::CallJump));
@@ -69,6 +67,25 @@ void AABPlayerController::SetupInputComponent()
 	ActionBindings.Add(InputComponent->BindAction("UseSkill", IE_Pressed, this, &AABPlayerController::CallUseAbility));
 	ActionBindings.Add(InputComponent->BindAction("AnimalTogether", IE_Pressed, this, &AABPlayerController::CallFollowing));
 	ActionBindings.Add(InputComponent->BindAction("Pause", IE_Pressed, this, &AABPlayerController::Pause));
+
+	// UI Input bindings
+	// axis bindings
+	auto& verticalUIInput = InputComponent->BindAxis("UI_SelectionChange", this, &AABPlayerController::UI_SelectionChange);
+	verticalUIInput.bExecuteWhenPaused = true;
+	AxisBindings.Add(verticalUIInput);
+
+	auto& horizontalUIInput = InputComponent->BindAxis("UI_SliderChange", this, &AABPlayerController::UI_SliderChange);
+	horizontalUIInput.bExecuteWhenPaused = true;
+	AxisBindings.Add(horizontalUIInput);
+
+	// button bindings
+	auto& confirmInput = InputComponent->BindAction("UI_Confirm", IE_Pressed, this, &AABPlayerController::UI_Confirm);
+	confirmInput.bExecuteWhenPaused = true;
+	ActionBindings.Add(confirmInput);
+
+	auto& cancelInput = InputComponent->BindAction("UI_Cancel", IE_Pressed, this, &AABPlayerController::UI_Cancel);
+	confirmInput.bExecuteWhenPaused = true;
+	ActionBindings.Add(cancelInput);
 
 	ConstantActionBindings.Add(InputComponent->BindAction("ChangeAnimal", IE_Pressed, this, &AABPlayerController::CallSwitchAnimal));
 	ConstantActionBindings.Add(InputComponent->BindAction("Bark", IE_Pressed, this, &AABPlayerController::Bark));
