@@ -14,49 +14,49 @@
 // My testing showed that this works as expected.
 constexpr float INTERACTABLE_ANGLE_THRESHOLD_RADIANS = 2;
 
-APushingBox::APushingBox()
-{
-	PrimaryActorTick.bCanEverTick = true;
-
-	//sceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("Scene Root"));
-	//SetRootComponent(sceneRoot);
-
-	collider = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Collider"));
-	SetRootComponent(collider);
-	// collider->SetupAttachment(RootComponent);
-	// collider->SetupAttachment(RootComponent);
-	// RootComponent = collider;
-
-	boxMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Box Mesh"));
-	boxMesh->SetupAttachment(RootComponent);
-
-	BoxJoint = CreateDefaultSubobject<UPhysicsConstraintComponent>(TEXT("BoxJoint"));
-	BoxJoint->SetupAttachment(RootComponent);
-	BoxJoint->SetDisableCollision(true);
-
-	trigger_left = CreateDefaultSubobject<UBoxComponent>(TEXT("Left Trigger"));
-	trigger_left->SetupAttachment(RootComponent);
-	//trigger_left->OnComponentBeginOverlap.AddDynamic(this, &APushingBox::OnOverlapBegin_Left);
-
-	trigger_right = CreateDefaultSubobject<UBoxComponent>(TEXT("Right Trigger"));
-	trigger_right->SetupAttachment(RootComponent);
-	//trigger_right->OnComponentBeginOverlap.AddDynamic(this, &APushingBox::OnOverlapBegin_Right);
-
-	trigger_front = CreateDefaultSubobject<UBoxComponent>(TEXT("Forward Trigger"));
-	trigger_front->SetupAttachment(RootComponent);
-	//trigger_front->OnComponentBeginOverlap.AddDynamic(this, &APushingBox::OnOverlapBegin_Front);
-
-	trigger_back = CreateDefaultSubobject<UBoxComponent>(TEXT("Back Trigger"));
-	trigger_back->SetupAttachment(RootComponent);
-	//trigger_back->OnComponentBeginOverlap.AddDynamic(this, &APushingBox::OnOverlapBegin_Back);
-
-	//trigger_left->OnComponentEndOverlap.AddDynamic(this, &APushingBox::OnOverlapEnd);
-	//trigger_right->OnComponentEndOverlap.AddDynamic(this, &APushingBox::OnOverlapEnd);
-	//trigger_front->OnComponentEndOverlap.AddDynamic(this, &APushingBox::OnOverlapEnd);
-	//trigger_back->OnComponentEndOverlap.AddDynamic(this, &APushingBox::OnOverlapEnd);
-
-	bHeld = false;
-}
+//APushingBox::APushingBox()
+//{
+//	PrimaryActorTick.bCanEverTick = true;
+//
+//	//sceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("Scene Root"));
+//	//SetRootComponent(sceneRoot);
+//
+//	collider = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Collider"));
+//	SetRootComponent(collider);
+//	// collider->SetupAttachment(RootComponent);
+//	// collider->SetupAttachment(RootComponent);
+//	// RootComponent = collider;
+//
+//	boxMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Box Mesh"));
+//	boxMesh->SetupAttachment(RootComponent);
+//
+//	BoxJoint = CreateDefaultSubobject<UPhysicsConstraintComponent>(TEXT("BoxJoint"));
+//	BoxJoint->SetupAttachment(RootComponent);
+//	BoxJoint->SetDisableCollision(true);
+//
+//	trigger_left = CreateDefaultSubobject<UBoxComponent>(TEXT("Left Trigger"));
+//	trigger_left->SetupAttachment(RootComponent);
+//	//trigger_left->OnComponentBeginOverlap.AddDynamic(this, &APushingBox::OnOverlapBegin_Left);
+//
+//	trigger_right = CreateDefaultSubobject<UBoxComponent>(TEXT("Right Trigger"));
+//	trigger_right->SetupAttachment(RootComponent);
+//	//trigger_right->OnComponentBeginOverlap.AddDynamic(this, &APushingBox::OnOverlapBegin_Right);
+//
+//	trigger_front = CreateDefaultSubobject<UBoxComponent>(TEXT("Forward Trigger"));
+//	trigger_front->SetupAttachment(RootComponent);
+//	//trigger_front->OnComponentBeginOverlap.AddDynamic(this, &APushingBox::OnOverlapBegin_Front);
+//
+//	trigger_back = CreateDefaultSubobject<UBoxComponent>(TEXT("Back Trigger"));
+//	trigger_back->SetupAttachment(RootComponent);
+//	//trigger_back->OnComponentBeginOverlap.AddDynamic(this, &APushingBox::OnOverlapBegin_Back);
+//
+//	//trigger_left->OnComponentEndOverlap.AddDynamic(this, &APushingBox::OnOverlapEnd);
+//	//trigger_right->OnComponentEndOverlap.AddDynamic(this, &APushingBox::OnOverlapEnd);
+//	//trigger_front->OnComponentEndOverlap.AddDynamic(this, &APushingBox::OnOverlapEnd);
+//	//trigger_back->OnComponentEndOverlap.AddDynamic(this, &APushingBox::OnOverlapEnd);
+//
+//	bHeld = false;
+//}
 
 APushingBox::APushingBox(const FObjectInitializer& OI)
 {
