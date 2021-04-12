@@ -64,6 +64,8 @@ public:
 		UBoxComponent* trigger_back;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 		float pushingSpeed = 100.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
+		bool NotInteractable = true;
 
 private:
 	UFUNCTION()

@@ -127,6 +127,8 @@ bool APushingBox::CanInteract(UCharacterInteractionComponent* interactingCompone
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Can't"));
 		return false;
 	}
+	if (NotInteractable)
+		return false;
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, TEXT("Reeee"));
 	auto actor = GET_CHARACTER(interactingComponent);
 	if (!actor) {
