@@ -21,6 +21,7 @@ AABDogCharacter::AABDogCharacter()
 void AABDogCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	myIsPushing = false;
 }
 
 void AABDogCharacter::UseAbility()
@@ -61,4 +62,14 @@ void AABDogCharacter::CatScentTracker()
 		}
 		
 	}
+}
+
+void AABDogCharacter::EnterPushMode()
+{
+	myIsPushing = true;
+}
+
+void AABDogCharacter::SetInteractState(InteractState i_state)
+{
+	myInteractState = i_state;
 }
