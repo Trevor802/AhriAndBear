@@ -282,7 +282,6 @@ void AABPlayerController::Pause()
 		pauseMenu = CreateWidget<UGamepadCompatibleWidget>(GetWorld(), PauseMenuWidgetClass);
 
 		if (!pauseMenu) {
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("Pausing failed - pauseMenu not created?"));
 			return;
 		}
 		pauseMenu->AddToViewport();
@@ -295,7 +294,7 @@ void AABPlayerController::Pause()
 void AABPlayerController::UI_SelectionChange(float value)
 {
 	if (UGameplayStatics::IsGamePaused(GetWorld()) && pauseMenu) {
-		pauseMenu->UIHorizontalSelectionChanged(value);
+		pauseMenu->UIVerticalSelectionChanged(value);
 	}
 }
 
