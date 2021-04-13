@@ -150,6 +150,7 @@ void APushingBox::BeginInteraction()
 	{
 		dogCharacter->bOrientRotationToMovementSetting = false;
 		dogCharacter->ChangeMovementSetting();
+		dogCharacter->SetInteractState(InteractState::Pulling);
 
 		//BoxJoint->SetConstrainedComponents(boxMesh, "", dogCharacter->GetMesh(), "");
 		bHeld = true;
@@ -209,6 +210,7 @@ void APushingBox::EndInteraction(bool)
 		dogCharacter->DetachFromActor(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
 		dogCharacter->bOrientRotationToMovementSetting = true;
 		dogCharacter->ChangeMovementSetting();
+		dogCharacter->SetInteractState(InteractState::None);
 	}
 
 	myCollisionParams.ClearIgnoredActors();
@@ -348,8 +350,12 @@ void APushingBox::CallMoveForward(float value)
 	{
 		auto character = GET_CHARACTER(InteractingComponent);
 		AABDogCharacter* dogCharacter = Cast<AABDogCharacter>(character);
-		if(dogCharacter)
+		if (dogCharacter)
+		{
 			moveValue = -value;
+			dogCharacter->myIsPulling = moveValue == 0.f ? false : true;
+		}
+			
 		//Super::CallMoveForward(value);
 	}
 }
