@@ -84,7 +84,7 @@ void AABPlayerController::SetupInputComponent()
 	ActionBindings.Add(confirmInput);
 
 	auto& cancelInput = InputComponent->BindAction("UI_Cancel", IE_Pressed, this, &AABPlayerController::UI_Cancel);
-	confirmInput.bExecuteWhenPaused = true;
+	cancelInput.bExecuteWhenPaused = true;
 	ActionBindings.Add(cancelInput);
 
 	ConstantActionBindings.Add(InputComponent->BindAction("ChangeAnimal", IE_Pressed, this, &AABPlayerController::CallSwitchAnimal));
@@ -314,8 +314,10 @@ void AABPlayerController::UI_Confirm()
 
 void AABPlayerController::UI_Cancel()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, TEXT("wopwoakf"));
 	if (UGameplayStatics::IsGamePaused(GetWorld()) && pauseMenu) {
 		pauseMenu->UICancelPressed();
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("AAAH"));
 	}
 }
 
