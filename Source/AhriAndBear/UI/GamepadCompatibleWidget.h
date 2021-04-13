@@ -45,6 +45,12 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "UI|Input")
 		void UICancelPressed();
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "UI|Input")
+		void UIStartPressed();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "UI|Input")
+		void UISelectPressed();
+
 protected:
 	// Protected methods
 	/**
@@ -90,7 +96,7 @@ protected:
 	*/
 	UFUNCTION(BlueprintCallable, Category = "UI|Input")
 		void ChangeMenuSelection(int index, bool triggerEvent);
-	
+
 	/**
 	* Retrieves the currently selected item.
 	*

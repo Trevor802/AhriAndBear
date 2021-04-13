@@ -57,9 +57,14 @@ public:
 	void UI_Confirm();
 
 	/**
-	* Passes this input event over to a GamepadeCompatibleWidget.
+	* Passes this input event over to a GamepadCompatibleWidget.
 	*/
 	void UI_Cancel();
+
+	/**
+	* Passes this input event over to a GamepadCompatibleWidget.
+	*/
+	void UI_Start();
 
 	void QuitGame();
 	void Bark();

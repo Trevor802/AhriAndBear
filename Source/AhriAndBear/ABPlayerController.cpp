@@ -314,10 +314,8 @@ void AABPlayerController::UI_Confirm()
 
 void AABPlayerController::UI_Cancel()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, TEXT("wopwoakf"));
 	if (UGameplayStatics::IsGamePaused(GetWorld()) && pauseMenu) {
 		pauseMenu->UICancelPressed();
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("AAAH"));
 	}
 }
 
@@ -326,6 +324,13 @@ void AABPlayerController::Bark()
 	if (AnimalCharacter && !AnimalCharacter->bReading)
 	{
 		AnimalCharacter->Bark();
+	}
+}
+
+void AABPlayerController::UI_Start()
+{
+	if (UGameplayStatics::IsGamePaused(GetWorld()) && pauseMenu) {
+		pauseMenu->UIStartPressed();
 	}
 }
 

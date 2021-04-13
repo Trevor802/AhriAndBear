@@ -9,6 +9,10 @@ void UGamepadCompatibleWidget::UIConfirmPressed_Implementation() {}
 
 void UGamepadCompatibleWidget::UICancelPressed_Implementation() {}
 
+void UGamepadCompatibleWidget::UIStartPressed_Implementation() {}
+
+void UGamepadCompatibleWidget::UISelectPressed_Implementation() {}
+
 void UGamepadCompatibleWidget::RegisterButton(const FControllerWidgetSelectionItem& item) {
 	widgetItems.Add(item);
 }
