@@ -346,7 +346,10 @@ void APushingBox::CallMoveForward(float value)
 {
 	if (InteractingComponent)
 	{
-		moveValue = -value;
+		auto character = GET_CHARACTER(InteractingComponent);
+		AABDogCharacter* dogCharacter = Cast<AABDogCharacter>(character);
+		if(dogCharacter)
+			moveValue = -value;
 		//Super::CallMoveForward(value);
 	}
 }
