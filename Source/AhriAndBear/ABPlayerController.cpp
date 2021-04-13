@@ -87,6 +87,15 @@ void AABPlayerController::SetupInputComponent()
 	cancelInput.bExecuteWhenPaused = true;
 	ActionBindings.Add(cancelInput);
 
+	auto& startInput = InputComponent->BindAction("UI_Start", IE_Pressed, this, &AABPlayerController::UI_Start);
+	startInput.bExecuteWhenPaused = true;
+	ActionBindings.Add(startInput);
+
+	auto& selectInput = InputComponent->BindAction("UI_Select", IE_Pressed, this, &AABPlayerController::UI_Select);
+	selectInput.bExecuteWhenPaused = true;
+	ActionBindings.Add(selectInput);
+
+
 	ConstantActionBindings.Add(InputComponent->BindAction("ChangeAnimal", IE_Pressed, this, &AABPlayerController::CallSwitchAnimal));
 	ConstantActionBindings.Add(InputComponent->BindAction("Bark", IE_Pressed, this, &AABPlayerController::Bark));
 	ConstantActionBindings.Add(InputComponent->BindAction("ESC", IE_Pressed, this, &AABPlayerController::QuitGame));
@@ -331,6 +340,13 @@ void AABPlayerController::UI_Start()
 {
 	if (UGameplayStatics::IsGamePaused(GetWorld()) && pauseMenu) {
 		pauseMenu->UIStartPressed();
+	}
+}
+
+void AABPlayerController::UI_Select()
+{
+	if (UGameplayStatics::IsGamePaused(GetWorld()) && pauseMenu) {
+		pauseMenu->UISelectPressed();
 	}
 }
 

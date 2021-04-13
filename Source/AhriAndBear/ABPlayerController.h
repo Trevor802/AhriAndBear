@@ -66,6 +66,11 @@ public:
 	*/
 	void UI_Start();
 
+	/**
+	* Passes this input event over to a GamepadCompatibleWidget.
+	*/
+	void UI_Select();
+
 	void QuitGame();
 	void Bark();
 
