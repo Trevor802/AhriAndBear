@@ -24,7 +24,7 @@ class AHRIANDBEAR_API APushingBox : public AInteractive
 	GENERATED_BODY()
 
 public:
-	APushingBox();
+	//APushingBox();
 	APushingBox(const FObjectInitializer& OI);
 	virtual void Tick(float DeltaTime) override;
 

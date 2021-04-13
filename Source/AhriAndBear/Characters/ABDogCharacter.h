@@ -34,6 +34,8 @@ public:
 		TSubclassOf<class AABScentIndicator> scentIndicator;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Animation")
 		InteractState myInteractState = InteractState::None;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Animation")
+		bool myIsPulling = false;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
