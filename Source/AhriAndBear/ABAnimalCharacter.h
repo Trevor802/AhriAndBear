@@ -178,6 +178,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 		EAnimalType AnimalType;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		bool IsHidden;
+
 	bool bAttached;
 
 	UPROPERTY(BlueprintReadWrite)
