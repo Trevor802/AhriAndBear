@@ -211,6 +211,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Character")
 		virtual EABAnimalMovementNoiseVolume GetCurrentMovementVolume() const;
 
+	bool bShowHint;
+	FString HintString;
+
 private:
 	bool bWithinRange;
 	AABInteractiveObjectBase* InteractiveObjectRef;
