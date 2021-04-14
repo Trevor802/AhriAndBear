@@ -25,6 +25,15 @@ public:
 			bool bFromSweep,
 			const FHitResult& SweepResult);
 
+	UFUNCTION()
+		void OnTriggerOverlapEnd
+		(
+			UPrimitiveComponent* OverlappedComp,
+			AActor* OtherActor,
+			UPrimitiveComponent* OtherComp,
+			int32 OtherBodyIndex
+		);
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		UBoxComponent* Trigger;
 
@@ -41,5 +50,8 @@ public:
 
 private:
 	bool bTriggered = false;
+	bool bOverlappingCharacter = false;
+
+	AABAnimalCharacter* tempChara;
 
 };
