@@ -214,6 +214,8 @@ public:
 	bool bShowHint;
 	FString HintString;
 
+	bool bShowInteractiveHint;
+
 private:
 	bool bWithinRange;
 	AABInteractiveObjectBase* InteractiveObjectRef;

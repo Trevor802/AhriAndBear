@@ -6,6 +6,7 @@
 #include "Interactive.h"
 #include "Blueprint/UserWidget.h"
 #include "ABPlayerController.h"
+#include "ABAnimalCharacter.h"
 
 // Sets default values for this component's properties
 UCharacterInteractionComponent::UCharacterInteractionComponent()
@@ -68,6 +69,32 @@ void UCharacterInteractionComponent::TickComponent(float DeltaTime, ELevelTick T
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	TArray<AActor*> actors;
+	GetOverlappingActors(actors, AInteractive::StaticClass());
+	TArray<AInteractive*> interactives;
+	for (auto& a : actors)
+	{
+		AInteractive* interact = Cast<AInteractive>(a);
+		interactives.Add(interact);
+		
+	}
+	AABAnimalCharacter* character = Cast<AABAnimalCharacter>(GetOwner());
+	if (interactives.Num() == 0)
+	{
+		character->bShowInteractiveHint = false;
+		return;
+	}
+	
+	for (auto& i : interactives)
+	{
+		if (i->CanInteract(this))
+		{
+			character->bShowInteractiveHint = true;
+			return;
+		}
+	}
+
+	character->bShowInteractiveHint = false;
 	// ...
 }
 

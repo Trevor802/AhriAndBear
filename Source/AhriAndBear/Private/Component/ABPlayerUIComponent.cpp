@@ -10,6 +10,7 @@ UABPlayerUIComponent::UABPlayerUIComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 	bHintWidgetShowed = false;
+	bInteractiveHintWidgetShowed = false;
 	// ...
 }
 
@@ -36,6 +37,7 @@ void UABPlayerUIComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	}
 	*/
 	CheckHintUI();
+	CheckInteractiveHintUI();
 }
 
 void UABPlayerUIComponent::AddNewspaperWidgetToViewPort()
@@ -78,6 +80,14 @@ void UABPlayerUIComponent::InitHintWidget()
 	}
 }
 
+void UABPlayerUIComponent::InitInteractiveHintWidget()
+{
+	if (PlayerController)
+	{
+		InteractiveHintWidget = CreateWidget<UInteractiveHintWidget>(PlayerController, IntreactiveHintWidgetClass);
+	}
+}
+
 void UABPlayerUIComponent::AddHintWidgetToViewPort()
 {
 	if (PlayerController)
@@ -91,7 +101,6 @@ void UABPlayerUIComponent::CheckHintUI()
 {
 	if (PlayerController && character)
 	{
-
 		if (character->bShowHint && !bHintWidgetShowed)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("open hint"));
@@ -115,5 +124,37 @@ void UABPlayerUIComponent::HideHintUI()
 		HintWidget->HideHint();
 		character->bShowHint = false;
 	}
+}
+
+void UABPlayerUIComponent::AddInteractiveHintWidgetToViewPort()
+{
+	if (PlayerController)
+	{
+		InitInteractiveHintWidget();
+		PlayerController->AddWidgetToViewPort(InteractiveHintWidget);
+	}
+}
+
+void UABPlayerUIComponent::CheckInteractiveHintUI()
+{
+	if (PlayerController && character)
+	{
+		if (character->bShowInteractiveHint && !bInteractiveHintWidgetShowed)
+		{
+			AddInteractiveHintWidgetToViewPort();
+			bInteractiveHintWidgetShowed = true;
+			InteractiveHintWidget->ShowHint();
+		}
+		else if (!character->bShowInteractiveHint && bInteractiveHintWidgetShowed)
+		{
+			HideInteractiveHintUI();
+			bInteractiveHintWidgetShowed = false;
+		}
+	}
+}
+
+void UABPlayerUIComponent::HideInteractiveHintUI()
+{
+	InteractiveHintWidget->HideHint();
 }
 
