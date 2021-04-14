@@ -273,7 +273,7 @@ void APushingBox::UpdateBox()
 
 bool APushingBox::CheckBoxMoveable()
 {
-	FCollisionShape shape = FCollisionShape::MakeBox(collider->GetScaledBoxExtent() * 0.9f);
+	FCollisionShape shape = FCollisionShape::MakeBox(collider->GetScaledBoxExtent() * FVector(0.9f, 0.9f, 0.7f));
 	FHitResult sweepResult;
 	auto character = GET_CHARACTER(InteractingComponent);
 	AABDogCharacter* dogCharacter = Cast<AABDogCharacter>(character);

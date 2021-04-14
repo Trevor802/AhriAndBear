@@ -167,19 +167,19 @@ void AABScentIndicator::MoveToTarget(float DeltaTime)
 	FVector arrival = FVector::ZeroVector;
 	FVector avoid = FVector::ZeroVector;
 	arrival = toTarget.GetSafeNormal();
-	for (int i = 0; i < helper.G_S_directions.Num(); i++)
-	{
-		FHitResult onHit;
-		FCollisionQueryParams CollisionParams;
-		if (GetWorld()->LineTraceSingleByChannel(onHit,
-			GetActorLocation(),
-			GetActorLocation() + helper.G_S_directions[i] * 30,
-			ECollisionChannel::ECC_Visibility,
-			CollisionParams))
-		{
-			avoid += -helper.G_S_directions[i].GetSafeNormal();
-		}
-	}
+	//for (int i = 0; i < helper.G_S_directions.Num(); i++)
+	//{
+	//	FHitResult onHit;
+	//	FCollisionQueryParams CollisionParams;
+	//	if (GetWorld()->LineTraceSingleByChannel(onHit,
+	//		GetActorLocation(),
+	//		GetActorLocation() + helper.G_S_directions[i] * 30,
+	//		ECollisionChannel::ECC_Visibility,
+	//		CollisionParams))
+	//	{
+	//		avoid += -helper.G_S_directions[i].GetSafeNormal();
+	//	}
+	//}
 	myVelocity = (arrival + avoid).GetSafeNormal() * moveSpeed;
 	lastFrameLocation = GetActorLocation();
 	FVector updatedLocation = GetActorLocation() + myVelocity * DeltaTime;
