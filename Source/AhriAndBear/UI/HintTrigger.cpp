@@ -45,7 +45,7 @@ void AHintTrigger::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (tempChara && bOverlappingCharacter && !bTriggered)
+	if (tempChara && bOverlappingCharacter && !bTriggered && !tempChara->bShowHint)
 	{
 		tempChara->HintString = TriggerHintString;
 		tempChara->bShowHint = true;
