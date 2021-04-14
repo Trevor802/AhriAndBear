@@ -7,6 +7,7 @@
 #include "Components/InputComponent.h"
 #include "UI/InteractionDurationWidget.h"
 #include "Blueprint/UserWidget.h"
+#include "UI/GamepadCompatibleWidget.h"
 
 AABPlayerController::AABPlayerController()
 	: Super()
@@ -36,6 +37,7 @@ void AABPlayerController::OnPossess(APawn* Pawn)
 void AABPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
 	if (AnimalCharacter)
 	{
 		AnimalCharacter->UpdateChecking();
@@ -54,7 +56,7 @@ void AABPlayerController::SetupInputComponent()
 	AxisBindings.Add(InputComponent->BindAxis("Turn", this, &AABPlayerController::CallTurn));
 	AxisBindings.Add(InputComponent->BindAxis("LookUp", this, &AABPlayerController::CallLookUp));
 	AxisBindings.Add(InputComponent->BindAxis("LookUpRate", this, &AABPlayerController::CallLookUpAtRate));
-
+	
 	ActionBindings.Add(InputComponent->BindAction("Catch", IE_Pressed, this, &AABPlayerController::CallInteract));
 	ActionBindings.Add(InputComponent->BindAction("Catch", IE_Released, this, &AABPlayerController::CallStopInteract));
 	ActionBindings.Add(InputComponent->BindAction("Jump", IE_Pressed, this, &AABPlayerController::CallJump));
@@ -65,6 +67,34 @@ void AABPlayerController::SetupInputComponent()
 	ActionBindings.Add(InputComponent->BindAction("UseSkill", IE_Pressed, this, &AABPlayerController::CallUseAbility));
 	ActionBindings.Add(InputComponent->BindAction("AnimalTogether", IE_Pressed, this, &AABPlayerController::CallFollowing));
 	ActionBindings.Add(InputComponent->BindAction("Pause", IE_Pressed, this, &AABPlayerController::Pause));
+
+	// UI Input bindings
+	// axis bindings
+	auto& verticalUIInput = InputComponent->BindAxis("UI_SelectionChange", this, &AABPlayerController::UI_SelectionChange);
+	verticalUIInput.bExecuteWhenPaused = true;
+	AxisBindings.Add(verticalUIInput);
+
+	auto& horizontalUIInput = InputComponent->BindAxis("UI_SliderChange", this, &AABPlayerController::UI_SliderChange);
+	horizontalUIInput.bExecuteWhenPaused = true;
+	AxisBindings.Add(horizontalUIInput);
+
+	// button bindings
+	auto& confirmInput = InputComponent->BindAction("UI_Confirm", IE_Pressed, this, &AABPlayerController::UI_Confirm);
+	confirmInput.bExecuteWhenPaused = true;
+	ActionBindings.Add(confirmInput);
+
+	auto& cancelInput = InputComponent->BindAction("UI_Cancel", IE_Pressed, this, &AABPlayerController::UI_Cancel);
+	cancelInput.bExecuteWhenPaused = true;
+	ActionBindings.Add(cancelInput);
+
+	auto& startInput = InputComponent->BindAction("UI_Start", IE_Pressed, this, &AABPlayerController::UI_Start);
+	startInput.bExecuteWhenPaused = true;
+	ActionBindings.Add(startInput);
+
+	auto& selectInput = InputComponent->BindAction("UI_Select", IE_Pressed, this, &AABPlayerController::UI_Select);
+	selectInput.bExecuteWhenPaused = true;
+	ActionBindings.Add(selectInput);
+
 
 	ConstantActionBindings.Add(InputComponent->BindAction("ChangeAnimal", IE_Pressed, this, &AABPlayerController::CallSwitchAnimal));
 	ConstantActionBindings.Add(InputComponent->BindAction("Bark", IE_Pressed, this, &AABPlayerController::Bark));
@@ -258,16 +288,43 @@ void AABPlayerController::Pause()
 	}
 	// We currently rely on the pause menu to do this
 	else if (!UGameplayStatics::IsGamePaused(GetWorld())) {
-		pauseMenu = CreateWidget<UUserWidget>(GetWorld(), PauseMenuWidgetClass);
+		pauseMenu = CreateWidget<UGamepadCompatibleWidget>(GetWorld(), PauseMenuWidgetClass);
 
 		if (!pauseMenu) {
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("Pausing failed - pauseMenu not created?"));
 			return;
 		}
 		pauseMenu->AddToViewport();
-		SetInputMode(FInputModeUIOnly());
+		//SetInputMode(FInputModeUIOnly());
 		SetShowMouseCursor(true);
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
+	}
+}
+
+void AABPlayerController::UI_SelectionChange(float value)
+{
+	if (UGameplayStatics::IsGamePaused(GetWorld()) && pauseMenu) {
+		pauseMenu->UIVerticalSelectionChanged(value);
+	}
+}
+
+void AABPlayerController::UI_SliderChange(float value)
+{
+	if (UGameplayStatics::IsGamePaused(GetWorld()) && pauseMenu) {
+		pauseMenu->UIHorizontalSelectionChanged(value);
+	}
+}
+
+void AABPlayerController::UI_Confirm()
+{
+	if (UGameplayStatics::IsGamePaused(GetWorld()) && pauseMenu) {
+		pauseMenu->UIConfirmPressed();
+	}
+}
+
+void AABPlayerController::UI_Cancel()
+{
+	if (UGameplayStatics::IsGamePaused(GetWorld()) && pauseMenu) {
+		pauseMenu->UICancelPressed();
 	}
 }
 
@@ -276,6 +333,20 @@ void AABPlayerController::Bark()
 	if (AnimalCharacter && !AnimalCharacter->bReading)
 	{
 		AnimalCharacter->Bark();
+	}
+}
+
+void AABPlayerController::UI_Start()
+{
+	if (UGameplayStatics::IsGamePaused(GetWorld()) && pauseMenu) {
+		pauseMenu->UIStartPressed();
+	}
+}
+
+void AABPlayerController::UI_Select()
+{
+	if (UGameplayStatics::IsGamePaused(GetWorld()) && pauseMenu) {
+		pauseMenu->UISelectPressed();
 	}
 }
 

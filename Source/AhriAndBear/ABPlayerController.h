@@ -42,6 +42,35 @@ public:
 	void CallStopReading();
 	void Pause();
 
+	/**
+	* Passes this input event over to a GamepadCompatibleWidget.
+	*/
+	void UI_SelectionChange(float value);
+	/**
+	* Passes this input event over to a GamepadCompatibleWidget.
+	*/
+	void UI_SliderChange(float value);
+
+	/**
+	* Passes this input event over to a GamepadCompatibleWidget.
+	*/
+	void UI_Confirm();
+
+	/**
+	* Passes this input event over to a GamepadCompatibleWidget.
+	*/
+	void UI_Cancel();
+
+	/**
+	* Passes this input event over to a GamepadCompatibleWidget.
+	*/
+	void UI_Start();
+
+	/**
+	* Passes this input event over to a GamepadCompatibleWidget.
+	*/
+	void UI_Select();
+
 	void QuitGame();
 	void Bark();
 
@@ -62,8 +91,12 @@ protected:
 	// Naive implementation, TODO: Move all UIs to a UI Manager class
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<class UInteractionDurationWidget> WidgetClass;
+	
+	// This is the class of the pause menu widget shown while paused.
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
-	TSubclassOf<class UUserWidget> PauseMenuWidgetClass;
-	UUserWidget* pauseMenu;
+	TSubclassOf<class UGamepadCompatibleWidget> PauseMenuWidgetClass;
+	// The created pause menu.
+	UGamepadCompatibleWidget* pauseMenu;
+
 	class UInteractionDurationWidget* InteractionWidget;
 };
