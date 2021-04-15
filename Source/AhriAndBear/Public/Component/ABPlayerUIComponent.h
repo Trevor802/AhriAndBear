@@ -9,6 +9,7 @@
 #include "UI/NewspaperWidget.h"
 #include "UI/HintWidget.h"
 #include "UI/InteractiveHintWidget.h"
+#include "UI/EndWidget.h"
 #include "ABPlayerController.h"
 #include "ABAnimalCharacter.h"
 #include "ABPlayerUIComponent.generated.h"
@@ -29,6 +30,7 @@ protected:
 	void InitNewsWidget();
 	void InitHintWidget();
 	void InitInteractiveHintWidget();
+	void InitEndWidget();
 
 public:	
 	// Called every frame
@@ -45,12 +47,16 @@ public:
 	void CheckInteractiveHintUI();
 	void HideInteractiveHintUI();
 
+	void AddEndWidgetToViewPort();
+	void CheckEndWidget();
+
 private:
 	AABPlayerController* PlayerController;
 	AABAnimalCharacter* character;
 
 	bool bHintWidgetShowed;
 	bool bInteractiveHintWidgetShowed;
+	bool bEndWidgetShowed;
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 		TSubclassOf<class UNewspaperWidget> NewspaperWidgetClass;
@@ -63,6 +69,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 		TSubclassOf<class UInteractiveHintWidget> IntreactiveHintWidgetClass;
 	class UInteractiveHintWidget* InteractiveHintWidget;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+		TSubclassOf<class UEndWidget> EndWidgetClass;
+	class UEndWidget* EndWidget;
 
 protected:
 	FTimerHandle TimerHandle;

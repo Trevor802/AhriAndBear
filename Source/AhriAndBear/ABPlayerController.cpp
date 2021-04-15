@@ -205,6 +205,12 @@ void AABPlayerController::CallStopSprint()
 
 void AABPlayerController::CallInteract()
 {
+	if (AnimalCharacter && AnimalCharacter->bShowEndWidget)
+	{
+		UGameplayStatics::OpenLevel(GetWorld(), "MenuLevel");
+		return;
+	}
+
 	if (AnimalCharacter && !AnimalCharacter->bReading)
 	{
 		auto interactionComponent = AnimalCharacter->FindComponentByClass<UCharacterInteractionComponent>();

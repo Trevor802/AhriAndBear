@@ -38,6 +38,7 @@ void UABPlayerUIComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	*/
 	CheckHintUI();
 	CheckInteractiveHintUI();
+	CheckEndWidget();
 }
 
 void UABPlayerUIComponent::AddNewspaperWidgetToViewPort()
@@ -85,6 +86,14 @@ void UABPlayerUIComponent::InitInteractiveHintWidget()
 	if (PlayerController)
 	{
 		InteractiveHintWidget = CreateWidget<UInteractiveHintWidget>(PlayerController, IntreactiveHintWidgetClass);
+	}
+}
+
+void UABPlayerUIComponent::InitEndWidget()
+{
+	if (PlayerController)
+	{
+		EndWidget = CreateWidget<UEndWidget>(PlayerController, EndWidgetClass);
 	}
 }
 
@@ -156,5 +165,28 @@ void UABPlayerUIComponent::CheckInteractiveHintUI()
 void UABPlayerUIComponent::HideInteractiveHintUI()
 {
 	InteractiveHintWidget->HideHint();
+}
+
+void UABPlayerUIComponent::AddEndWidgetToViewPort()
+{
+	if (PlayerController)
+	{
+		InitEndWidget();
+		PlayerController->AddWidgetToViewPort(EndWidget);
+	}
+}
+
+void UABPlayerUIComponent::CheckEndWidget()
+{
+	if (PlayerController && character)
+	{
+		if (character->bShowEndWidget && !bEndWidgetShowed)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Open end widget"));
+			AddEndWidgetToViewPort();
+			bEndWidgetShowed = true;
+			EndWidget->ShowEnd();
+		}
+	}
 }
 

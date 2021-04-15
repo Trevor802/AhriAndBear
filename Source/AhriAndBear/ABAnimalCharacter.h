@@ -216,6 +216,8 @@ public:
 
 	bool bShowInteractiveHint;
 
+	bool bShowEndWidget;
+
 private:
 	bool bWithinRange;
 	AABInteractiveObjectBase* InteractiveObjectRef;
