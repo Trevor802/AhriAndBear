@@ -10,6 +10,7 @@
 #include "Components/PrimitiveComponent.h"
 #include "Characters/ABDogCharacter.h"
 #include "Math/TransformNonVectorized.h"
+#include "DrawDebugHelpers.h"
 
 // My testing showed that this works as expected.
 constexpr float INTERACTABLE_ANGLE_THRESHOLD_RADIANS = 2;
@@ -127,6 +128,8 @@ bool APushingBox::CanInteract(UCharacterInteractionComponent* interactingCompone
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Can't"));
 		return false;
 	}
+	if (myInteractPosition != InteractPosition::None)
+		return false;
 	if (NotInteractable)
 		return false;
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, TEXT("Reeee"));
@@ -146,7 +149,7 @@ void APushingBox::BeginInteraction()
 {
 	auto character = GET_CHARACTER(InteractingComponent);
 	AABDogCharacter* dogCharacter = Cast<AABDogCharacter>(character);
-	if (dogCharacter && myInteractPosition != InteractPosition::None)
+	if (dogCharacter)
 	{
 		dogCharacter->bOrientRotationToMovementSetting = false;
 		dogCharacter->ChangeMovementSetting();
@@ -154,6 +157,7 @@ void APushingBox::BeginInteraction()
 
 		//BoxJoint->SetConstrainedComponents(boxMesh, "", dogCharacter->GetMesh(), "");
 		bHeld = true;
+		CheckInteractDirection();
 
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("attach box"));
 		//collider->SetSimulatePhysics(false);
@@ -164,32 +168,32 @@ void APushingBox::BeginInteraction()
 		characterTransform = dogCharacter->GetActorTransform();
 		myCollisionParams.AddIgnoredActor(dogCharacter);
 		// Setup direction 
-		switch (myInteractPosition)
-		{
-		case InteractPosition::Front:
-			myPushDirection = GetActorForwardVector();
-			currentTrigger = trigger_front;
-			interactTransform = trigger_front->GetComponentTransform();
-			break;
-		case InteractPosition::Back:
-			myPushDirection = -GetActorForwardVector();
-			currentTrigger = trigger_back;
-			interactTransform = trigger_back->GetComponentTransform();
-			break;
-		case InteractPosition::Left:
-			myPushDirection = -GetActorRightVector();
-			currentTrigger = trigger_left;
-			interactTransform = trigger_left->GetComponentTransform();
-			break;
-		case InteractPosition::Right:
-			myPushDirection = GetActorRightVector();
-			currentTrigger = trigger_right;
-			interactTransform = trigger_right->GetComponentTransform();
-			break;
-		default:
-			myPushDirection = GetActorForwardVector();
-			break;
-		}
+		//switch (myInteractPosition)
+		//{
+		//case InteractPosition::Front:
+		//	myPushDirection = GetActorForwardVector();
+		//	currentTrigger = trigger_front;
+		//	interactTransform = trigger_front->GetComponentTransform();
+		//	break;
+		//case InteractPosition::Back:
+		//	myPushDirection = -GetActorForwardVector();
+		//	currentTrigger = trigger_back;
+		//	interactTransform = trigger_back->GetComponentTransform();
+		//	break;
+		//case InteractPosition::Left:
+		//	myPushDirection = -GetActorRightVector();
+		//	currentTrigger = trigger_left;
+		//	interactTransform = trigger_left->GetComponentTransform();
+		//	break;
+		//case InteractPosition::Right:
+		//	myPushDirection = GetActorRightVector();
+		//	currentTrigger = trigger_right;
+		//	interactTransform = trigger_right->GetComponentTransform();
+		//	break;
+		//default:
+		//	myPushDirection = GetActorForwardVector();
+		//	break;
+		//}
 	}
 
 }
@@ -219,38 +223,114 @@ void APushingBox::EndInteraction(bool)
 	moveValue = 0.f;
 	currentTrigger = nullptr;
 	isInPosition = false;
+	myInteractPosition = InteractPosition::None;
 	//collider->SetSimulatePhysics(true);
 	//collider->SetEnableGravity(true);
+}
+
+void APushingBox::CheckInteractDirection()
+{
+	FCollisionShape shape = FCollisionShape::MakeBox(collider->GetScaledBoxExtent() * FVector(0.9f, 0.9f, 0.7f));
+	TArray<FHitResult> sweepResults;
+	FCollisionQueryParams params;
+	params.AddIgnoredActor(this);
+
+	FVector sweepEndPosition = GetActorLocation() + GetActorForwardVector() * collider->GetScaledBoxExtent().X * 2;
+	GetWorld()->SweepMultiByChannel(sweepResults, sweepEndPosition, sweepEndPosition, collider->GetComponentRotation().Quaternion(), ECC_Visibility, shape, params);
+	for (auto& hit : sweepResults)
+	{
+		if (Cast<AABDogCharacter>(hit.Actor))
+		{
+			myPushDirection = GetActorForwardVector();
+			currentTrigger = trigger_front;
+			interactTransform = trigger_front->GetComponentTransform();
+			myInteractPosition = InteractPosition::Front;
+		}
+	}
+	//DrawDebugBox(GetWorld(), sweepEndPosition, shape.GetExtent(), collider->GetComponentRotation().Quaternion(), FColor::Red, false, 2.f);
+
+	sweepResults.Empty();
+	sweepEndPosition = GetActorLocation() - GetActorForwardVector() * collider->GetScaledBoxExtent().X * 2;
+	GetWorld()->SweepMultiByChannel(sweepResults, sweepEndPosition, sweepEndPosition, collider->GetComponentRotation().Quaternion(), ECC_Visibility, shape, params);
+	for (auto& hit : sweepResults)
+	{
+		if (Cast<AABDogCharacter>(hit.Actor))
+		{
+			myPushDirection = -GetActorForwardVector();
+			currentTrigger = trigger_back;
+			interactTransform = trigger_back->GetComponentTransform();
+			myInteractPosition = InteractPosition::Back;
+		}
+	}
+	//DrawDebugBox(GetWorld(), sweepEndPosition, shape.GetExtent(), collider->GetComponentRotation().Quaternion(), FColor::Red, false, 2.f);
+
+	sweepResults.Empty();
+	sweepEndPosition = GetActorLocation() + GetActorRightVector() * collider->GetScaledBoxExtent().Y * 2;
+	GetWorld()->SweepMultiByChannel(sweepResults, sweepEndPosition, sweepEndPosition, collider->GetComponentRotation().Quaternion(), ECC_Visibility, shape, params);
+	for (auto& hit : sweepResults)
+	{
+		if (Cast<AABDogCharacter>(hit.Actor))
+		{
+			myPushDirection = GetActorRightVector();
+			currentTrigger = trigger_right;
+			interactTransform = trigger_right->GetComponentTransform();
+			myInteractPosition = InteractPosition::Right;
+		}
+	}
+	//DrawDebugBox(GetWorld(), sweepEndPosition, shape.GetExtent(), collider->GetComponentRotation().Quaternion(), FColor::Red, false, 2.f);
+
+	sweepResults.Empty();
+	sweepEndPosition = GetActorLocation() - GetActorRightVector() * collider->GetScaledBoxExtent().Y * 2;
+	GetWorld()->SweepMultiByChannel(sweepResults, sweepEndPosition, sweepEndPosition, collider->GetComponentRotation().Quaternion(), ECC_Visibility, shape, params);
+	for (auto& hit : sweepResults)
+	{
+		if (Cast<AABDogCharacter>(hit.Actor))
+		{
+			myPushDirection = -GetActorRightVector();
+			currentTrigger = trigger_left;
+			interactTransform = trigger_left->GetComponentTransform();
+			myInteractPosition = InteractPosition::Left;
+		}
+	}
+	//DrawDebugBox(GetWorld(), sweepEndPosition, shape.GetExtent(), collider->GetComponentRotation().Quaternion(), FColor::Red, false, 2.f);
+	//if (GetWorld()->SweepSingleByChannel(
+	//	sweepResult,
+	//	sweepStartPosition,
+	//	sweepStartPosition,
+	//	collider->GetComponentRotation().Quaternion(),
+	//	ECC_Visibility,
+	//	shape,
+	//	myCollisionParams))
 }
 
 void APushingBox::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	UpdateBox();
-	if (bHeld && !isInPosition)
-	{
-		auto character = GET_CHARACTER(InteractingComponent);
-		AABDogCharacter* dogCharacter = Cast<AABDogCharacter>(character);
-		if (dogCharacter)
-		{
-			// Lerp into push position
-			float lerpProgress = FMath::Clamp(enterPositionTimer / enterPositionDuration, 0.f, 1.f);
-			FVector lerpPos = FMath::Lerp(characterTransform.GetLocation(), currentTrigger->GetComponentLocation(), lerpProgress);
-			FRotator lerpRot = FMath::Lerp(characterTransform.GetRotation().Rotator(), currentTrigger->GetComponentRotation(), lerpProgress);
-			//dogCharacter->SetActorLocation(lerpPos);
-			dogCharacter->SetActorLocationAndRotation(lerpPos, lerpRot.Quaternion());
-			enterPositionTimer += DeltaTime;
+	//if (bHeld && !isInPosition)
+	//{
+	//	auto character = GET_CHARACTER(InteractingComponent);
+	//	AABDogCharacter* dogCharacter = Cast<AABDogCharacter>(character);
+	//	if (dogCharacter)
+	//	{
+	//		// Lerp into push position
+	//		float lerpProgress = FMath::Clamp(enterPositionTimer / enterPositionDuration, 0.f, 1.f);
+	//		FVector lerpPos = FMath::Lerp(characterTransform.GetLocation(), currentTrigger->GetComponentLocation(), lerpProgress);
+	//		FRotator lerpRot = FMath::Lerp(characterTransform.GetRotation().Rotator(), currentTrigger->GetComponentRotation(), lerpProgress);
+	//		//dogCharacter->SetActorLocation(lerpPos);
+	//		dogCharacter->SetActorLocationAndRotation(lerpPos, lerpRot.Quaternion());
+	//		enterPositionTimer += DeltaTime;
 
-			if (lerpProgress >= 1.f)
-			{
-				enterPositionTimer = 0.f;
-				isInPosition = true;
-			}
-		}
-		
-	}
+	//		if (lerpProgress >= 1.f)
+	//		{
+	//			enterPositionTimer = 0.f;
+	//			isInPosition = true;
+	//		}
+	//	}
+	//	
+	//}
 
-	if (myInteractPosition != InteractPosition::None && moveValue != 0.f && isInPosition)
+	if (myInteractPosition != InteractPosition::None && moveValue != 0.f)
 	{
 		if (CheckBoxMoveable())
 		{
@@ -278,10 +358,12 @@ bool APushingBox::CheckBoxMoveable()
 	auto character = GET_CHARACTER(InteractingComponent);
 	AABDogCharacter* dogCharacter = Cast<AABDogCharacter>(character);
 	
-	FVector sweepStartPosition = moveValue < 0.f ? GetActorLocation() : dogCharacter->GetActorLocation();
+	FVector sweepStartPosition = moveValue < 0.f ? GetActorLocation() : (dogCharacter->GetActorLocation() * FVector(1, 1, 0) + GetActorLocation() * FVector(0,0,1));
 	FVector sweepEndPosition = moveValue < 0.f ?
 		GetActorLocation() + (myPushDirection * collider->GetScaledBoxExtent() / 2 + myPushDirection * 20.f)
-		: (dogCharacter->GetActorLocation() - currentTrigger->GetForwardVector() * 50.f);
+		: ((dogCharacter->GetActorLocation() - currentTrigger->GetForwardVector() * 50.f) * FVector(1,1,0) + GetActorLocation() * FVector(0, 0, 1));
+
+	//DrawDebugBox(GetWorld(), sweepEndPosition, shape.GetExtent(), collider->GetComponentRotation().Quaternion(), FColor::Red);
 	
 	if (GetWorld()->SweepSingleByChannel(
 		sweepResult,
