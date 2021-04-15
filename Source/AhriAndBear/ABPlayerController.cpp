@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "ABPlayerController.h"
+
 #include "Engine/World.h"
 #include "Interactives/CharacterInteractionComponent.h"
 #include "ABPlayerUIComponent.h"
@@ -20,6 +21,12 @@ void AABPlayerController::BeginPlay()
 	Super::BeginPlay();
 	InteractionWidget = CreateWidget<UInteractionDurationWidget>(this, WidgetClass);
 	InteractionWidget->AddToViewport();
+
+	auto gameMode = Cast<AAhriAndBearGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (gameMode)
+	{
+		gameMode->OnGameOver.AddDynamic(this, &AABPlayerController::HandleGameOver);
+	}
 }
 
 void AABPlayerController::OnPossess(APawn* Pawn)
@@ -294,12 +301,12 @@ void AABPlayerController::Pause()
 	}
 	// We currently rely on the pause menu to do this
 	else if (!UGameplayStatics::IsGamePaused(GetWorld())) {
-		pauseMenu = CreateWidget<UGamepadCompatibleWidget>(GetWorld(), PauseMenuWidgetClass);
+		currentMenu = CreateWidget<UGamepadCompatibleWidget>(GetWorld(), PauseMenuWidgetClass);
 
-		if (!pauseMenu) {
+		if (!currentMenu) {
 			return;
 		}
-		pauseMenu->AddToViewport();
+		currentMenu->AddToViewport();
 		//SetInputMode(FInputModeUIOnly());
 		SetShowMouseCursor(true);
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
@@ -308,29 +315,29 @@ void AABPlayerController::Pause()
 
 void AABPlayerController::UI_SelectionChange(float value)
 {
-	if (UGameplayStatics::IsGamePaused(GetWorld()) && pauseMenu) {
-		pauseMenu->UIVerticalSelectionChanged(value);
+	if (UGameplayStatics::IsGamePaused(GetWorld()) && currentMenu) {
+		currentMenu->UIVerticalSelectionChanged(value);
 	}
 }
 
 void AABPlayerController::UI_SliderChange(float value)
 {
-	if (UGameplayStatics::IsGamePaused(GetWorld()) && pauseMenu) {
-		pauseMenu->UIHorizontalSelectionChanged(value);
+	if (UGameplayStatics::IsGamePaused(GetWorld()) && currentMenu) {
+		currentMenu->UIHorizontalSelectionChanged(value);
 	}
 }
 
 void AABPlayerController::UI_Confirm()
 {
-	if (UGameplayStatics::IsGamePaused(GetWorld()) && pauseMenu) {
-		pauseMenu->UIConfirmPressed();
+	if (UGameplayStatics::IsGamePaused(GetWorld()) && currentMenu) {
+		currentMenu->UIConfirmPressed();
 	}
 }
 
 void AABPlayerController::UI_Cancel()
 {
-	if (UGameplayStatics::IsGamePaused(GetWorld()) && pauseMenu) {
-		pauseMenu->UICancelPressed();
+	if (UGameplayStatics::IsGamePaused(GetWorld()) && currentMenu) {
+		currentMenu->UICancelPressed();
 	}
 }
 
@@ -344,15 +351,15 @@ void AABPlayerController::Bark()
 
 void AABPlayerController::UI_Start()
 {
-	if (UGameplayStatics::IsGamePaused(GetWorld()) && pauseMenu) {
-		pauseMenu->UIStartPressed();
+	if (UGameplayStatics::IsGamePaused(GetWorld()) && currentMenu) {
+		currentMenu->UIStartPressed();
 	}
 }
 
 void AABPlayerController::UI_Select()
 {
-	if (UGameplayStatics::IsGamePaused(GetWorld()) && pauseMenu) {
-		pauseMenu->UISelectPressed();
+	if (UGameplayStatics::IsGamePaused(GetWorld()) && currentMenu) {
+		currentMenu->UISelectPressed();
 	}
 }
 
@@ -404,5 +411,17 @@ void AABPlayerController::RemoveWidgetFromViewPort(UUserWidget* Widget)
 {
 	Widget->SetVisibility(ESlateVisibility::Hidden);
 	Widget->RemoveFromViewport();
+}
+
+void AABPlayerController::HandleGameOver(const FGameOverInfo& info)
+{
+	SetInputMode(FInputModeUIOnly());
+	SetShowMouseCursor(true);
+	currentMenu = CreateWidget<UGamepadCompatibleWidget>(GetWorld(), GameOverMenuClass);
+
+	if (!currentMenu) {
+		return;
+	}
+	currentMenu->AddToViewport();
 }
 
