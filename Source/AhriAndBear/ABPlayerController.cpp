@@ -23,8 +23,10 @@ void AABPlayerController::BeginPlay()
 	InteractionWidget->AddToViewport();
 
 	auto gameMode = Cast<AAhriAndBearGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Yaha!"));
 	if (gameMode)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Did it!"));
 		gameMode->OnGameOver.AddDynamic(this, &AABPlayerController::HandleGameOver);
 	}
 }
