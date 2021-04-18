@@ -255,7 +255,7 @@ void APushingBox::CheckInteractDirection()
 			myInteractPosition = InteractPosition::Front;
 		}
 	}
-	DrawDebugBox(GetWorld(), sweepEndPosition, shape.GetExtent(), collider->GetComponentRotation().Quaternion(), FColor::Red, false, 2.f);
+	//DrawDebugBox(GetWorld(), sweepEndPosition, shape.GetExtent(), collider->GetComponentRotation().Quaternion(), FColor::Red, false, 2.f);
 
 	sweepResults.Empty();
 	sweepEndPosition = GetActorLocation() - GetActorForwardVector() * (collider->GetScaledBoxExtent().X * 2 + 10.f);
@@ -270,7 +270,7 @@ void APushingBox::CheckInteractDirection()
 			myInteractPosition = InteractPosition::Back;
 		}
 	}
-	DrawDebugBox(GetWorld(), sweepEndPosition, shape.GetExtent(), collider->GetComponentRotation().Quaternion(), FColor::Red, false, 2.f);
+	//DrawDebugBox(GetWorld(), sweepEndPosition, shape.GetExtent(), collider->GetComponentRotation().Quaternion(), FColor::Red, false, 2.f);
 
 	sweepResults.Empty();
 	sweepEndPosition = GetActorLocation() + GetActorRightVector() * (collider->GetScaledBoxExtent().Y * 2 + 10.f);
@@ -285,7 +285,7 @@ void APushingBox::CheckInteractDirection()
 			myInteractPosition = InteractPosition::Right;
 		}
 	}
-	DrawDebugBox(GetWorld(), sweepEndPosition, shape.GetExtent(), collider->GetComponentRotation().Quaternion(), FColor::Red, false, 2.f);
+	//DrawDebugBox(GetWorld(), sweepEndPosition, shape.GetExtent(), collider->GetComponentRotation().Quaternion(), FColor::Red, false, 2.f);
 
 	sweepResults.Empty();
 	sweepEndPosition = GetActorLocation() - GetActorRightVector() * (collider->GetScaledBoxExtent().Y * 2 + 10.f);
@@ -300,7 +300,7 @@ void APushingBox::CheckInteractDirection()
 			myInteractPosition = InteractPosition::Left;
 		}
 	}
-	DrawDebugBox(GetWorld(), sweepEndPosition, shape.GetExtent(), collider->GetComponentRotation().Quaternion(), FColor::Red, false, 2.f);
+	//DrawDebugBox(GetWorld(), sweepEndPosition, shape.GetExtent(), collider->GetComponentRotation().Quaternion(), FColor::Red, false, 2.f);
 	//if (GetWorld()->SweepSingleByChannel(
 	//	sweepResult,
 	//	sweepStartPosition,
@@ -385,7 +385,7 @@ bool APushingBox::CheckBoxMoveable()
 		GetActorLocation() + (myPushDirection * collider->GetScaledBoxExtent() / 2 + myPushDirection * 20.f)
 		: ((dogCharacter->GetActorLocation() ) * FVector(1,1,0) + GetActorLocation() * FVector(0, 0, 1)); // - currentTrigger->GetForwardVector() * 50.f
 
-	DrawDebugBox(GetWorld(), sweepEndPosition, shape.GetExtent(), collider->GetComponentRotation().Quaternion(), FColor::Red);
+	//DrawDebugBox(GetWorld(), sweepEndPosition, shape.GetExtent(), collider->GetComponentRotation().Quaternion(), FColor::Red);
 	
 	if (GetWorld()->SweepSingleByChannel(
 		sweepResult,
