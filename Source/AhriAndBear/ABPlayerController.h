@@ -107,5 +107,6 @@ protected:
 	class UInteractionDurationWidget* InteractionWidget;
 
 private:
+	UFUNCTION()
 	void HandleGameOver(const FGameOverInfo& info);
 };
