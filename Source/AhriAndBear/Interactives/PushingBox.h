@@ -114,6 +114,7 @@ private:
 	void LockMeshLocation();
 	void EnterInteractPosition();
 	void CheckInteractDirection();
+	bool IsSameDirection(InteractPosition);
 
 	bool horizontal;
 	bool verticle;
