@@ -69,7 +69,7 @@ void AAhriAndBearGameModeBase::OnAnimalCaught(AActor* captor) {
 
 void AAhriAndBearGameModeBase::EndGame(EGameOverReason reason)
 {
-	UGameplayStatics::SetGamePaused(GetWorld(), true);
 	// If we need more information, the game mode can probably work it out.
 	OnGameOver.Broadcast(FGameOverInfo(reason));
+	UGameplayStatics::SetGamePaused(GetWorld(), true);
 }
