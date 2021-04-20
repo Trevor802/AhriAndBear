@@ -417,7 +417,6 @@ void AABPlayerController::RemoveWidgetFromViewPort(UUserWidget* Widget)
 
 void AABPlayerController::HandleGameOver(const FGameOverInfo& info)
 {
-	SetInputMode(FInputModeUIOnly());
 	SetShowMouseCursor(true);
 	currentMenu = CreateWidget<UGamepadCompatibleWidget>(GetWorld(), GameOverMenuClass);
 
