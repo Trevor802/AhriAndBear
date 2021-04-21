@@ -71,14 +71,5 @@ void AAhriAndBearGameModeBase::EndGame(EGameOverReason reason)
 {
 	// If we need more information, the game mode can probably work it out.
 	OnGameOver.Broadcast(FGameOverInfo(reason));
-
-	TArray<AActor*> allActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), allActors);
-	for (AActor* actor : allActors) {
-		actor->SetActorTickEnabled(false);
-	}
-
-	auto playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	playerController->SetInputMode(FInputModeUIOnly());
-	playerController->bShowMouseCursor = true;
+	UGameplayStatics::SetGamePaused(GetWorld(), true);
 }

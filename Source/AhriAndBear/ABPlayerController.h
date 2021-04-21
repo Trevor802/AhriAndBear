@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "ABAnimalCharacter.h"
+#include "AhriAndBearGameModeBase.h"
 #include "ABPlayerController.generated.h"
 /**
  * 
@@ -95,8 +96,17 @@ protected:
 	// This is the class of the pause menu widget shown while paused.
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<class UGamepadCompatibleWidget> PauseMenuWidgetClass;
-	// The created pause menu.
-	UGamepadCompatibleWidget* pauseMenu;
+
+	// The class of game over menu that shows during game over.
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<class UGamepadCompatibleWidget> GameOverMenuClass;
+
+	// The current menu.
+	UGamepadCompatibleWidget* currentMenu;
 
 	class UInteractionDurationWidget* InteractionWidget;
+
+private:
+	UFUNCTION()
+	void HandleGameOver(const FGameOverInfo& info);
 };
