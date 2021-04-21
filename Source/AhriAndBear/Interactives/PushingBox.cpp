@@ -339,7 +339,7 @@ void APushingBox::Tick(float DeltaTime)
 	//	
 	//}
 
-	if (myInteractPosition != InteractPosition::None && moveValue != 0.f && isInPosition)
+	if (myInteractPosition != InteractPosition::None && moveValue != 0.f)
 	{
 		if (CheckBoxMoveable())
 		{
