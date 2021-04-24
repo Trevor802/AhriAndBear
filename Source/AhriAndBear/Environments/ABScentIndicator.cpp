@@ -107,7 +107,7 @@ void AABScentIndicator::Tick(float DeltaTime)
 	if (lifeSpan <= 0 && !isDestructing)
 	{
 		StartDissipating();
-		lifeSpan = 100.f;
+		lifeSpan = 3.f;
 	}
 	else if (isDestructing)
 	{
