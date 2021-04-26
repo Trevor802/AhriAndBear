@@ -107,7 +107,7 @@ void AABPlayerController::SetupInputComponent()
 
 	ConstantActionBindings.Add(InputComponent->BindAction("ChangeAnimal", IE_Pressed, this, &AABPlayerController::CallSwitchAnimal));
 	ConstantActionBindings.Add(InputComponent->BindAction("Bark", IE_Pressed, this, &AABPlayerController::Bark));
-	ConstantActionBindings.Add(InputComponent->BindAction("ESC", IE_Pressed, this, &AABPlayerController::QuitGame));
+	ConstantActionBindings.Add(InputComponent->BindAction("ESC", IE_Pressed, this, &AABPlayerController::Pause));
 }
 
 void AABPlayerController::CallMoveForward(float value)
