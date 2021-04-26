@@ -70,7 +70,7 @@ void AABInteractiveObjectNewspaper::OpenNewspaper()
 	if (player)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("player found"));
-		player->FindComponentByClass<UABPlayerUIComponent>()->AddNewspaperWidgetToViewPort();
+		player->FindComponentByClass<UABPlayerUIComponent>()->AddNewspaperWidgetToViewPort(NewspaperIndex);
 	}
 	
 }

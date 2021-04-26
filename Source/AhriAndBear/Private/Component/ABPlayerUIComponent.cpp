@@ -41,12 +41,13 @@ void UABPlayerUIComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	CheckEndWidget();
 }
 
-void UABPlayerUIComponent::AddNewspaperWidgetToViewPort()
+void UABPlayerUIComponent::AddNewspaperWidgetToViewPort(int NewspaperImageIndex)
 {
 	if (PlayerController)
 	{
 		InitNewsWidget();
 		PlayerController->AddWidgetToViewPort(NewspaperWidget);
+		NewspaperWidget->NewspaperIndex(NewspaperImageIndex);
 		PlayerController->CallReading();
 	}
 }

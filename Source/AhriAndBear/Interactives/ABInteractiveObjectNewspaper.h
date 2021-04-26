@@ -49,6 +49,9 @@ public:
 		TSubclassOf<class UNewspaperWidget> WidgetClass;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
 		FString TempTitle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+		int NewspaperIndex;
 private:
 	bool bOpened;
 

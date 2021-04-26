@@ -16,6 +16,10 @@ class AHRIANDBEAR_API UNewspaperWidget : public UUserWidget
 public:
 	UFUNCTION(BlueprintImplementableEvent)
 		void Open();
+	
 	UFUNCTION(BlueprintImplementableEvent)
 		void Close();
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void NewspaperIndex(int Index);
 };

@@ -36,7 +36,7 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	void AddNewspaperWidgetToViewPort();
+	void AddNewspaperWidgetToViewPort(int NewspaperImageIndex);
 	void RemoveNewspaperWidgetFromViewPort();
 
 	void AddHintWidgetToViewPort();
