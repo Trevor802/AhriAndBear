@@ -58,7 +58,7 @@ void AABDogCharacter::CatScentTracker()
 				UE_LOG(LogTemp, Error, TEXT("AABDogCharacter: Cat's scnet source not available."));
 			indicator->SetTargetPosition(cat->GetActorLocation());
 			indicator->SetIndicatorLifeSpan(3);
-			indicator->CalculateDirection();
+			//indicator->CalculateDirection();
 		}
 		
 	}
