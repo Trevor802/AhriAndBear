@@ -30,6 +30,11 @@ void AHintTrigger::OnTriggerOverlapEnd(UPrimitiveComponent* OverlappedComp, AAct
 	if (OtherActor && Cast<AABAnimalCharacter>(OtherActor))
 	{
 		bOverlappingCharacter = false;
+
+		if (bCanReappear == true && tempChara && tempChara->bShowHint)
+		{
+			HideHint();
+		}
 	}
 }
 
@@ -45,12 +50,31 @@ void AHintTrigger::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	
 	if (tempChara && bOverlappingCharacter && !bTriggered && !tempChara->bShowHint)
 	{
 		tempChara->HintString = TriggerHintString;
 		tempChara->bShowHint = true;
-		bTriggered = true;
+
+		if (bCanReappear == false)
+		{
+			bTriggered = true;
+			FTimerDelegate HintDelegate = FTimerDelegate::CreateUObject(this, &AHintTrigger::HideHint);
+			GetWorld()->GetTimerManager().SetTimer(TimerHandle, HintDelegate, 5.0f, false);
+		}
+		
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("enter hint trigger"));
+	}
+}
+
+void AHintTrigger::HideHint() 
+{
+	if (tempChara) 
+	{
+		tempChara->bShowHint = false;
+
+		UABPlayerUIComponent* UIComponent = tempChara->FindComponentByClass<UABPlayerUIComponent>();
+		UIComponent->HideHintUI();
 	}
 }
 

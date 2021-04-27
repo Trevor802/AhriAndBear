@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
 #include "ABAnimalCharacter.h"
+#include "ABPlayerUIComponent.h"
 #include "HintTrigger.generated.h"
 
 UCLASS()
@@ -40,18 +41,26 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		FString TriggerHintString = "";
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+		bool bCanReappear = false;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	FTimerHandle TimerHandle;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	void HideHint();
 
 private:
 	bool bTriggered = false;
 	bool bOverlappingCharacter = false;
 
 	AABAnimalCharacter* tempChara;
+	
 
 };

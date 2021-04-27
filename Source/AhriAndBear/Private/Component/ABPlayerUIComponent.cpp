@@ -120,9 +120,15 @@ void UABPlayerUIComponent::CheckHintUI()
 			HintWidget->HintString = character->HintString;
 			HintWidget->ShowHint(3.0f);
 
-			FTimerDelegate HintDelegate = FTimerDelegate::CreateUObject(this, &UABPlayerUIComponent::HideHintUI);
-			GetWorld()->GetTimerManager().SetTimer(TimerHandle, HintDelegate, 5.0f, false);
+			//FTimerDelegate HintDelegate = FTimerDelegate::CreateUObject(this, &UABPlayerUIComponent::HideHintUI);
+			//GetWorld()->GetTimerManager().SetTimer(TimerHandle, HintDelegate, 5.0f, false);
 		}
+		/*
+		else if (!character->bShowHint && bHintWidgetShowed)
+		{
+			HideHintUI();
+		}
+		*/
 	}
 }
 
@@ -132,7 +138,7 @@ void UABPlayerUIComponent::HideHintUI()
 	{
 		bHintWidgetShowed = false;
 		HintWidget->HideHint();
-		character->bShowHint = false;
+		//character->bShowHint = false;
 	}
 }
 
