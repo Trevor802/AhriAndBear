@@ -56,6 +56,11 @@ bool AABInteractiveObjectGate::CanInteract(UCharacterInteractionComponent* compo
 		return false;
 	}
 
+	if (bOpened == true)
+	{
+		return false;
+	}
+
 	auto character = Cast<AABAnimalCharacter>(component->GetOwner());
 	AABCatCharacter* catCharacter = Cast<AABCatCharacter>(character);
 
@@ -73,22 +78,19 @@ bool AABInteractiveObjectGate::CanInteract(UCharacterInteractionComponent* compo
 
 	// Only check directions if the UnlockDirection vector is not the zero  vector.
 	if (UnlockDirection != FVector::ZeroVector) {
-		GEngine->AddOnScreenDebugMessage(-1, 60.f, FColor::Green, TEXT("Checking to see if gate can be unlocked"));
 		// Get vector from actor to gate and compare to the UnlockDirection.
 		auto actorLocation = character->GetTransform().GetLocation();
 
 		auto gateLocation = GetTransform().GetLocation();
 		auto actor2GateVector = gateLocation - actorLocation;
 		auto a2gvDotUd = FVector::DotProduct(actor2GateVector, UnlockDirection);
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("a2gvDotUd is %f"), a2gvDotUd));
-		DrawDebugLine(GetWorld(), actorLocation, gateLocation, FColor::Cyan, false, 1, 0, 5.f);
+		
 		// Get actor's forward vector and compare to UnlockDirection.
 		auto actorForward = character->GetActorForwardVector();
 		auto aFDotUd = FVector::DotProduct(actorForward, UnlockDirection);
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("aFDotUd is %f"), aFDotUd));
+
 		// All three vectors should be facing the same direction, meaning neither dot
 		// product should be less than zero.
-
 		if (aFDotUd < 0 || a2gvDotUd < 0)
 			return false;
 	}
@@ -102,12 +104,19 @@ bool AABInteractiveObjectGate::CanInteract(UCharacterInteractionComponent* compo
 		return bDogCanOpen;
 }
 
+void AABInteractiveObjectGate::BeginInteraction()
+{
+	Super::BeginInteraction();
+	OnBeginOpen();
+}
+
 void AABInteractiveObjectGate::EndInteraction(bool bResult)
 {
 	Super::EndInteraction(bResult);
 
 	if (!bResult)
 	{
+		OnDoorOpened(false);
 		return;
 	}
 
@@ -121,4 +130,6 @@ void AABInteractiveObjectGate::EndInteraction(bool bResult)
 		AAhriAndBearGameModeBase* GameMode = (AAhriAndBearGameModeBase*)GetWorld()->GetAuthGameMode();
 		GameMode->ToNextTask();
 	}
+
+	OnDoorOpened(true);
 }

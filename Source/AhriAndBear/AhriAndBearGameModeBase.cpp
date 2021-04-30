@@ -23,16 +23,18 @@ void AAhriAndBearGameModeBase::BeginPlay()
 	AActor* dogActor = UGameplayStatics::GetActorOfClass(GetWorld(), AABDogCharacter::StaticClass());
 	dog = Cast<AABDogCharacter>(dogActor);
 	if (dog != nullptr) {
-		dog->SurvivalComponent->OnCriticalConditionChanged.AddDynamic(this, &AAhriAndBearGameModeBase::OnAnimalCriticalConditionChanged);
+		//dog->SurvivalComponent->OnCriticalConditionChanged.AddDynamic(this, &AAhriAndBearGameModeBase::OnAnimalCriticalConditionChanged);
 		dog->OnAnimalCaught.AddDynamic(this, &AAhriAndBearGameModeBase::OnAnimalCaught);
 	}
 
 	AActor* catActor = UGameplayStatics::GetActorOfClass(GetWorld(), AABCatCharacter::StaticClass());
 	cat = Cast<AABCatCharacter>(catActor);
 	if (cat != nullptr) {
-		cat->SurvivalComponent->OnCriticalConditionChanged.AddDynamic(this, &AAhriAndBearGameModeBase::OnAnimalCriticalConditionChanged);
+		//cat->SurvivalComponent->OnCriticalConditionChanged.AddDynamic(this, &AAhriAndBearGameModeBase::OnAnimalCriticalConditionChanged);
 		cat->OnAnimalCaught.AddDynamic(this, &AAhriAndBearGameModeBase::OnAnimalCaught);
 	}
+
+	//AccessibilitySettings = UUserSettings::LoadSettingsFromDisc();
 }
 
 void AAhriAndBearGameModeBase::ToNextTask()
@@ -69,14 +71,5 @@ void AAhriAndBearGameModeBase::EndGame(EGameOverReason reason)
 {
 	// If we need more information, the game mode can probably work it out.
 	OnGameOver.Broadcast(FGameOverInfo(reason));
-
-	TArray<AActor*> allActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), allActors);
-	for (AActor* actor : allActors) {
-		actor->SetActorTickEnabled(false);
-	}
-
-	auto playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	playerController->SetInputMode(FInputModeUIOnly());
-	playerController->bShowMouseCursor = true;
+	UGameplayStatics::SetGamePaused(GetWorld(), true);
 }

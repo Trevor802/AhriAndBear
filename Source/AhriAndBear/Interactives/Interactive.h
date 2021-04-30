@@ -20,7 +20,6 @@ class AHRIANDBEAR_API AInteractive : public AActor
 protected:
 	AInteractive();
 	UCharacterInteractionComponent* InteractingComponent;
-	virtual bool CanInteract(UCharacterInteractionComponent*) const;
 
 	virtual void BeginInteraction() {};
 	virtual void EndInteraction(bool) {};
@@ -77,6 +76,7 @@ public:
 	bool bCanTriggerTask;
 
 	void AfterInteraction(bool);
+	virtual bool CanInteract(UCharacterInteractionComponent*) const;
 	bool TryInteracting(UCharacterInteractionComponent*);
 
 	virtual void BindInput(UInputComponent*) const;

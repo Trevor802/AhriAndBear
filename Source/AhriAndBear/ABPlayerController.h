@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "ABAnimalCharacter.h"
+#include "AhriAndBearGameModeBase.h"
 #include "ABPlayerController.generated.h"
 /**
  * 
@@ -40,7 +41,37 @@ public:
 	void CallStopCrouch();
 	void CallReading();
 	void CallStopReading();
-	
+	void Pause();
+
+	/**
+	* Passes this input event over to a GamepadCompatibleWidget.
+	*/
+	void UI_SelectionChange(float value);
+	/**
+	* Passes this input event over to a GamepadCompatibleWidget.
+	*/
+	void UI_SliderChange(float value);
+
+	/**
+	* Passes this input event over to a GamepadCompatibleWidget.
+	*/
+	void UI_Confirm();
+
+	/**
+	* Passes this input event over to a GamepadCompatibleWidget.
+	*/
+	void UI_Cancel();
+
+	/**
+	* Passes this input event over to a GamepadCompatibleWidget.
+	*/
+	void UI_Start();
+
+	/**
+	* Passes this input event over to a GamepadCompatibleWidget.
+	*/
+	void UI_Select();
+
 	void QuitGame();
 	void Bark();
 
@@ -61,5 +92,21 @@ protected:
 	// Naive implementation, TODO: Move all UIs to a UI Manager class
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<class UInteractionDurationWidget> WidgetClass;
+	
+	// This is the class of the pause menu widget shown while paused.
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<class UGamepadCompatibleWidget> PauseMenuWidgetClass;
+
+	// The class of game over menu that shows during game over.
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<class UGamepadCompatibleWidget> GameOverMenuClass;
+
+	// The current menu.
+	UGamepadCompatibleWidget* currentMenu;
+
 	class UInteractionDurationWidget* InteractionWidget;
+
+private:
+	UFUNCTION()
+	void HandleGameOver(const FGameOverInfo& info);
 };

@@ -15,8 +15,6 @@ struct FSurvivalData
 	float Thirst;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float Warmth;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float Stamina;
 };
 
 USTRUCT(BlueprintType)

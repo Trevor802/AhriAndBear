@@ -45,7 +45,7 @@ AABAnimalCharacter::AABAnimalCharacter()
 
 	baseTurnRate = 45.f;
 	baseLookUpRate = 45.f;
-	cameraLerpSpeed = 2.0f;
+	cameraLerpSpeed = 1.0f;
 
 	bWithinRange = false;
 	bIsFollowing = false;
@@ -60,6 +60,8 @@ AABAnimalCharacter::AABAnimalCharacter()
 	bAttached = false;
 
 	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
+
+	ClimbingRotationRate = 2.0f;
 }
 
 bool AABAnimalCharacter::IsInCriticalCondition() const
@@ -84,7 +86,13 @@ void AABAnimalCharacter::BeginPlay()
 
 bool AABAnimalCharacter::CanJumpInternal_Implementation() const
 {
-	return Super::CanJumpInternal_Implementation();
+	// Prevent animals from jumping if they're interacting with something
+	return Super::CanJumpInternal_Implementation() && !InteractionComponent->IsInteracting();
+}
+
+EABAnimalMovementNoiseVolume AABAnimalCharacter::GetSprintMovementVolume() const
+{
+	return EABAnimalMovementNoiseVolume::Normal;
 }
 
 // Called every frame
@@ -94,7 +102,8 @@ void AABAnimalCharacter::Tick(float DeltaTime)
 
 	ChangeMovementMode();
 	ChangeCameraLocation(DeltaTime);
-	SprintStaminaUpdate(DeltaTime);
+	UpdateSprinting(DeltaTime);
+	CheckClimbingRotation();
 }
 
 void AABAnimalCharacter::GetCaught(AActor* byWhom)
@@ -102,6 +111,40 @@ void AABAnimalCharacter::GetCaught(AActor* byWhom)
 	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, "Animal Caught By: " + byWhom->GetName());
 	OnAnimalCaught.Broadcast(byWhom);
 	//UGameplayStatics::OpenLevel(GetWorld(), "level1_Shelter");
+}
+
+EABAnimalMovementNoiseVolume AABAnimalCharacter::GetCurrentMovementVolume() const
+{
+	if (GetMovementComponent()->Velocity.IsNearlyZero()) {
+		return EABAnimalMovementNoiseVolume::Silent;
+	}
+	else if (bSprinting) {
+		return GetSprintMovementVolume();
+	}
+	else {
+		return EABAnimalMovementNoiseVolume::Normal;
+	}
+}
+
+void AABAnimalCharacter::CheckClimbingRotation()
+{
+	GEngine->AddOnScreenDebugMessage(0, 0.5f, FColor::Cyan, FString::Printf(TEXT("Angle: %f"), GetActorRotation().Roll));
+	if (bClimbing == true)
+	{
+		if (GetActorRotation().Pitch <= TargetClimbingRotation)
+		{
+			FQuat Rotation = FQuat(FRotator(ClimbingRotationRate, 0.f, 0.f));
+			AddActorLocalRotation(Rotation, false, 0, ETeleportType::None);
+		}
+	}
+	else
+	{
+		if (GetActorRotation().Pitch >= 0)
+		{
+			FQuat Rotation = FQuat(FRotator(-ClimbingRotationRate, 0.f, 0.f));
+			AddActorLocalRotation(Rotation, false, 0, ETeleportType::None);
+		}
+	}
 }
 
 void AABAnimalCharacter::Jump()
@@ -119,22 +162,24 @@ void AABAnimalCharacter::Bark()
 
 void AABAnimalCharacter::UpdateChecking()
 {
-	if (SurvivalComponent->Stamina.CurrentValue < JumpStamina)
-	{
-		bCanJump = false;
-		return;
-	}
-
 	//bCanJump = CheckJumping(JumpingVelocity);
 	bCanJump = CanJump();
 }
 
 void AABAnimalCharacter::StartJumping()
 {
+	if (AnimalsCombined || AnimalOnTop)
+	{
+		bJumping = false;
+		return;
+	}
+
 	bJumping = true;
 
 	FTimerDelegate JumpTimerDelegate = FTimerDelegate::CreateUObject(this, &AABAnimalCharacter::EndJumping);
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, JumpTimerDelegate, 0.5f, false);
+
+	Jump();
 }
 
 void AABAnimalCharacter::EndJumping()
@@ -144,21 +189,22 @@ void AABAnimalCharacter::EndJumping()
 
 void AABAnimalCharacter::StartSprinting()
 {
-	if (SurvivalComponent->Stamina.CurrentValue <= 0)
+	if (AnimalsCombined || AnimalOnTop)
 	{
+		bSprinting = false;
 		return;
 	}
 
 	bSprinting = true;
 	GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
+	OnSprintStart.Broadcast();
 }
 
-void AABAnimalCharacter::SprintStaminaUpdate(float DeltaTime)
+void AABAnimalCharacter::UpdateSprinting(float DeltaTime)
 {
 	if (bSprinting)
 	{
-		UABSurvivalStatFunctions::AddToCurrentValue(SurvivalComponent->Stamina, -SprintStaminaRateOfChange * DeltaTime);
-		if (SurvivalComponent->Stamina.CurrentValue <= 0)
+		if (AnimalsCombined || AnimalOnTop)
 		{
 			EndSprinting();
 		}
@@ -171,6 +217,7 @@ void AABAnimalCharacter::EndSprinting()
 {
 	bSprinting = false;
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+	OnSprintEnd.Broadcast();
 }
 
 void AABAnimalCharacter::StartCrouch()
@@ -235,19 +282,19 @@ void AABAnimalCharacter::SwitchAnimal()
 		{
 			// Toggle scent trail's visibility
 			AABDogCharacter* dog = Cast<AABDogCharacter>(this);
-			
+
 			if (dog)
 			{
 				HideScentFromCat();
 				UE_LOG(LogTemp, Warning, TEXT("Dog"));
-			}	
+			}
 
 			tempPlayerController->UnPossess();
 			tempAIController->UnPossess();
 
 			tempPlayerController->Possess(OtherAnimal);
 			tempAIController->Possess(this);
-			
+
 			if (OtherAnimal->InteractionComponent->IsInteracting())
 			{
 				Cast<AABPlayerController>(tempPlayerController)->UnbindInput();
@@ -292,7 +339,10 @@ void AABAnimalCharacter::ChangeMovementMode()
 	}
 	else if (bClimbing == true)
 	{
-		GetCharacterMovement()->SetMovementMode(MOVE_Flying);
+		//GetCharacterMovement()->SetMovementMode(MOVE_Flying);
+		GetCharacterMovement()->StopActiveMovement();
+		GetCharacterMovement()->StopMovementImmediately();
+		GetCharacterMovement()->SetMovementMode(MOVE_None);
 	}
 }
 

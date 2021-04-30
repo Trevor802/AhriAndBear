@@ -9,6 +9,7 @@
 #include "NiagaraComponent.h"
 #include "NiagaraSystem.h"
 #include "NiagaraFunctionLibrary.h"
+#include "NiagaraDataInterfaceColorCurve.h"
 
 AABScentIndicator::AABScentIndicator()
 {
@@ -18,11 +19,13 @@ AABScentIndicator::AABScentIndicator()
 	targetPosition = FVector::ZeroVector;
 	myTrailComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Trail Comp"));
 	myTrailComponent->SetupAttachment(RootComponent);
+	stuckTimer = 3.f;
 }
 
 void AABScentIndicator::BeginPlay()
 {
 	Super::BeginPlay();
+	lastFrameLocation = GetActorLocation();
 	//myTrailComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), trailVFX, GetActorLocation(), FRotator::ZeroRotator, (FVector)1.0f, false);
 	//myTrailComponent->Activate(true);
 }
@@ -40,6 +43,12 @@ void AABScentIndicator::CalculateDirection()
 		}
 			
 	}
+}
+
+void AABScentIndicator::StartDissipating()
+{
+	isDestructing = true;
+	bIsDissipating = true;
 }
 
 AABScentWaypoint* AABScentIndicator::GetReachableWaypoint()
@@ -95,12 +104,21 @@ AABScentWaypoint* AABScentIndicator::GetReachableWaypoint()
 void AABScentIndicator::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (lifeSpan <= 0)
+	if (lifeSpan <= 0 && !isDestructing)
 	{
-		myTrailComponent->DestroyComponent();
-		Destroy();
+		StartDissipating();
+		lifeSpan = 3.f;
 	}
-		
+	else if (isDestructing)
+	{
+		lifeSpan -= DeltaTime;
+		if (lifeSpan <= 0.f)
+		{
+			myTrailComponent->DestroyComponent();
+			Destroy();
+		}
+		return;
+	}
 
 	MoveToTarget(DeltaTime);
 
@@ -116,9 +134,13 @@ void AABScentIndicator::Tick(float DeltaTime)
 	if (myReachingTarget)
 	{
 		lifeSpan -= DeltaTime;
-		if (lifeSpan <= 0.f)
-			Destroy();
 	}
+
+	//if (lifeSpan <= 0.f)
+	//{
+	//	myTrailComponent->DestroyComponent();
+	//	Destroy();
+	//}
 }
 
 void AABScentIndicator::SetTargetPosition(FVector target)
@@ -145,21 +167,23 @@ void AABScentIndicator::MoveToTarget(float DeltaTime)
 	FVector arrival = FVector::ZeroVector;
 	FVector avoid = FVector::ZeroVector;
 	arrival = toTarget.GetSafeNormal();
-	for (int i = 0; i < helper.G_S_directions.Num(); i++)
-	{
-		FHitResult onHit;
-		FCollisionQueryParams CollisionParams;
-		if (GetWorld()->LineTraceSingleByChannel(onHit,
-			GetActorLocation(),
-			GetActorLocation() + helper.G_S_directions[i] * 30,
-			ECollisionChannel::ECC_Visibility,
-			CollisionParams))
-		{
-			avoid += -helper.G_S_directions[i].GetSafeNormal();
-		}
-	}
-	myVelocity = (arrival + avoid).GetSafeNormal() * 100;
-	SetActorLocation(GetActorLocation() + myVelocity * DeltaTime);
+	//for (int i = 0; i < helper.G_S_directions.Num(); i++)
+	//{
+	//	FHitResult onHit;
+	//	FCollisionQueryParams CollisionParams;
+	//	if (GetWorld()->LineTraceSingleByChannel(onHit,
+	//		GetActorLocation(),
+	//		GetActorLocation() + helper.G_S_directions[i] * 30,
+	//		ECollisionChannel::ECC_Visibility,
+	//		CollisionParams))
+	//	{
+	//		avoid += -helper.G_S_directions[i].GetSafeNormal();
+	//	}
+	//}
+	myVelocity = (arrival + avoid).GetSafeNormal() * moveSpeed;
+	lastFrameLocation = GetActorLocation();
+	FVector updatedLocation = GetActorLocation() + myVelocity * DeltaTime;
+	SetActorLocation(updatedLocation);
 
 	if (FVector::Distance(targetPosition, GetActorLocation()) <= myReachingRange)
 	{
@@ -172,6 +196,12 @@ void AABScentIndicator::MoveToTarget(float DeltaTime)
 			myReachingTarget = true;
 	}
 
+	if (FVector::Distance(updatedLocation, lastFrameLocation) < moveSpeed * DeltaTime)
+	{
+		stuckTimer -= DeltaTime;
+		if (stuckTimer <= 0.f)
+			lifeSpan = 0.f;
+	}
 }
 
 bool AABScentIndicator::IsWaypointReachable(const AABScentWaypoint* actor)

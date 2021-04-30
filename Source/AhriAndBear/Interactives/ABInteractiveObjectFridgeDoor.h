@@ -21,7 +21,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	FORCEINLINE virtual bool CanInteract(UCharacterInteractionComponent* component) const override { return !bOpened; }
+	virtual bool CanInteract(UCharacterInteractionComponent* interactingComponent) const override;
 	virtual void EndInteraction(bool) override;
 
 public:
@@ -37,6 +37,9 @@ public:
 		class UBoxComponent* CollisionShape;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
 		UStaticMeshComponent* DoorMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interactive Object | Gate")
+		FVector UnlockDirection = FVector::ZeroVector;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rotation")
 		float RotationTimeLength;

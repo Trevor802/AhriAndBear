@@ -8,6 +8,9 @@
 #include "Components/StaticMeshComponent.h"
 #include "TimerManager.h"
 #include "Kismet/GameplayStatics.h"
+#include "CharacterInteractionComponent.h"
+#include "Characters/ABCatCharacter.h"
+#include "Characters/ABDogCharacter.h"
 
 AABInteractiveObjectFridgeDoor::AABInteractiveObjectFridgeDoor()
 	: Super()
@@ -29,6 +32,40 @@ void AABInteractiveObjectFridgeDoor::BeginPlay()
 {
 	Super::BeginPlay();
 
+}
+
+bool AABInteractiveObjectFridgeDoor::CanInteract(UCharacterInteractionComponent* interactingComponent) const
+{
+	if (!Super::CanInteract(interactingComponent)) {
+		return false;
+	}
+
+	auto character = Cast<AABAnimalCharacter>(interactingComponent->GetOwner());
+
+	if (UnlockDirection != FVector::ZeroVector) {
+		// Get vector from actor to gate and compare to the UnlockDirection.
+		auto actorLocation = character->GetTransform().GetLocation();
+
+		auto gateLocation = GetTransform().GetLocation();
+		auto actor2GateVector = gateLocation - actorLocation;
+		auto a2gvDotUd = FVector::DotProduct(actor2GateVector, UnlockDirection);
+
+		// Get actor's forward vector and compare to UnlockDirection.
+		auto actorForward = character->GetActorForwardVector();
+		auto aFDotUd = FVector::DotProduct(actorForward, UnlockDirection);
+
+		// All three vectors should be facing the same direction, meaning neither dot
+		// product should be less than zero.
+		if (aFDotUd < 0 || a2gvDotUd < 0)
+			return false;
+	}
+
+	if (bOpened)
+	{
+		return false;
+	}
+
+	return true;
 }
 
 void AABInteractiveObjectFridgeDoor::EndInteraction(bool bResult)
@@ -61,7 +98,9 @@ void AABInteractiveObjectFridgeDoor::OpenDoor()
 {
 	FQuat Rotation = FQuat(FRotator(0.f, RotationRate, 0.f));
 
-	AddActorLocalRotation(Rotation, false, 0, ETeleportType::None);
+	//AddActorLocalRotation(Rotation, false, 0, ETeleportType::None);
+
+	DoorMesh->AddLocalRotation(Rotation, false, 0, ETeleportType::None);
 }
 
 void AABInteractiveObjectFridgeDoor::StopRotation()
