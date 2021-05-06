@@ -69,7 +69,7 @@ void AHintTrigger::Tick(float DeltaTime)
 
 void AHintTrigger::HideHint() 
 {
-	if (tempChara) 
+	if (tempChara && tempChara->bShowHint)
 	{
 		tempChara->bShowHint = false;
 

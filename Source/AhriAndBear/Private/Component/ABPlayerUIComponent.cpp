@@ -134,7 +134,7 @@ void UABPlayerUIComponent::CheckHintUI()
 
 void UABPlayerUIComponent::HideHintUI()
 {
-	if (character)
+	if (character && HintWidget)
 	{
 		bHintWidgetShowed = false;
 		HintWidget->HideHint();
